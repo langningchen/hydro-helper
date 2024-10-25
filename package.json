@@ -1,0 +1,110 @@
+{
+  "name": "cyezoi",
+  "displayName": "CYEZOI Helper",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "cyezoi",
+          "name": "CYEZOI"
+        }
+      ]
+    },
+    "treeView": [
+      {
+        "id": "cyezoi",
+        "name": "CYEZOI"
+      }
+    ],
+    "commands": [
+      {
+        "command": "cyezoi.login",
+        "title": "CYEZOI: Login"
+      },
+      {
+        "command": "cyezoi.openOutput",
+        "title": "CYEZOI: Open Output"
+      },
+      {
+        "command": "cyezoi.logout",
+        "title": "CYEZOI: Logout"
+      },
+      {
+        "command": "cyezoi.refreshProblemTree",
+        "title": "CYEZOI: Refresh Problem Tree",
+        "icon": {
+          "light": "res/icons/refresh-light.svg",
+          "dark": "res/icons/refresh-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.openProblem",
+        "title": "CYEZOI: Open Problem"
+      },
+      {
+        "command": "cyezoi.submitProblem",
+        "title": "CYEZOI: Submit Problem",
+        "icon": {
+          "light": "res/icons/send-light.svg",
+          "dark": "res/icons/send-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.openSubmission",
+        "title": "CYEZOI: Open Submission"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "cyezoi.refreshProblemTree",
+          "when": "view == cyezoi",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "cyezoi.submitProblem",
+          "when": "viewItem == problem",
+          "group": "inline"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.8",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.94.0",
+    "@types/ws": "^8.5.12",
+    "@typescript-eslint/eslint-plugin": "^8.7.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.11.1",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "@vscode/codicons": "^0.0.36",
+    "hydrooj": "^4.16.1",
+    "marked": "^14.1.3",
+    "ws": "^8.18.0"
+  }
+}

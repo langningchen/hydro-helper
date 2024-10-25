@@ -1,0 +1,27 @@
+{
+	"search.exclude": {
+		"out": true
+	},
+	"typescript.tsc.autoDetect": "off",
+	"cSpell.words": [
+		"autorefresh",
+		"chtml",
+		"clike",
+		"codicon",
+		"codicons",
+		"CYEZOI",
+		"foldcode",
+		"foldgutter",
+		"mathjax",
+		"newoj",
+		"pdoc",
+		"pdocs",
+		"ppcount",
+		"problemset",
+		"psdict",
+		"psdoc",
+		"rdoc",
+		"realname"
+	],
+	"explorer.excludeGitIgnore": true
+}
