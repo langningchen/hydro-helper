@@ -119,7 +119,7 @@ export class submissionWebview {
     private getHtml() {
         const staticFiles = [
             { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
-            { 'path': ['node_modules', '@vscode/codicons', 'dist', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
+            { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
             { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.css'] },
             { 'path': ['res', 'libs', 'codemirror', 'theme', 'material.min.css'] },

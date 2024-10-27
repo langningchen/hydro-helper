@@ -67,7 +67,7 @@ export class problemWebview {
         const staticFiles = [
             { 'path': ['res', 'libs', 'MathJax-3.2.2', 'es5', 'tex-mml-chtml.js'], attributes: { 'async': undefined, 'id': 'MathJax-script' } },
             { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
-            { 'path': ['node_modules', '@vscode/codicons', 'dist', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
+            { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
             { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.css'] },
             { 'path': ['res', 'libs', 'codemirror', 'theme', 'material.min.css'] },
