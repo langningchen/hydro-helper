@@ -1,6 +1,11 @@
+.gitignore
+.npmrc
 .vscode
-node_modules
+.vscodeignore
+esbuild.js
+eslint.config.mjs
+node_modules/
+pnpm-lock.yaml
 src/
 tsconfig.json
 webpack.config.js
-esbuild.js
