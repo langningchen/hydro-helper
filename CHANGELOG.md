@@ -2,6 +2,10 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.6
+
+Fix icon displaying failed.
+
 ## v0.0.5
 
 Remove useless dependencies to make the extension smaller.
