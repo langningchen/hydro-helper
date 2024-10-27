@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import { cyezoiAuthenticationProvider } from './authenticationProvider';
 import { outputChannel } from './outputChannel';
 import { cyezoiFetch } from './fetch';
-import { marked } from 'marked';
 import { io } from './io';
 import { WebSocket } from 'ws';
 import { cyezoiStorage } from './storage';
