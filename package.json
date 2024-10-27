@@ -43,8 +43,8 @@
         "command": "cyezoi.refreshProblemTree",
         "title": "CYEZOI: Refresh Problem Tree",
         "icon": {
-          "light": "res/icons/refresh-light.svg",
-          "dark": "res/icons/refresh-dark.svg"
+          "light": "res/icons/arrow-clockwise-light.svg",
+          "dark": "res/icons/arrow-clockwise-dark.svg"
         }
       },
       {
