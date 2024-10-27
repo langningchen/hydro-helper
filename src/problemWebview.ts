@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { io } from './io';
 import { cyezoiFetch } from './fetch';
 import { marked } from 'marked';
+import { cyezoiSettings } from './settings';
 
 export class problemWebview {
     private static readonly viewType = 'problem';
@@ -31,7 +32,7 @@ export class problemWebview {
             }
         });
 
-        new cyezoiFetch({ path: '/d/problemset/p/' + problemId, addCookie: true }).start().then(async (problemDetail) => {
+        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p/${problemId}`, addCookie: true }).start().then(async (problemDetail) => {
             if (problemDetail?.json === undefined) {
                 this._panel.webview.postMessage({ command: 'notFound', data: {} });
             } else {
@@ -39,7 +40,7 @@ export class problemWebview {
                 const markdownContent: { [key: string]: string } = {};
                 for (const [key, value] of Object.entries(problemContent)) {
                     let stringValue: string = value as string;
-                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, 'https://newoj.cyezoi.com/d/problemset/p/' + problemId + '/file/$1');
+                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, `https://${cyezoiSettings.server}/d/${cyezoiSettings.domain}/p/${problemId}/file/$1`);
                     markdownContent[key] = await marked(stringValue);
                 }
                 const message = {

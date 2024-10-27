@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { io } from './io';
+import { cyezoiSettings } from './settings';
 
 interface HydroError extends Error {
     params: any[]
@@ -39,7 +40,7 @@ export class cyezoiFetch {
     };
 
     doFetch = async (options: fetchOptions): Promise<void> => {
-        this.response = await fetch('https://newoj.cyezoi.com' + options.path, {
+        this.response = await fetch(`https://${cyezoiSettings.server}${options.path}`, {
             method: options.body ? 'POST' : 'GET',
             headers: {
                 'accept': 'application/json',

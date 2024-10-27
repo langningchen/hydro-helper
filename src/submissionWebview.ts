@@ -2,6 +2,7 @@ import path from 'path';
 import * as vscode from 'vscode';
 import { io } from './io';
 import { cyezoiFetch } from './fetch';
+import { cyezoiSettings } from './settings';
 
 interface TestCase {
     id: number;
@@ -65,7 +66,7 @@ export class submissionWebview {
             }
         });
 
-        new cyezoiFetch({ path: '/d/problemset/record/' + rid, addCookie: true }).start().then(async (submissionDetail) => {
+        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record/${rid}`, addCookie: true }).start().then(async (submissionDetail) => {
             if (submissionDetail?.json === undefined) {
                 this._panel.webview.postMessage({ command: 'notFound', data: {} });
             } else {

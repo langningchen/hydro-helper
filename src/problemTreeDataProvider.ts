@@ -3,6 +3,7 @@ import { cyezoiFetch } from './fetch';
 import path from 'path';
 import { statusIcon, statusName } from './static';
 import { io } from './io';
+import { cyezoiSettings } from './settings';
 
 export interface ProblemDoc {
     _id: string
@@ -74,7 +75,7 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
     async getChildren(): Promise<Problem[]> {
         try {
             io.log('Fetching problem list...');
-            const response = await new cyezoiFetch({ path: `/d/problemset/p?page=${this.page}`, addCookie: true }).start();
+            const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p?page=${this.page}`, addCookie: true }).start();
             io.log('Problem list fetched.');
             this.pageCounter = response.json.ppcount;
             const problems: Problem[] = [];

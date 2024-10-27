@@ -19,6 +19,21 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "CYEZOI Helper",
+      "properties": {
+        "cyezoi.server": {
+          "type": "string",
+          "default": "newoj.cyezoi.com",
+          "description": "The server address of CYEZOI"
+        },
+        "cyezoi.domain": {
+          "type": "string",
+          "default": "problemset",
+          "description": "The domain of CYEZOI"
+        }
+      }
+    },
     "views": {
       "explorer": [
         {

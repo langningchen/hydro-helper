@@ -9,6 +9,7 @@ import { statusEnded, statusName } from './static';
 import { submissionWebview } from './submissionWebview';
 import { problemWebview } from './problemWebview';
 import { cyezoiTreeDataProvider } from './treeDataProvider';
+import { cyezoiSettings } from './settings';
 
 export function activate(context: vscode.ExtensionContext) {
 	cyezoiStorage.secretStorage = context.secrets;
@@ -92,7 +93,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}, async (progress) => {
 			progress.report({ message: 'Submitting' });
 			const response = await new cyezoiFetch({
-				path: '/d/problemset/p/' + problemId + '/submit',
+				path: `/d/${cyezoiSettings.domain}/p/${problemId}/submit`,
 				body: {
 					lang,
 					code: code.toString(),
@@ -107,7 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
 			progress.report({ message: 'Waiting for judge response' });
 
 			return new Promise<number>(async (resolve) => {
-				const ws = new WebSocket('wss://newoj.cyezoi.com/record-detail-conn?domainId=problemset&rid=' + rid, {
+				const ws = new WebSocket(`wss://${cyezoiSettings.server}/record-detail-conn?domainId=${cyezoiSettings.domain}&rid=${rid}`, {
 					headers: {
 						'cookie': await cyezoiFetch.getCookiesValue(),
 					},
