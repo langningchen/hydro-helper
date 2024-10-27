@@ -8,14 +8,30 @@ export class cyezoiTreeDataProvider implements vscode.TreeDataProvider<any> {
     readonly onDidChangeTreeData: vscode.Event<any | undefined> = this._onDidChangeTreeData.event;
 
     constructor() {
-        this._problemTreeDataProvider = new cyezoiProblemTreeDataProvider();
+        this._problemTreeDataProvider = new cyezoiProblemTreeDataProvider(this._onDidChangeTreeData);
     }
 
     getTreeItem(element: any): vscode.TreeItem {
-        return this._problemTreeDataProvider.getTreeItem(element);
+        if (element instanceof Problem) {
+            return this._problemTreeDataProvider.getTreeItem(element);
+        }
+        return element;
     }
 
-    async getChildren(element?: any): Promise<Problem[]> {
-        return this._problemTreeDataProvider.getChildren(element);
+    async getChildren(element?: any): Promise<any[]> {
+        if (!element) {
+            return [new ProblemContainer()];
+        }
+        if (element instanceof ProblemContainer) {
+            return this._problemTreeDataProvider.getChildren();
+        }
+        return [];
+    }
+}
+
+export class ProblemContainer extends vscode.TreeItem {
+    constructor() {
+        super('Problems', vscode.TreeItemCollapsibleState.Collapsed);
+        this.contextValue = 'problemContainer';
     }
 }

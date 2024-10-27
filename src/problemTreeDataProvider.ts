@@ -42,62 +42,50 @@ export interface ProblemStatusDoc {
 }
 
 export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Problem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<Problem | undefined> = new vscode.EventEmitter<Problem | undefined>();
-    readonly onDidChangeTreeData: vscode.Event<Problem | undefined> = this._onDidChangeTreeData.event;
+    private _onDidChangeTreeData: vscode.EventEmitter<Problem | undefined>;
+    readonly onDidChangeTreeData: vscode.Event<Problem | undefined>;
     private page: number = 1;
-    private pageCounter: number = 1;
+    private pageCounter: number = -1;
 
-    constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshProblemTree',
-            (nextPage: boolean | undefined) => {
-                if (nextPage === true) {
-                    if (this.page < this.pageCounter) { this.page++; }
-                    else { io.warn('You are already on the last page.'); }
-                }
-                else if (nextPage === false) {
-                    if (this.page > 1) { this.page--; }
-                    else { io.warn('You are already on the first page.'); }
-                }
-                return this._onDidChangeTreeData.fire(undefined);
-            });
+    constructor(_onDidChangeTreeData: vscode.EventEmitter<Problem | undefined>) {
+        this._onDidChangeTreeData = _onDidChangeTreeData;
+        this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+        vscode.commands.registerCommand('cyezoi.refreshProblemTree', () => {
+            return this._onDidChangeTreeData.fire(undefined);
+        });
+        vscode.commands.registerCommand('cyezoi.problemTreeNextPage', () => {
+            if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
+            if (this.page < this.pageCounter) { this.page++; }
+            else { io.warn('You are already on the last page.'); }
+            return this._onDidChangeTreeData.fire(undefined);
+        });
+        vscode.commands.registerCommand('cyezoi.problemTreePreviousPage', () => {
+            if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
+            if (this.page > 1) { this.page--; }
+            else { io.warn('You are already on the first page.'); }
+            return this._onDidChangeTreeData.fire(undefined);
+        });
     }
 
     getTreeItem(element: Problem): vscode.TreeItem {
         return element;
     }
 
-    async getChildren(element?: Problem): Promise<Problem[]> {
-        if (!element) {
-            try {
-                io.log('Fetching problem list...');
-                const response = await new cyezoiFetch({ path: `/d/problemset/p?page=${this.page}`, addCookie: true }).start();
-                io.log('Problem list fetched.');
-                this.pageCounter = response.json.ppcount;
-                const problems: Problem[] = [];
-                for (const pdoc of response.json.pdocs) {
-                    problems.push(new Problem(pdoc, response.json.psdict[pdoc.docId]));
-                }
-                problems.push(new ProblemSwitchPage(false));
-                problems.push(new ProblemSwitchPage(true));
-                return problems;
-            } catch (e) {
-                io.error((e as Error).message);
-                return [];
+    async getChildren(): Promise<Problem[]> {
+        try {
+            io.log('Fetching problem list...');
+            const response = await new cyezoiFetch({ path: `/d/problemset/p?page=${this.page}`, addCookie: true }).start();
+            io.log('Problem list fetched.');
+            this.pageCounter = response.json.ppcount;
+            const problems: Problem[] = [];
+            for (const pdoc of response.json.pdocs) {
+                problems.push(new Problem(pdoc, response.json.psdict[pdoc.docId]));
             }
+            return problems;
+        } catch (e) {
+            io.error((e as Error).message);
+            return [];
         }
-        return [];
-    }
-}
-
-export class ProblemSwitchPage extends vscode.TreeItem {
-    constructor(more: boolean = true) {
-        super(more ? 'Next page' : 'Previous page', vscode.TreeItemCollapsibleState.None);
-        this.contextValue = 'problemSwitchPage';
-        this.command = {
-            command: 'cyezoi.refreshProblemTree',
-            title: 'Load more problems',
-            arguments: [more],
-        };
     }
 }
 

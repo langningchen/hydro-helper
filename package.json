@@ -48,6 +48,22 @@
         }
       },
       {
+        "command": "cyezoi.problemTreeNextPage",
+        "title": "CYEZOI: Next Page",
+        "icon": {
+          "light": "res/icons/caret-right-light.svg",
+          "dark": "res/icons/caret-right-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.problemTreePreviousPage",
+        "title": "CYEZOI: Previous Page",
+        "icon": {
+          "light": "res/icons/caret-left-light.svg",
+          "dark": "res/icons/caret-left-dark.svg"
+        }
+      },
+      {
         "command": "cyezoi.openProblem",
         "title": "CYEZOI: Open Problem"
       },
@@ -65,18 +81,26 @@
       }
     ],
     "menus": {
-      "view/title": [
-        {
-          "command": "cyezoi.refreshProblemTree",
-          "when": "view == cyezoi",
-          "group": "navigation"
-        }
-      ],
       "view/item/context": [
         {
           "command": "cyezoi.submitProblem",
           "when": "viewItem == problem",
           "group": "inline"
+        },
+        {
+          "command": "cyezoi.refreshProblemTree",
+          "when": "viewItem == problemContainer",
+          "group": "inline@1"
+        },
+        {
+          "command": "cyezoi.problemTreePreviousPage",
+          "when": "viewItem == problemContainer",
+          "group": "inline@2"
+        },
+        {
+          "command": "cyezoi.problemTreeNextPage",
+          "when": "viewItem == problemContainer",
+          "group": "inline@3"
         }
       ]
     }
