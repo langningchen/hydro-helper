@@ -87,7 +87,11 @@
       },
       {
         "command": "cyezoi.openProblem",
-        "title": "CYEZOI: Open Problem"
+        "title": "CYEZOI: Open Problem",
+        "icon": {
+          "light": "res/icons/arrow-right-circle-light.svg",
+          "dark": "res/icons/arrow-right-circle-dark.svg"
+        }
       },
       {
         "command": "cyezoi.submitProblem",
@@ -123,6 +127,11 @@
           "command": "cyezoi.problemTreeNextPage",
           "when": "viewItem == problemContainer",
           "group": "inline@3"
+        },
+        {
+          "command": "cyezoi.openProblem",
+          "when": "viewItem == problemContainer",
+          "group": "inline@4"
         }
       ]
     }

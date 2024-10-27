@@ -53,7 +53,10 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (problemId: string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (problemId: vscode.TreeItem | string | undefined) => {
+		if (problemId instanceof vscode.TreeItem) {
+			problemId = undefined;
+		}
 		if (problemId === undefined) {
 			problemId = await io.input('Please input the problem ID');
 			if (problemId === undefined) {
