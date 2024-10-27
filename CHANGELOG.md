@@ -2,6 +2,10 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.4
+
+Fix the versioning bug.
+
 ## ~~v0.0.3~~
 
 This version does not exists because of versioning bug.
