@@ -3,6 +3,11 @@
   "displayName": "CYEZOI Helper",
   "description": "",
   "version": "0.0.1",
+  "publisher": "CYEZOI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CYEZOI/cyezoi-helper.git"
+  },
   "engines": {
     "vscode": "^1.94.0"
   },
@@ -106,12 +111,15 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "pnpm run esbuild-base --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "package": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.8",
@@ -122,6 +130,7 @@
     "@typescript-eslint/parser": "^8.7.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
+    "esbuild": "^0.24.0",
     "eslint": "^9.11.1",
     "typescript": "^5.6.2"
   },
