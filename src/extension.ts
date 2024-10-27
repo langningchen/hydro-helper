@@ -75,6 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// TODO: Select language
 		const lang = 'cc.cc14o2';
 		const file = await vscode.window.showOpenDialog({
+			title: 'Select the source code file',
 			canSelectFiles: true,
 			canSelectFolders: false,
 			canSelectMany: false,
