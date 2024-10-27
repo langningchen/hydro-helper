@@ -1,2 +1,6 @@
-.git/
-.vscode/
+.vscode
+node_modules
+src/
+tsconfig.json
+webpack.config.js
+esbuild.js
