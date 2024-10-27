@@ -131,7 +131,6 @@ export function activate(context: vscode.ExtensionContext) {
 					if (stringData === 'pong') {
 						return;
 					}
-					io.log('Received: ' + stringData);
 					const responseJSON = JSON.parse(stringData);
 					if (responseJSON.error === 'PermissionError' || responseJSON.error === 'PrivilegeError') {
 						ws.close();

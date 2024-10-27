@@ -151,7 +151,6 @@ export class submissionWebview {
             }
         }).join('\n'));
         htmlContent = htmlContent.replace(/{{hydroIconsFile}}/g, this.getRealPath(['res', 'fonts', 'hydro-icons.woff2']));
-        io.log(htmlContent);
         return htmlContent;
     }
 }

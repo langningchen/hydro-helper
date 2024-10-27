@@ -68,7 +68,6 @@ export class cyezoiWebview {
         let htmlContent = require('fs').readFileSync(submissionHtml, 'utf8');
         htmlContent = htmlContent.replace(/{{staticFiles}}/g, this.generateHtmlByStaticFiles(this.staticFiles));
         htmlContent = htmlContent.replace(/{{hydroIconsFile}}/g, this.getRealPath(['res', 'fonts', 'hydro-icons.woff2']));
-        io.log(htmlContent);
         return htmlContent;
     }
 };
