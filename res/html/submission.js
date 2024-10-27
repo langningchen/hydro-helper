@@ -47,6 +47,7 @@ const statusRealIcon = {
     'progress': '',
     'ignored': '',
 };
+import DOMPurify from 'dompurify';
 const vscode = acquireVsCodeApi();
 const formatString = (str) => {
     if (typeof str === 'string') {
@@ -90,8 +91,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 const record = message.data.record;
                 const subtasks = message.data.subtasks;
 
-                title.innerHTML = `<span class="${statusIcon[record.status]} icon"></span>
-                <span class="${statusIcon[record.status]}">${record.score} ${statusName[record.status]}</span>`;
+                if (statusIcon.hasOwnProperty(record.status)) {
+                    const sanitizedHTML = DOMPurify.sanitize(`<span class="${statusIcon[record.status]} icon"></span>
+                    <span class="${statusIcon[record.status]}">${record.score} ${statusName[record.status]}</span>`);
+                    title.innerHTML = sanitizedHTML;
+                } else {
+                    title.innerHTML = 'Invalid status';
+                }
 
                 gotoProblem.addEventListener('click', () => {
                     vscode.postMessage({ command: 'openProblem', problemId: record.pid });
