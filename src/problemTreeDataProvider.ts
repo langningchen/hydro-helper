@@ -1,46 +1,9 @@
 import * as vscode from 'vscode';
 import { cyezoiFetch } from './fetch';
 import path from 'path';
-import { statusIcon, statusName } from './static';
+import { statusIcon, statusName, ProblemDoc, ProblemStatusDoc } from './static';
 import { io } from './io';
 import { cyezoiSettings } from './settings';
-
-export interface ProblemDoc {
-    _id: string
-    owner: number
-    domainId: string
-    docType: number
-    docId: number
-    title: string
-    tag: string[]
-    hidden: boolean
-    nSubmit: number
-    nAccept: number
-    difficulty: number
-    stats: {
-        AC: number
-        WA: number
-        TLE: number
-        MLE: number
-        RE: number
-        SE: number
-        IGN: number
-        CE: number
-        s100: number
-    }
-}
-
-export interface ProblemStatusDoc {
-    _id: string
-    docId: number
-    docType: number
-    domainId: string
-    uid: number
-    rid: string
-    score: number
-    status: number
-    counter: number
-}
 
 export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Problem> {
     private _onDidChangeTreeData: vscode.EventEmitter<Problem | undefined>;

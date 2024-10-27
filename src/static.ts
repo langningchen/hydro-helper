@@ -75,3 +75,86 @@ export const statusEnded: { [key: number]: boolean } = {
     32: true,
     33: true
 };
+export const languageDisplayName: { [key: string]: string } = {
+    "bash": "Bash",
+    "c": "C",
+    "cc": "C++",
+    "cc.cc98": "C++98",
+    "cc.cc98o2": "C++98(O2)",
+    "cc.cc11": "C++11",
+    "cc.cc11o2": "C++11(O2)",
+    "cc.cc14": "C++14",
+    "cc.cc14o2": "C++14(O2)",
+    "cc.cc17": "C++17",
+    "cc.cc17o2": "C++17(O2)",
+    "cc.cc20": "C++20",
+    "cc.cc20o2": "C++20(O2)",
+    "pas": "Pascal",
+    "java": "Java",
+    "kt": "Kotlin",
+    "kt.jvm": "Kotlin/JVM",
+    "py": "Python",
+    "py.py2": "Python 2",
+    "py.py3": "Python 3",
+    "py.pypy3": "PyPy3",
+    "php": "PHP",
+    "rs": "Rust",
+    "hs": "Haskell",
+    "js": "NodeJS",
+    "go": "Golang",
+    "rb": "Ruby",
+    "cs": "C#",
+    "r": "R",
+};
+
+
+export interface ProblemDoc {
+    _id: string
+    owner: number
+    domainId: string
+    docType: number
+    docId: number
+    title: string
+    tag: string[]
+    hidden: boolean
+    nSubmit: number
+    nAccept: number
+    difficulty: number
+    stats: {
+        AC: number
+        WA: number
+        TLE: number
+        MLE: number
+        RE: number
+        SE: number
+        IGN: number
+        CE: number
+        s100: number
+    }
+}
+export interface ProblemStatusDoc {
+    _id: string
+    docId: number
+    docType: number
+    domainId: string
+    uid: number
+    rid: string
+    score: number
+    status: number
+    counter: number
+}
+export interface RecordDoc {
+    _id: string
+    status: number
+    uid: number
+    lang: string
+    pid: number
+    domainId: string
+    score: number
+    time: number
+    memory: number
+    judger: number
+    judgeAt: string
+    rejudged: boolean
+    files: object
+}
