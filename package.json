@@ -4,6 +4,8 @@
   "description": "",
   "version": "0.0.1",
   "publisher": "CYEZOI",
+  "icon": "res/icons/CYEZOI.png",
+  "pricing": "Free",
   "repository": {
     "type": "git",
     "url": "https://github.com/CYEZOI/cyezoi-helper.git"
