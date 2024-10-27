@@ -113,12 +113,12 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run package",
+    "vscode:prepublish": "pnpm run check-types && node esbuild.js --production",
     "compile": "pnpm run check-types && node esbuild.js",
     "check-types": "tsc --noEmit",
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "pnpm run check-types && node esbuild.js --production",
+    "package": "pnpm vsce package --no-dependencies",
     "publish": "pnpm vsce publish --no-dependencies"
   },
   "devDependencies": {
