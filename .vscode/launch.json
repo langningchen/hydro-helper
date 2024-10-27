@@ -6,10 +6,11 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
+				"--disable-extensions",
 				"--extensionDevelopmentPath=${workspaceFolder}"
 			],
 			"outFiles": [
-				"${workspaceFolder}/out/**/*.js"
+				"${workspaceFolder}/dist/extension.js"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
 		}
