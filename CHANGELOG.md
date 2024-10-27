@@ -2,6 +2,10 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.7
+
+Add submissions in the tree data provider.
+
 ## v0.0.6
 
 Fix icon displaying failed.
