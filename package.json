@@ -71,7 +71,7 @@
       },
       {
         "command": "cyezoi.problemTreeNextPage",
-        "title": "CYEZOI: Next Page",
+        "title": "CYEZOI: Problem Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
@@ -79,7 +79,7 @@
       },
       {
         "command": "cyezoi.problemTreePreviousPage",
-        "title": "CYEZOI: Previous Page",
+        "title": "CYEZOI: Problem Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
@@ -102,8 +102,36 @@
         }
       },
       {
+        "command": "cyezoi.refreshRecordTree",
+        "title": "CYEZOI: Refresh Record Tree",
+        "icon": {
+          "light": "res/icons/arrow-clockwise-light.svg",
+          "dark": "res/icons/arrow-clockwise-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.recordTreeNextPage",
+        "title": "CYEZOI: Record Tree Next Page",
+        "icon": {
+          "light": "res/icons/caret-right-light.svg",
+          "dark": "res/icons/caret-right-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.recordTreePreviousPage",
+        "title": "CYEZOI: Record Tree Previous Page",
+        "icon": {
+          "light": "res/icons/caret-left-light.svg",
+          "dark": "res/icons/caret-left-dark.svg"
+        }
+      },
+      {
         "command": "cyezoi.openRecord",
-        "title": "CYEZOI: Open Record"
+        "title": "CYEZOI: Open Record",
+        "icon": {
+          "light": "res/icons/arrow-right-circle-light.svg",
+          "dark": "res/icons/arrow-right-circle-dark.svg"
+        }
       }
     ],
     "menus": {
@@ -131,6 +159,26 @@
         {
           "command": "cyezoi.openProblem",
           "when": "viewItem == problemContainer",
+          "group": "inline@4"
+        },
+        {
+          "command": "cyezoi.refreshRecordTree",
+          "when": "viewItem == recordContainer",
+          "group": "inline@1"
+        },
+        {
+          "command": "cyezoi.recordTreePreviousPage",
+          "when": "viewItem == recordContainer",
+          "group": "inline@2"
+        },
+        {
+          "command": "cyezoi.recordTreeNextPage",
+          "when": "viewItem == recordContainer",
+          "group": "inline@3"
+        },
+        {
+          "command": "cyezoi.openRecord",
+          "when": "viewItem == recordContainer",
           "group": "inline@4"
         }
       ]
