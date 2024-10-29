@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { cyezoiFetch } from './fetch';
 import path from 'path';
-import { languageDisplayName, ProblemDoc, RecordDoc, statusIcon, statusName } from './static';
+import { languageDisplayName, ProblemDoc, RecordDoc, statusIcon, statusName, UserDoc } from './static';
 import { io } from './io';
 import { cyezoiSettings } from './settings';
 
@@ -38,7 +38,7 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
             io.log('Record list fetched.');
             const problems: Record[] = [];
             for (const rdoc of response.json.rdocs) {
-                problems.push(new Record(rdoc, response.json.pdict[rdoc.pid]));
+                problems.push(new Record(rdoc, response.json.pdict[rdoc.pid], response.json.udict[rdoc.uid]));
             }
             return problems;
         } catch (e) {
@@ -49,13 +49,14 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
 }
 
 export class Record extends vscode.TreeItem {
-    constructor(rdoc: RecordDoc, pdoc: ProblemDoc) {
+    constructor(rdoc: RecordDoc, pdoc: ProblemDoc, udoc: UserDoc) {
         super(rdoc.score + ' ' + statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.contextValue = 'record';
         this.description = 'P' + rdoc.pid + ' ' + pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
         this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[rdoc.status] + '.svg');
         tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
+        tooltipDoc.appendMarkdown(`- **User**: ${udoc.uname}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
         tooltipDoc.appendMarkdown(`- **Time**: ${rdoc.time}ms\n`);
         tooltipDoc.appendMarkdown(`- **Memory**: ${rdoc.memory}KB\n`);

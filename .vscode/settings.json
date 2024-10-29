@@ -12,6 +12,7 @@
 		"CYEZOI",
 		"foldcode",
 		"foldgutter",
+		"loginat",
 		"mathjax",
 		"newoj",
 		"pdoc",
@@ -22,6 +23,7 @@
 		"psdoc",
 		"rdoc",
 		"realname",
+		"regat",
 		"udoc"
 	],
 	"explorer.excludeGitIgnore": true

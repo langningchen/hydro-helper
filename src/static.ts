@@ -158,3 +158,14 @@ export interface RecordDoc {
     rejudged: boolean
     files: object
 }
+export interface UserDoc {
+    uname: string
+    mail: string
+    perm: string
+    role: string
+    priv: number
+    regat: string
+    loginat: string
+    tfa: boolean
+    authn: boolean
+}
