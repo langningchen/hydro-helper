@@ -78,15 +78,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 submission.innerHTML = 'Submission not found';
                 break;
             case 'submission':
-                var submissionHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
-                    <vscode-table-header slot="header">
-                        <vscode-table-header-cell>#</vscode-table-header-cell>
-                        <vscode-table-header-cell>Status</vscode-table-header-cell>
-                        <vscode-table-header-cell>Score</vscode-table-header-cell>
-                        <vscode-table-header-cell>Time Cost</vscode-table-header-cell>
-                        <vscode-table-header-cell>Memory Cost</vscode-table-header-cell>
-                    </vscode-table-header>
-                    <vscode-table-body slot="body">`;
                 const record = message.data.record;
                 const subtasks = message.data.subtasks;
 
@@ -107,6 +98,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
                 compilerTextsEditor.setSize('100%', 'auto');
 
+                var submissionHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
+                    <vscode-table-header slot="header">
+                        <vscode-table-header-cell>#</vscode-table-header-cell>
+                        <vscode-table-header-cell>Status</vscode-table-header-cell>
+                        <vscode-table-header-cell>Score</vscode-table-header-cell>
+                        <vscode-table-header-cell>Time Cost</vscode-table-header-cell>
+                        <vscode-table-header-cell>Memory Cost</vscode-table-header-cell>
+                    </vscode-table-header>
+                    <vscode-table-body slot="body">`;
                 for (const [subtaskId, subtask] of Object.entries(subtasks)) {
                     submissionHTML += `<vscode-table-row class="subtask">
                         <vscode-table-cell>${'#' + subtaskId}</vscode-table-cell>
