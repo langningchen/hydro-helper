@@ -7,16 +7,16 @@ window.MathJax = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+    const loading = document.getElementById('loading');
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
     const problem = document.getElementById('problem');
     window.addEventListener('message', event => {
         const message = event.data;
         switch (message.command) {
-            case 'notFound':
-                problem.innerHTML = 'Problem not found';
-                break;
             case 'problem':
+                loading.style.display = 'none';
+
                 title.innerText = '#' + message.data.problemId + '. ' + message.data.title;
                 submitProblem.addEventListener('click', () => {
                     vscode.postMessage({ command: 'submitProblem', problemId: message.data.problemId });

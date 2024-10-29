@@ -67,9 +67,7 @@ export class recordWebview {
         });
 
         new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
-            if (recordDetail?.json === undefined) {
-                this._panel.webview.postMessage({ command: 'notFound', data: {} });
-            } else {
+            if (recordDetail?.json !== undefined) {
                 this._panel.webview.postMessage({
                     command: 'record',
                     data: recordDetail.json

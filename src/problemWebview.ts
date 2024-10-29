@@ -33,9 +33,7 @@ export class problemWebview {
         });
 
         new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p/${problemId}`, addCookie: true }).start().then(async (problemDetail) => {
-            if (problemDetail?.json === undefined) {
-                this._panel.webview.postMessage({ command: 'notFound', data: {} });
-            } else {
+            if (problemDetail?.json !== undefined) {
                 const problemContent = JSON.parse(problemDetail.json.pdoc.content);
                 const markdownContent: { [key: string]: string } = {};
                 for (const [key, value] of Object.entries(problemContent)) {

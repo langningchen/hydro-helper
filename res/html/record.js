@@ -98,6 +98,7 @@ window.MathJax = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+    const loading = document.getElementById('loading');
     const title = document.getElementById('title');
     const gotoProblem = document.getElementById('gotoProblem');
     const info = document.getElementById('info');
@@ -107,22 +108,21 @@ window.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('message', event => {
         const message = event.data;
         switch (message.command) {
-            case 'notFound':
-                record.innerHTML = 'Record not found';
-                break;
             case 'record':
-                const record = message.data;
-                record.rdoc.testCases.sort((a, b) => a.id - b.id);
+                loading.style.display = 'none';
+
+                const data = message.data;
+                data.rdoc.testCases.sort((a, b) => a.id - b.id);
 
                 var parsedSubtasks = {};
-                for (const [key, value] of Object.entries(record.rdoc.subtasks)) {
+                for (const [key, value] of Object.entries(data.rdoc.subtasks)) {
                     parsedSubtasks[parseInt(key)] = {
                         score: value.score,
                         status: value.status,
                         testCase: [],
                     };
                 }
-                for (const testCase of record.rdoc.testCases) {
+                for (const testCase of data.rdoc.testCases) {
                     if (parsedSubtasks[testCase.subtaskId] === undefined) {
                         parsedSubtasks[testCase.subtaskId] = {
                             score: 0,
@@ -133,11 +133,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     parsedSubtasks[testCase.subtaskId].testCase.push(testCase);
                 }
 
-                title.innerHTML = `<span class="${statusIcon[record.rdoc.status]} icon"></span>
-                <span class="${statusIcon[record.rdoc.status]}">${record.rdoc.score} ${statusName[record.rdoc.status]}</span>`;
+                title.innerHTML = `<span class="${statusIcon[data.rdoc.status]} icon"></span>
+                <span class="${statusIcon[data.rdoc.status]}">${data.rdoc.score} ${statusName[data.rdoc.status]}</span>`;
 
                 gotoProblem.addEventListener('click', () => {
-                    vscode.postMessage({ command: 'openProblem', problemId: record.rdoc.pid });
+                    vscode.postMessage({ command: 'openProblem', problemId: data.rdoc.pid });
                 });
                 gotoProblem.disabled = false;
 
@@ -149,44 +149,44 @@ window.addEventListener('DOMContentLoaded', () => {
                     <vscode-table-body slot="body">
                         <vscode-table-row>
                             <vscode-table-cell>Submit By</vscode-table-cell>
-                            <vscode-table-cell>${record.udoc.uname}</vscode-table-cell>
+                            <vscode-table-cell>${data.udoc.uname}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Problem</vscode-table-cell>
-                            <vscode-table-cell>${record.pdoc.title}</vscode-table-cell>
+                            <vscode-table-cell>${data.pdoc.title}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Language</vscode-table-cell>
-                            <vscode-table-cell>${languageDisplayName[record.rdoc.lang]}</vscode-table-cell>
+                            <vscode-table-cell>${languageDisplayName[data.rdoc.lang]}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Code Length</vscode-table-cell>
-                            <vscode-table-cell>${record.rdoc.code.length}B</vscode-table-cell>
+                            <vscode-table-cell>${data.rdoc.code.length}B</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Judge At</vscode-table-cell>
-                            <vscode-table-cell>${new Date(record.rdoc.judgeAt).toLocaleString()}</vscode-table-cell>
+                            <vscode-table-cell>${new Date(data.rdoc.judgeAt).toLocaleString()}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row style="border-top-width: 2px;">
                             <vscode-table-cell>Score</vscode-table-cell>
-                            <vscode-table-cell>${record.rdoc.score}</vscode-table-cell>
+                            <vscode-table-cell>${data.rdoc.score}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Total Time</vscode-table-cell>
-                            <vscode-table-cell>${record.rdoc.time}ms</vscode-table-cell>
+                            <vscode-table-cell>${data.rdoc.time}ms</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Peak Time</vscode-table-cell>
-                            <vscode-table-cell>${record.rdoc.testCases.reduce((acc, cur) => Math.max(acc, cur.time), 0)}ms</vscode-table-cell>
+                            <vscode-table-cell>${data.rdoc.testCases.reduce((acc, cur) => Math.max(acc, cur.time), 0)}ms</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Peak Memory</vscode-table-cell>
-                            <vscode-table-cell>${record.rdoc.memory}KiB</vscode-table-cell>
+                            <vscode-table-cell>${data.rdoc.memory}KiB</vscode-table-cell>
                         </vscode-table-row>
                     </vscode-table-body>
                 </vscode-table>`;
 
-                const compilerTextsData = record.rdoc.compilerTexts.join();
+                const compilerTextsData = data.rdoc.compilerTexts.join();
                 const compilerTextsEditor = window.CodeMirror(compilerTexts, {
                     autoRefresh: true,
                     value: (compilerTextsData === '' ? 'No compiler texts' : compilerTextsData),
@@ -237,7 +237,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 const lastCodeEditor = window.CodeMirror(lastCode, {
                     autoRefresh: true,
-                    value: record.rdoc.code,
+                    value: data.rdoc.code,
                     readOnly: true,
                     theme: 'material',
                     lineNumbers: true,
@@ -250,7 +250,6 @@ window.addEventListener('DOMContentLoaded', () => {
                     styleActiveLine: true,
                 });
                 lastCodeEditor.setSize('100%', 'auto');
-
                 break;
             default:
                 break;
