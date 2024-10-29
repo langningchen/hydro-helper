@@ -2,6 +2,12 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.10
+
+- Add loading icon
+- Add info tab in the record
+- Update record tree view, including the title and the actions
+
 ## v0.0.9
 
 Add submissions in the tree data provider.
