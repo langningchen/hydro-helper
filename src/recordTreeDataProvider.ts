@@ -50,9 +50,9 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
 
 export class Record extends vscode.TreeItem {
     constructor(rdoc: RecordDoc, pdoc: ProblemDoc) {
-        super('P' + rdoc.pid, vscode.TreeItemCollapsibleState.None);
+        super(rdoc.score + ' ' + statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.contextValue = 'record';
-        this.description = pdoc.title;
+        this.description = 'P' + rdoc.pid + ' ' + pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
         this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[rdoc.status] + '.svg');
         tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
