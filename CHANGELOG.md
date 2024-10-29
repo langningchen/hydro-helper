@@ -2,9 +2,17 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
-## v0.0.7
+## v0.0.9
 
 Add submissions in the tree data provider.
+
+## ~~v0.0.8~~
+
+Exactly the same as v0.0.7.
+
+## v0.0.7
+
+Fix the MathJax path.
 
 ## v0.0.6
 
