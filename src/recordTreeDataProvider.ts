@@ -58,8 +58,8 @@ export class Record extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
         tooltipDoc.appendMarkdown(`- **User**: ${udoc.uname}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
-        tooltipDoc.appendMarkdown(`- **Time**: ${rdoc.time}ms\n`);
-        tooltipDoc.appendMarkdown(`- **Memory**: ${rdoc.memory}KB\n`);
+        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${rdoc.time}ms\n`); }
+        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${rdoc.memory}KB\n`); }
         tooltipDoc.appendMarkdown(`- **Lang**: ${languageDisplayName[rdoc.lang]}\n`);
         tooltipDoc.appendMarkdown(`- **Judge At**: ${rdoc.judgeAt}\n`);
         this.tooltip = tooltipDoc;
