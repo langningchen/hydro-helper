@@ -2,6 +2,13 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.11
+
+- Update tree view to sidebar
+- Fix record show error when CE
+- Add user item to record tree view
+- Show time and error only when have data
+
 ## v0.0.10
 
 - Add loading icon
