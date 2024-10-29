@@ -8,6 +8,7 @@ window.MathJax = {
 
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
+    const content = document.getElementById('content');
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
     const problem = document.getElementById('problem');
@@ -16,6 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
         switch (message.command) {
             case 'problem':
                 loading.style.display = 'none';
+                content.style.display = '';
 
                 title.innerText = '#' + message.data.problemId + '. ' + message.data.title;
                 submitProblem.addEventListener('click', () => {

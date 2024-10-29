@@ -99,6 +99,7 @@ window.MathJax = {
 
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
+    const content = document.getElementById('content');
     const title = document.getElementById('title');
     const gotoProblem = document.getElementById('gotoProblem');
     const info = document.getElementById('info');
@@ -110,6 +111,7 @@ window.addEventListener('DOMContentLoaded', () => {
         switch (message.command) {
             case 'record':
                 loading.style.display = 'none';
+                content.style.display = '';
 
                 const data = message.data;
                 data.rdoc.testCases.sort((a, b) => a.id - b.id);

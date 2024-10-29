@@ -15,26 +15,28 @@
 
 <body>
     <vscode-progress-ring id="loading"></vscode-progress-ring>
-    <h1 id="title"></h1>
-    <vscode-button disabled icon="check" id="gotoProblem">Go to Problem</vscode-button>
-    <vscode-tabs selected-index="1">
-        <vscode-tab-header slot="header">Info</vscode-tab-header>
-        <vscode-tab-panel>
-            <div id="info"></div>
-        </vscode-tab-panel>
-        <vscode-tab-header slot="header">Compiler Texts</vscode-tab-header>
-        <vscode-tab-panel>
-            <div id="compilerTexts"></div>
-        </vscode-tab-panel>
-        <vscode-tab-header slot="header">Judge result</vscode-tab-header>
-        <vscode-tab-panel>
-            <div id="record"></div>
-        </vscode-tab-panel>
-        <vscode-tab-header slot="header">Last Code</vscode-tab-header>
-        <vscode-tab-panel>
-            <div id="lastCode"></div>
-        </vscode-tab-panel>
-    </vscode-tabs>
+    <div id="content" style="display: none;">
+        <h1 id="title"></h1>
+        <vscode-button disabled icon="check" id="gotoProblem">Go to Problem</vscode-button>
+        <vscode-tabs selected-index="1">
+            <vscode-tab-header slot="header">Info</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="info"></div>
+            </vscode-tab-panel>
+            <vscode-tab-header slot="header">Compiler Texts</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="compilerTexts"></div>
+            </vscode-tab-panel>
+            <vscode-tab-header slot="header">Judge result</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="record"></div>
+            </vscode-tab-panel>
+            <vscode-tab-header slot="header">Last Code</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="lastCode"></div>
+            </vscode-tab-panel>
+        </vscode-tabs>
+    </div>
 </body>
 
 </html>
