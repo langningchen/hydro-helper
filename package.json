@@ -102,8 +102,8 @@
         }
       },
       {
-        "command": "cyezoi.openSubmission",
-        "title": "CYEZOI: Open Submission"
+        "command": "cyezoi.openRecord",
+        "title": "CYEZOI: Open Record"
       }
     ],
     "menus": {

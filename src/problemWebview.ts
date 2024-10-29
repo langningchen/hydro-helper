@@ -77,8 +77,8 @@ export class problemWebview {
             { 'path': ['res', 'html', 'problem.css'] },
             { 'path': ['res', 'html', 'problem.js'] },
         ];
-        let submissionHtml = path.join(this._extensionPath, 'res', 'html', 'problem.html');
-        let htmlContent = require('fs').readFileSync(submissionHtml, 'utf8');
+        let recordHtml = path.join(this._extensionPath, 'res', 'html', 'problem.html');
+        let htmlContent = require('fs').readFileSync(recordHtml, 'utf8');
         htmlContent = htmlContent.replace(/{{staticFiles}}/g, staticFiles.map(file => {
             let attributes = '';
             if (file.attributes !== undefined) {

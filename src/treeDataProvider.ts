@@ -47,7 +47,7 @@ export class ProblemContainer extends vscode.TreeItem {
 
 export class RecordContainer extends vscode.TreeItem {
     constructor() {
-        super('Submissions', vscode.TreeItemCollapsibleState.Collapsed);
-        this.contextValue = 'submissionContainer';
+        super('Record', vscode.TreeItemCollapsibleState.Collapsed);
+        this.contextValue = 'recordContainer';
     }
 }

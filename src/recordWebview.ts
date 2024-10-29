@@ -39,15 +39,15 @@ interface RecordDocument {
     subtasks: { [key: number]: Subtask };
 }
 
-export class submissionWebview {
-    private static readonly viewType = 'submission';
+export class recordWebview {
+    private static readonly viewType = 'record';
 
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
     constructor(rid: string, extensionPath: string) {
         this._panel = vscode.window.createWebviewPanel(
-            submissionWebview.viewType,
+            recordWebview.viewType,
             'CYEZOI - R' + rid,
             vscode.ViewColumn.Active,
             {
@@ -66,44 +66,13 @@ export class submissionWebview {
             }
         });
 
-        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record/${rid}`, addCookie: true }).start().then(async (submissionDetail) => {
-            if (submissionDetail?.json === undefined) {
+        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
+            if (recordDetail?.json === undefined) {
                 this._panel.webview.postMessage({ command: 'notFound', data: {} });
             } else {
-                const record: RecordDocument = submissionDetail.json.rdoc;
-                record.testCases.sort((a, b) => a.id - b.id);
-
-                var subtasks: {
-                    [key: number]: {
-                        score: number,
-                        status: number,
-                        testCase: TestCase[],
-                    },
-                } = {};
-                for (const [key, value] of Object.entries(record.subtasks)) {
-                    subtasks[parseInt(key)] = {
-                        score: value.score,
-                        status: value.status,
-                        testCase: [],
-                    };
-                }
-                for (const testCase of record.testCases) {
-                    if (subtasks[testCase.subtaskId] === undefined) {
-                        subtasks[testCase.subtaskId] = {
-                            score: 0,
-                            status: 30,
-                            testCase: [],
-                        };
-                    }
-                    subtasks[testCase.subtaskId].testCase.push(testCase);
-                }
-
                 this._panel.webview.postMessage({
-                    command: 'submission',
-                    data: {
-                        record,
-                        subtasks,
-                    }
+                    command: 'record',
+                    data: recordDetail.json
                 });
             }
         }).catch(async (e: Error) => {
@@ -133,11 +102,11 @@ export class submissionWebview {
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'indent-fold.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'section', 'active-line.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'display', 'autorefresh.min.js'] },
-            { 'path': ['res', 'html', 'submission.css'] },
-            { 'path': ['res', 'html', 'submission.js'] },
+            { 'path': ['res', 'html', 'record.css'] },
+            { 'path': ['res', 'html', 'record.js'] },
         ];
-        let submissionHtml = path.join(this._extensionPath, 'res', 'html', 'submission.html');
-        let htmlContent = require('fs').readFileSync(submissionHtml, 'utf8');
+        let recordHtml = path.join(this._extensionPath, 'res', 'html', 'record.html');
+        let htmlContent = require('fs').readFileSync(recordHtml, 'utf8');
         htmlContent = htmlContent.replace(/{{staticFiles}}/g, staticFiles.map(file => {
             let attributes = file.attributes === undefined ? '' : ' ' + Object.entries(file.attributes).map(([key, value]) => `${key}="${value}"`).join(' ');
             if (file.path[file.path.length - 1].endsWith('.css')) {

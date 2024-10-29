@@ -33,7 +33,7 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
 
     async getChildren(): Promise<Record[]> {
         try {
-            io.log('Fetching problem list...');
+            io.log('Fetching record list...');
             const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record?page=${this.page}`, addCookie: true }).start();
             io.log('Record list fetched.');
             const problems: Record[] = [];
@@ -63,7 +63,7 @@ export class Record extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Judge At**: ${rdoc.judgeAt}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openSubmission',
+            command: 'cyezoi.openRecord',
             title: 'Open Record',
             arguments: [rdoc._id],
         };

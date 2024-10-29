@@ -6,7 +6,7 @@ import { io } from './io';
 import { WebSocket } from 'ws';
 import { cyezoiStorage } from './storage';
 import { statusEnded, statusName } from './static';
-import { submissionWebview } from './submissionWebview';
+import { recordWebview } from './recordWebview';
 import { problemWebview } from './problemWebview';
 import { cyezoiTreeDataProvider } from './treeDataProvider';
 import { cyezoiSettings } from './settings';
@@ -158,17 +158,17 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 
 		if (rid !== undefined) {
-			vscode.commands.executeCommand('cyezoi.openSubmission', rid);
+			vscode.commands.executeCommand('cyezoi.openRecord', rid);
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openSubmission', async (rid: string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openRecord', async (rid: string | undefined) => {
 		if (rid === undefined) {
-			rid = await io.input('Please input the submission ID');
+			rid = await io.input('Please input the RID');
 			if (rid === undefined) {
 				return;
 			}
 		}
-		new submissionWebview(rid, context.extensionPath);
+		new recordWebview(rid, context.extensionPath);
 	}));
 
 	disposables.push(vscode.window.registerTreeDataProvider('cyezoi', new cyezoiTreeDataProvider()));

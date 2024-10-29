@@ -21,7 +21,8 @@
 		"psdict",
 		"psdoc",
 		"rdoc",
-		"realname"
+		"realname",
+		"udoc"
 	],
 	"explorer.excludeGitIgnore": true
 }
