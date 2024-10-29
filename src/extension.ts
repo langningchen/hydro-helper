@@ -161,7 +161,10 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.commands.executeCommand('cyezoi.openRecord', rid);
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openRecord', async (rid: string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openRecord', async (rid: vscode.TreeItem | string | undefined) => {
+		if (rid instanceof vscode.TreeItem) {
+			rid = undefined;
+		}
 		if (rid === undefined) {
 			rid = await io.input('Please input the RID');
 			if (rid === undefined) {
