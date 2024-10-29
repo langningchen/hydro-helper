@@ -53,25 +53,25 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (problemId: vscode.TreeItem | string | undefined) => {
-		if (problemId instanceof vscode.TreeItem) {
-			problemId = undefined;
+	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined) => {
+		if (pid instanceof vscode.TreeItem) {
+			pid = undefined;
 		}
-		if (problemId === undefined) {
-			problemId = await io.input('Please input the problem ID');
-			if (problemId === undefined) {
+		if (pid === undefined) {
+			pid = await io.input('Please input the problem ID');
+			if (pid === undefined) {
 				return;
 			}
 		};
-		new problemWebview(problemId, context.extensionPath);
+		new problemWebview(pid, context.extensionPath);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (problemId: vscode.TreeItem | string | undefined) => {
-		if (problemId instanceof vscode.TreeItem) {
-			problemId = problemId.command?.arguments?.[0];
+	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined) => {
+		if (pid instanceof vscode.TreeItem) {
+			pid = pid.command?.arguments?.[0];
 		}
-		if (problemId === undefined) {
-			problemId = await io.input('Please input the problem ID');
-			if (problemId === undefined) {
+		if (pid === undefined) {
+			pid = await io.input('Please input the problem ID');
+			if (pid === undefined) {
 				return;
 			}
 		}
@@ -96,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}, async (progress) => {
 			progress.report({ message: 'Submitting' });
 			const response = await new cyezoiFetch({
-				path: `/d/${cyezoiSettings.domain}/p/${problemId}/submit`,
+				path: `/d/${cyezoiSettings.domain}/p/${pid}/submit`,
 				body: {
 					lang,
 					code: code.toString(),
