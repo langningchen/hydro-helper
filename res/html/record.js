@@ -117,12 +117,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 data.rdoc.testCases.sort((a, b) => a.id - b.id);
 
                 var parsedSubtasks = {};
+                if (data.rdoc.subtasks !== undefined) {
                 for (const [key, value] of Object.entries(data.rdoc.subtasks)) {
                     parsedSubtasks[parseInt(key)] = {
                         score: value.score,
                         status: value.status,
                         testCase: [],
                     };
+                }
                 }
                 for (const testCase of data.rdoc.testCases) {
                     if (parsedSubtasks[testCase.subtaskId] === undefined) {
