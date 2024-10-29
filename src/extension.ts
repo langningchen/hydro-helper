@@ -8,8 +8,9 @@ import { cyezoiStorage } from './storage';
 import { statusEnded, statusName } from './static';
 import { recordWebview } from './recordWebview';
 import { problemWebview } from './problemWebview';
-import { cyezoiTreeDataProvider } from './treeDataProvider';
 import { cyezoiSettings } from './settings';
+import { cyezoiProblemTreeDataProvider } from './problemTreeDataProvider';
+import { cyezoiRecordTreeDataProvider } from './recordTreeDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 	cyezoiStorage.secretStorage = context.secrets;
@@ -75,8 +76,19 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		}
-		// TODO: Select language
-		const lang = 'cc.cc14o2';
+
+		const langs = await new cyezoiFetch({ path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit', addCookie: true }).start()
+			.then(response => response.json.langRange);
+		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
+			label: langs[key],
+			description: key,
+		}), {
+			placeHolder: 'Select the language',
+		})))?.description;
+		if (lang === undefined) {
+			return;
+		}
+
 		const file = await vscode.window.showOpenDialog({
 			title: 'Select the source code file',
 			canSelectFiles: true,
@@ -174,7 +186,8 @@ export function activate(context: vscode.ExtensionContext) {
 		new recordWebview(rid, context.extensionPath);
 	}));
 
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoi', new cyezoiTreeDataProvider()));
+	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new cyezoiProblemTreeDataProvider()));
+	disposables.push(vscode.window.registerTreeDataProvider('cyezoiRecordTreeView', new cyezoiRecordTreeDataProvider()));
 
 	outputChannel.appendLine('CYEZOI Helper is now active');
 }

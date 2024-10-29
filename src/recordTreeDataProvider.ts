@@ -6,13 +6,11 @@ import { io } from './io';
 import { cyezoiSettings } from './settings';
 
 export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Record> {
-    private _onDidChangeTreeData: vscode.EventEmitter<Record | undefined>;
-    readonly onDidChangeTreeData: vscode.Event<Record | undefined>;
+    private _onDidChangeTreeData: vscode.EventEmitter<Record | undefined> = new vscode.EventEmitter<any | undefined>();
+    readonly onDidChangeTreeData: vscode.Event<Record | undefined> = this._onDidChangeTreeData.event;
     private page: number = 1;
 
-    constructor(_onDidChangeTreeData: vscode.EventEmitter<Record | undefined>) {
-        this._onDidChangeTreeData = _onDidChangeTreeData;
-        this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+    constructor() {
         vscode.commands.registerCommand('cyezoi.refreshRecordTree', () => {
             return this._onDidChangeTreeData.fire(undefined);
         });

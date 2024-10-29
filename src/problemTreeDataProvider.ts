@@ -6,14 +6,12 @@ import { io } from './io';
 import { cyezoiSettings } from './settings';
 
 export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Problem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<Problem | undefined>;
-    readonly onDidChangeTreeData: vscode.Event<Problem | undefined>;
+    private _onDidChangeTreeData: vscode.EventEmitter<Problem | undefined> = new vscode.EventEmitter<any | undefined>();
+    readonly onDidChangeTreeData: vscode.Event<Problem | undefined> = this._onDidChangeTreeData.event;
     private page: number = 1;
     private pageCounter: number = -1;
 
-    constructor(_onDidChangeTreeData: vscode.EventEmitter<Problem | undefined>) {
-        this._onDidChangeTreeData = _onDidChangeTreeData;
-        this.onDidChangeTreeData = this._onDidChangeTreeData.event;
+    constructor() {
         vscode.commands.registerCommand('cyezoi.refreshProblemTree', () => {
             return this._onDidChangeTreeData.fire(undefined);
         });

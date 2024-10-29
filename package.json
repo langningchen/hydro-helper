@@ -19,6 +19,15 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cyezoi-helper",
+          "title": "CYEZOI",
+          "icon": "res/icons/CYEZ.svg"
+        }
+      ]
+    },
     "configuration": {
       "title": "CYEZOI Helper",
       "properties": {
@@ -35,17 +44,25 @@
       }
     },
     "views": {
-      "explorer": [
+      "cyezoi-helper": [
         {
-          "id": "cyezoi",
-          "name": "CYEZOI"
+          "id": "cyezoiProblemTreeView",
+          "name": "CYEZOI Problem"
+        },
+        {
+          "id": "cyezoiRecordTreeView",
+          "name": "CYEZOI Record"
         }
       ]
     },
     "treeView": [
       {
-        "id": "cyezoi",
-        "name": "CYEZOI"
+        "id": "cyezoiProblemTreeView",
+        "name": "CYEZOI Problem"
+      },
+      {
+        "id": "cyezoiRecordTreeView",
+        "name": "CYEZOI Record"
       }
     ],
     "commands": [
@@ -140,46 +157,48 @@
           "command": "cyezoi.submitProblem",
           "when": "viewItem == problem",
           "group": "inline"
-        },
+        }
+      ],
+      "view/title": [
         {
           "command": "cyezoi.refreshProblemTree",
-          "when": "viewItem == problemContainer",
-          "group": "inline@1"
+          "when": "view == cyezoiProblemTreeView",
+          "group": "navigation@1"
         },
         {
           "command": "cyezoi.problemTreePreviousPage",
-          "when": "viewItem == problemContainer",
-          "group": "inline@2"
+          "when": "view == cyezoiProblemTreeView",
+          "group": "navigation@2"
         },
         {
           "command": "cyezoi.problemTreeNextPage",
-          "when": "viewItem == problemContainer",
-          "group": "inline@3"
+          "when": "view == cyezoiProblemTreeView",
+          "group": "navigation@3"
         },
         {
           "command": "cyezoi.openProblem",
-          "when": "viewItem == problemContainer",
-          "group": "inline@4"
+          "when": "view == cyezoiProblemTreeView",
+          "group": "navigation@4"
         },
         {
           "command": "cyezoi.refreshRecordTree",
-          "when": "viewItem == recordContainer",
-          "group": "inline@1"
+          "when": "view == cyezoiRecordTreeView",
+          "group": "navigation@1"
         },
         {
           "command": "cyezoi.recordTreePreviousPage",
-          "when": "viewItem == recordContainer",
-          "group": "inline@2"
+          "when": "view == cyezoiRecordTreeView",
+          "group": "navigation@2"
         },
         {
           "command": "cyezoi.recordTreeNextPage",
-          "when": "viewItem == recordContainer",
-          "group": "inline@3"
+          "when": "view == cyezoiRecordTreeView",
+          "group": "navigation@3"
         },
         {
           "command": "cyezoi.openRecord",
-          "when": "viewItem == recordContainer",
-          "group": "inline@4"
+          "when": "view == cyezoiRecordTreeView",
+          "group": "navigation@4"
         }
       ]
     }
