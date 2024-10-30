@@ -49,7 +49,7 @@ export class recordWebview {
         this._panel = vscode.window.createWebviewPanel(
             recordWebview.viewType,
             'CYEZOI - R' + rid,
-            vscode.ViewColumn.Active,
+            vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,

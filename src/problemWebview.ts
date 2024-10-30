@@ -15,7 +15,7 @@ export class problemWebview {
         this._panel = vscode.window.createWebviewPanel(
             problemWebview.viewType,
             'CYEZOI - P' + problemId,
-            vscode.ViewColumn.Active,
+            vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
