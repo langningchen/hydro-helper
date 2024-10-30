@@ -47,22 +47,22 @@
       "cyezoi-helper": [
         {
           "id": "cyezoiProblemTreeView",
-          "name": "CYEZOI Problem"
+          "name": "Problem"
         },
         {
           "id": "cyezoiRecordTreeView",
-          "name": "CYEZOI Record"
+          "name": "Record"
         }
       ]
     },
     "treeView": [
       {
         "id": "cyezoiProblemTreeView",
-        "name": "CYEZOI Problem"
+        "name": "Problem"
       },
       {
         "id": "cyezoiRecordTreeView",
-        "name": "CYEZOI Record"
+        "name": "Record"
       }
     ],
     "commands": [
