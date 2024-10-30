@@ -77,8 +77,17 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 
-		const langs = await new cyezoiFetch({ path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit', addCookie: true }).start()
-			.then(response => response.json.langRange);
+		const langs = await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: 'Getting language list...',
+			cancellable: true,
+		}, async (progress, token) => {
+			const abortController = new AbortController();
+			token.onCancellationRequested(() => {
+				abortController.abort();
+			});
+			return await new cyezoiFetch({ path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit', addCookie: true, abortController }).start();
+		}).then(response => response.json.langRange);
 		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
 			label: langs[key],
 			description: key,
