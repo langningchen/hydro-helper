@@ -2,6 +2,12 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.12
+
+- Localize some contents
+- Add notification when fetching languages
+- View own submissions in the problem tree view
+
 ## v0.0.11
 
 - Update tree view to sidebar
