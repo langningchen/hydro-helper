@@ -112,6 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
 			canSelectFolders: false,
 			canSelectMany: false,
 			openLabel: 'Submit',
+			defaultUri: vscode.window.activeTextEditor ? vscode.Uri.file(vscode.window.activeTextEditor.document.fileName) : undefined,
 		});
 		if (file === undefined) {
 			return;
