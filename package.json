@@ -17,7 +17,7 @@
     "Other"
   ],
   "activationEvents": [],
-  "main": "./dist/extension.js",
+  "main": "./out/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -69,10 +69,6 @@
       {
         "command": "cyezoi.login",
         "title": "CYEZOI: Login"
-      },
-      {
-        "command": "cyezoi.openOutput",
-        "title": "CYEZOI: Open Output"
       },
       {
         "command": "cyezoi.logout",
@@ -208,7 +204,7 @@
     "compile": "pnpm run check-types && node esbuild.js",
     "check-types": "tsc --noEmit",
     "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "pnpm run compile && tsc --noEmit --watch --project tsconfig.json",
+    "watch:tsc": "tsc --watch --project tsconfig.json",
     "package": "pnpm vsce package --no-dependencies",
     "publish": "pnpm vsce publish --no-dependencies"
   },
