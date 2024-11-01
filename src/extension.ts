@@ -88,9 +88,8 @@ export function activate(context: vscode.ExtensionContext) {
 		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
 			label: langs[key],
 			description: key,
-		})), {
+		})).sort((a, b) => a.label.localeCompare(b.label)), {
 			title: 'Select the language',
-			placeHolder: await cyezoiStorage.lastLanguage,
 		}))?.description;
 		if (lang === undefined) {
 			return;
