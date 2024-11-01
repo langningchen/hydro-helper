@@ -85,10 +85,20 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 			return await new cyezoiFetch({ path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit', addCookie: true, abortController }).start();
 		}).then(response => response.json.langRange);
+
+		const lastLanguage = await cyezoiStorage.lastLanguage;
 		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
 			label: langs[key],
 			description: key,
-		})).sort((a, b) => a.label.localeCompare(b.label)), {
+		})).sort((a, b) => {
+			if (a.description === lastLanguage) {
+				return -1;
+			}
+			if (b.description === lastLanguage) {
+				return 1;
+			}
+			return 0;
+		}), {
 			title: 'Select the language',
 		}))?.description;
 		if (lang === undefined) {

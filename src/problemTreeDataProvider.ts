@@ -15,18 +15,18 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshProblemTree', () => {
-            outputChannel.trace(__filename, 'refreshProblemTree');
+            outputChannel.trace('problemTreeDataProvider', 'refreshProblemTree');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreeNextPage', () => {
-            outputChannel.trace(__filename, 'problemTreeNextPage');
+            outputChannel.trace('problemTreeDataProvider', 'problemTreeNextPage');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreePreviousPage', () => {
-            outputChannel.trace(__filename, 'problemTreePreviousPage');
+            outputChannel.trace('problemTreeDataProvider', 'problemTreePreviousPage');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -35,12 +35,12 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
     }
 
     getTreeItem(element: Problem): vscode.TreeItem {
-        outputChannel.trace(__filename, 'getTreeItem', arguments);
+        outputChannel.trace('problemTreeDataProvider', 'getTreeItem', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Problem[] | ProblemRecord[]> {
-        outputChannel.trace(__filename, 'getChildren', arguments);
+        outputChannel.trace('problemTreeDataProvider', 'getChildren', arguments);
         try {
             if (element === undefined) {
                 const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p?page=${this.page}`, addCookie: true }).start();

@@ -12,16 +12,16 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshRecordTree', () => {
-            outputChannel.trace(__filename, 'refreshRecordTree');
+            outputChannel.trace('recordTreeDataProvider', 'refreshRecordTree');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.recordTreeNextPage', () => {
-            outputChannel.trace(__filename, 'recordTreeNextPage');
+            outputChannel.trace('recordTreeDataProvider', 'recordTreeNextPage');
             this.page++;
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.recordTreePreviousPage', () => {
-            outputChannel.trace(__filename, 'recordTreePreviousPage');
+            outputChannel.trace('recordTreeDataProvider', 'recordTreePreviousPage');
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
             return this._onDidChangeTreeData.fire(undefined);
@@ -29,12 +29,12 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
     }
 
     getTreeItem(element: Record): vscode.TreeItem {
-        outputChannel.trace(__filename, 'getTreeItem', arguments);
+        outputChannel.trace('recordTreeDataProvider', 'getTreeItem', arguments);
         return element;
     }
 
     async getChildren(): Promise<Record[]> {
-        outputChannel.trace(__filename, 'getChildren');
+        outputChannel.trace('recordTreeDataProvider', 'getChildren');
         try {
             const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record?page=${this.page}`, addCookie: true }).start();
             const problems: Record[] = [];

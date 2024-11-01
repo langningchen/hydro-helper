@@ -26,7 +26,7 @@ export class recordWebview {
     private _extensionPath: string;
 
     constructor(rid: string, extensionPath: string) {
-        outputChannel.trace(__filename, 'constructor', arguments);
+        outputChannel.trace('recordWebview', 'constructor', arguments);
         outputChannel.info(`Open record ${rid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             recordWebview.viewType,

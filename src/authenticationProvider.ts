@@ -81,7 +81,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     async getSessions(scopes?: readonly string[], options?: vscode.AuthenticationProviderSessionOptions): Promise<vscode.AuthenticationSession[]> {
-        outputChannel.trace(__filename, 'getSessions', arguments);
+        outputChannel.trace('authenticationProvider', 'getSessions', arguments);
         this.ensureInitialized();
         const token = await this.cacheTokenFromStorage();
         const name = await this.cacheNameFromStorage();
@@ -94,7 +94,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     async createSession(_scopes: string[]): Promise<vscode.AuthenticationSession> {
-        outputChannel.trace(__filename, 'createSession', arguments);
+        outputChannel.trace('authenticationProvider', 'createSession', arguments);
         this.ensureInitialized();
         return new Promise(async (resolve, reject) => {
             try {
@@ -144,7 +144,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     async removeSession(_sessionId: string): Promise<void> {
-        outputChannel.trace(__filename, 'removeSession', arguments);
+        outputChannel.trace('authenticationProvider', 'removeSession', arguments);
         const token = await this.currentToken;
         const name = await this.currentName;
         if (!token || !name) {
