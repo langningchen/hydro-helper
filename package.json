@@ -52,6 +52,10 @@
         {
           "id": "cyezoiRecordTreeView",
           "name": "Record"
+        },
+        {
+          "id": "cyezoiContestTreeView",
+          "name": "Contest"
         }
       ]
     },
@@ -63,6 +67,10 @@
       {
         "id": "cyezoiRecordTreeView",
         "name": "Record"
+      },
+      {
+        "id": "cyezoiContestTreeView",
+        "name": "Contest"
       }
     ],
     "commands": [
@@ -112,6 +120,30 @@
         "icon": {
           "light": "res/icons/send-light.svg",
           "dark": "res/icons/send-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.refreshContestTree",
+        "title": "CYEZOI: Refresh Contest Tree",
+        "icon": {
+          "light": "res/icons/arrow-clockwise-light.svg",
+          "dark": "res/icons/arrow-clockwise-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.contestTreeNextPage",
+        "title": "CYEZOI: Contest Tree Next Page",
+        "icon": {
+          "light": "res/icons/caret-right-light.svg",
+          "dark": "res/icons/caret-right-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.contestTreePreviousPage",
+        "title": "CYEZOI: Contest Tree Previous Page",
+        "icon": {
+          "light": "res/icons/caret-left-light.svg",
+          "dark": "res/icons/caret-left-dark.svg"
         }
       },
       {
@@ -195,6 +227,21 @@
           "command": "cyezoi.openRecord",
           "when": "view == cyezoiRecordTreeView",
           "group": "navigation@4"
+        },
+        {
+          "command": "cyezoi.refreshContestTree",
+          "when": "view == cyezoiContestTreeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "cyezoi.contestTreePreviousPage",
+          "when": "view == cyezoiContestTreeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "cyezoi.contestTreeNextPage",
+          "when": "view == cyezoiContestTreeView",
+          "group": "navigation@3"
         }
       ]
     }

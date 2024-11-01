@@ -106,6 +106,15 @@ export const languageDisplayName: { [key: string]: string } = {
     "cs": "C#",
     "r": "R",
 };
+export const contestRuleName: { [key: string]: string } = {
+    "acm": "ACM/ICPC",
+    "oi": "OI",
+    "ioi": "IOI",
+    "strictioi": "IOI(Strict)",
+    "ledo": "Ledo",
+    "homework": "Assignment",
+};
+
 
 
 export interface ProblemDoc {
@@ -168,4 +177,62 @@ export interface UserDoc {
     loginat: string
     tfa: boolean
     authn: boolean
+}
+export interface ContestDoc {
+    _id: string
+    content: string
+    owner: number
+    domainId: string
+    docType: number
+    docId: number
+    duration?: number
+    title: string
+    rule: string
+    beginAt: string
+    endAt: string
+    pids: number[]
+    attend: number
+    rated: boolean
+    allowViewCode: boolean
+    assign: number[]
+    autoHide: boolean
+    lockAt?: string
+    maintainer: number[]
+}
+export interface ContestStatusDoc {
+    _id: string
+    docId: number
+    docType: number
+    domainId: string
+    uid: number,
+    attend: number,
+    subscribe: number,
+    counter: number,
+    startAt: string,
+    journal: {
+        rid: string,
+        pid: number,
+        status: number,
+        score: number,
+        subtasks: { [key: string]: { type: string, score: number, status: number } }
+    }[],
+    rev: number,
+    detail: { [key: string]: { rid: string, pid: number, status: number, score: number, subtasks: { [key: string]: { type: string, score: number, status: number } } } },
+    display: { [key: string]: { rid: string, pid: number, status: number, score: number, subtasks: { [key: string]: { type: string, score: number, status: number } } } },
+}
+export interface ContestProblemDoc {
+    _id: string
+    owner: number
+    domainId: string
+    docType: number
+    docId: number
+    title: string
+    config: {
+        count: number
+        memoryMin: number
+        memoryMax: number
+        timeMin: number
+        timeMax: number
+        type: string
+    }
 }

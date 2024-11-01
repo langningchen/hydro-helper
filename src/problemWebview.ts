@@ -11,12 +11,12 @@ export class problemWebview {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
-    constructor(problemId: string, extensionPath: string) {
+    constructor(extensionPath: string, pid: string, cid?: string) {
         outputChannel.trace('problemWebview', 'constructor', arguments);
-        outputChannel.info(`Open problem ${problemId} webview`);
+        outputChannel.info(`Open problem ${pid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             problemWebview.viewType,
-            'CYEZOI - P' + problemId,
+            'CYEZOI - P' + pid,
             vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
@@ -34,19 +34,19 @@ export class problemWebview {
             }
         });
 
-        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p/${problemId}`, addCookie: true }).start().then(async (problemDetail) => {
+        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p/${pid}`, addCookie: true }).start().then(async (problemDetail) => {
             if (problemDetail?.json !== undefined) {
                 const problemContent = JSON.parse(problemDetail.json.pdoc.content);
                 const markdownContent: { [key: string]: string } = {};
                 for (const [key, value] of Object.entries(problemContent)) {
                     let stringValue: string = value as string;
-                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, `https://${cyezoiSettings.server}/d/${cyezoiSettings.domain}/p/${problemId}/file/$1`);
+                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, `https://${cyezoiSettings.server}/d/${cyezoiSettings.domain}/p/${pid}/file/$1`);
                     markdownContent[key] = await marked(stringValue);
                 }
                 const message = {
                     command: 'problem',
                     data: {
-                        problemId,
+                        problemId: pid,
                         title: problemDetail.json.pdoc.title,
                         markdownContent,
                     },

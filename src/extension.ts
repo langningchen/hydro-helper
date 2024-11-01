@@ -10,6 +10,7 @@ import { problemWebview } from './problemWebview';
 import { cyezoiSettings } from './settings';
 import { cyezoiProblemTreeDataProvider } from './problemTreeDataProvider';
 import { cyezoiRecordTreeDataProvider } from './recordTreeDataProvider';
+import { cyezoiContestTreeDataProvider } from './contestTreeDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 	cyezoiStorage.secretStorage = context.secrets;
@@ -49,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined, cid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			pid = undefined;
 		}
@@ -59,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		};
-		new problemWebview(pid, context.extensionPath);
+		new problemWebview(context.extensionPath, pid, cid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined) => {
 		if (pid instanceof vscode.TreeItem) {
@@ -199,11 +200,12 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		}
-		new recordWebview(rid, context.extensionPath);
+		new recordWebview(context.extensionPath, rid);
 	}));
 
 	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new cyezoiProblemTreeDataProvider()));
 	disposables.push(vscode.window.registerTreeDataProvider('cyezoiRecordTreeView', new cyezoiRecordTreeDataProvider()));
+	disposables.push(vscode.window.registerTreeDataProvider('cyezoiContestTreeView', new cyezoiContestTreeDataProvider()));
 
 	outputChannel.info('Extension activated');
 }

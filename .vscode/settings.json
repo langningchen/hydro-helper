@@ -5,6 +5,7 @@
 	"typescript.tsc.autoDetect": "off",
 	"cSpell.words": [
 		"autorefresh",
+		"cdoc",
 		"chtml",
 		"clike",
 		"codicon",
@@ -16,15 +17,20 @@
 		"loginat",
 		"mathjax",
 		"newoj",
+		"pdict",
 		"pdoc",
 		"pdocs",
+		"pids",
 		"ppcount",
 		"problemset",
 		"psdict",
 		"psdoc",
 		"rdoc",
+		"rdocs",
 		"realname",
 		"regat",
+		"tdocs",
+		"tpcount",
 		"udoc"
 	],
 	"explorer.excludeGitIgnore": true
