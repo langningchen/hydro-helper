@@ -18,26 +18,6 @@ interface Subtask {
     score: number;
     status: number;
 }
-interface RecordDocument {
-    _id: string;
-    status: number;
-    uid: number;
-    code: string;
-    lang: string;
-    pid: number;
-    domainId: string;
-    score: number;
-    time: number;
-    memory: number;
-    judgeTexts: string[];
-    compilerTexts: string[];
-    testCases: TestCase[];
-    judger: number;
-    judgeAt: string;
-    rejudged: boolean;
-    files: { [key: string]: string };
-    subtasks: { [key: number]: Subtask };
-}
 
 export class recordWebview {
     private static readonly viewType = 'record';
@@ -49,7 +29,7 @@ export class recordWebview {
         this._panel = vscode.window.createWebviewPanel(
             recordWebview.viewType,
             'CYEZOI - R' + rid,
-            vscode.ViewColumn.Beside,
+            vscode.ViewColumn.Active,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
