@@ -1,0 +1,19 @@
+{
+    "cyezoi-helper.name": "CYEZOI Helper",
+    "cyezoi-helper.configuration.server": "The server address of CYEZOI",
+    "cyezoi-helper.configuration.domain": "The domain of CYEZOI",
+    "cyezoi-helper.views.problem": "Problem",
+    "cyezoi-helper.views.record": "Record",
+    "cyezoi-helper.commands.login": "CYEZOI Helper: Login",
+    "cyezoi-helper.commands.openOutput": "CYEZOI Helper: Open Output",
+    "cyezoi-helper.commands.logout": "CYEZOI Helper: Logout",
+    "cyezoi-helper.commands.refreshProblemTree": "CYEZOI Helper: Refresh Problem Tree",
+    "cyezoi-helper.commands.problemTreeNextPage": "CYEZOI Helper: Problem Tree Next Page",
+    "cyezoi-helper.commands.problemTreePreviousPage": "CYEZOI Helper: Problem Tree Previous Page",
+    "cyezoi-helper.commands.openProblem": "CYEZOI Helper: Open Problem",
+    "cyezoi-helper.commands.submitProblem": "CYEZOI Helper: Submit Problem",
+    "cyezoi-helper.commands.refreshRecordTree": "CYEZOI Helper: Refresh Record Tree",
+    "cyezoi-helper.commands.recordTreeNextPage": "CYEZOI Helper: Record Tree Next Page",
+    "cyezoi-helper.commands.recordTreePreviousPage": "CYEZOI Helper: Record Tree Previous Page",
+    "cyezoi-helper.commands.openRecord": "CYEZOI Helper: Open Record"
+}

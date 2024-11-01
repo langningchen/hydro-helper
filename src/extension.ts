@@ -44,13 +44,13 @@ export function activate(context: vscode.ExtensionContext) {
 			cyezoiStorage.token = undefined;
 			cyezoiStorage.name = undefined;
 			vscode.commands.executeCommand('cyezoi.login');
-			io.warn('Login expired, please login again.');
+			io.warn(vscode.l10n.t('loginExpired'));
 			return;
 		}
-		io.info(`Hi ${session.account.label}, you have successfully logged in!`);
+		io.info(vscode.l10n.t('loginSuccess', userContext.username));
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.logout', async () => {
-		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
+		io.warn(vscode.l10n.t('logoutInfo'), {
 			modal: true,
 		});
 	}));
@@ -59,7 +59,7 @@ export function activate(context: vscode.ExtensionContext) {
 			pid = undefined;
 		}
 		if (pid === undefined) {
-			pid = await io.input('Please input the problem ID');
+			pid = await io.input(vscode.l10n.t('inputPid'));
 			if (pid === undefined) {
 				return;
 			}
@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
 			pid = pid.command?.arguments?.[0];
 		}
 		if (pid === undefined) {
-			pid = await io.input('Please input the problem ID');
+			pid = await io.input(vscode.l10n.t('inputPid'));
 			if (pid === undefined) {
 				return;
 			}
@@ -79,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const langs = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: 'Getting language list...',
+			title: vscode.l10n.t('fetchingLanguages'),
 			cancellable: true,
 		}, async (progress, token) => {
 			const abortController = new AbortController();
@@ -92,18 +92,18 @@ export function activate(context: vscode.ExtensionContext) {
 			label: langs[key],
 			description: key,
 		}), {
-			placeHolder: 'Select the language',
+			placeHolder: vscode.l10n.t('selectLanguage'),
 		})))?.description;
 		if (lang === undefined) {
 			return;
 		}
 
 		const file = await vscode.window.showOpenDialog({
-			title: 'Select the source code file',
+			title: vscode.l10n.t('selectSourceCode'),
 			canSelectFiles: true,
 			canSelectFolders: false,
 			canSelectMany: false,
-			openLabel: 'Submit',
+			openLabel: vscode.l10n.t('submit'),
 		});
 		if (file === undefined) {
 			return;
@@ -112,10 +112,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const rid = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
-			title: 'Judging',
+			title: vscode.l10n.t('judging'),
 			cancellable: false,
 		}, async (progress) => {
-			progress.report({ message: 'Submitting' });
+			progress.report({ message: vscode.l10n.t('submitting') });
 			const response = await new cyezoiFetch({
 				path: `/d/${cyezoiSettings.domain}/p/${pid}/submit`,
 				body: {
@@ -126,10 +126,10 @@ export function activate(context: vscode.ExtensionContext) {
 			}).start();
 			const rid = response.json.rid;
 			if (rid === undefined) {
-				io.error('Submit failed');
+				io.error(vscode.l10n.t('submitFailed'));
 				return;
 			}
-			progress.report({ message: 'Waiting for judge response' });
+			progress.report({ message: vscode.l10n.t('waitingForJudgeResponse') });
 
 			return new Promise<number>(async (resolve) => {
 				const ws = new WebSocket(`wss://${cyezoiSettings.server}/record-detail-conn?domainId=${cyezoiSettings.domain}&rid=${rid}`, {
@@ -187,7 +187,7 @@ export function activate(context: vscode.ExtensionContext) {
 			rid = undefined;
 		}
 		if (rid === undefined) {
-			rid = await io.input('Please input the RID');
+			rid = await io.input(vscode.l10n.t('inputRid'));
 			if (rid === undefined) {
 				return;
 			}

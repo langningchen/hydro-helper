@@ -20,7 +20,7 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
         });
         vscode.commands.registerCommand('cyezoi.recordTreePreviousPage', () => {
             if (this.page > 1) { this.page--; }
-            else { io.warn('You are already on the first page.'); }
+            else { io.warn(vscode.l10n.t('alreadyFirstPage')); }
             return this._onDidChangeTreeData.fire(undefined);
         });
     }

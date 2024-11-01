@@ -16,15 +16,15 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreeNextPage', () => {
-            if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
+            if (this.pageCounter === -1) { io.warn(vscode.l10n.t('expandProblemTreeFirst')); return; }
             if (this.page < this.pageCounter) { this.page++; }
-            else { io.warn('You are already on the last page.'); }
+            else { io.warn(vscode.l10n.t('alreadyLastPage')); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreePreviousPage', () => {
-            if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
+            if (this.pageCounter === -1) { io.warn(vscode.l10n.t('expandProblemTreeFirst')); return; }
             if (this.page > 1) { this.page--; }
-            else { io.warn('You are already on the first page.'); }
+            else { io.warn(vscode.l10n.t('alreadyFirstPage')); }
             return this._onDidChangeTreeData.fire(undefined);
         });
     }

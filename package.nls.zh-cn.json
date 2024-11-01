@@ -1,0 +1,19 @@
+{
+    "cyezoi-helper.name": "CYEZOI 助手",
+    "cyezoi-helper.configuration.server": "CYEZOI 服务器地址",
+    "cyezoi-helper.configuration.domain": "CYEZOI 域",
+    "cyezoi-helper.views.problem": "题目",
+    "cyezoi-helper.views.record": "评测记录",
+    "cyezoi-helper.commands.login": "CYEZOI 助手：登录",
+    "cyezoi-helper.commands.openOutput": "CYEZOI 助手：打开输出日志",
+    "cyezoi-helper.commands.logout": "CYEZOI 助手：登出",
+    "cyezoi-helper.commands.refreshProblemTree": "CYEZOI 助手：刷新题目列表",
+    "cyezoi-helper.commands.problemTreeNextPage": "CYEZOI 助手：题目列表下一页",
+    "cyezoi-helper.commands.problemTreePreviousPage": "CYEZOI 助手：题目列表上一页",
+    "cyezoi-helper.commands.openProblem": "CYEZOI 助手：打开题目",
+    "cyezoi-helper.commands.submitProblem": "CYEZOI 助手：提交题目",
+    "cyezoi-helper.commands.refreshRecordTree": "CYEZOI 助手：刷新评测记录列表",
+    "cyezoi-helper.commands.recordTreeNextPage": "CYEZOI 助手：评测记录列表下一页",
+    "cyezoi-helper.commands.recordTreePreviousPage": "CYEZOI 助手：评测记录列表上一页",
+    "cyezoi-helper.commands.openRecord": "CYEZOI 助手：打开评测记录"
+}

@@ -1,0 +1,21 @@
+{
+    "inputUsername": "请输入用户名",
+    "inputPassword": "请输入密码",
+    "inputProblemID": "请输入题目 ID",
+    "inputRid": "请输入记录 ID",
+    "missingUsernameOrPassword": "未提供用户名或密码",
+    "loginExpired": "登录已过期，请重新登录。",
+    "loginSuccess": "你好，{0}，你已成功登录！",
+    "logoutInfo": "请前往账户选项卡（通常在窗口左下角）并从那里注销。",
+    "selectLanguage": "选择语言",
+    "selectSourceCode": "选择源代码文件",
+    "fetchingLanguages": "获取语言列表中...",
+    "submit": "提交",
+    "submitFailed": "提交失败",
+    "judging": "评测中...",
+    "submitting": "提交中",
+    "waitingForJudgeResponse": "等待评测结果",
+    "alreadyFirstPage": "你已经在第一页了。",
+    "alreadyLastPage": "你已经在最后一页了。",
+    "expandProblemTreeFirst": "请先展开题目树。"
+}
