@@ -103,13 +103,13 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
                 var uname: string | undefined = await cyezoiStorage.username;
                 var password: string | undefined = await cyezoiStorage.password;
                 if (!uname || !password) {
-                    uname = await io.input(vscode.l10n.t('inputUsername'));
-                    password = await io.input(vscode.l10n.t('inputPassword'), {
+                    uname = await io.input('Please input your username');
+                    password = await io.input('Please input your password', {
                         password: true,
                     });
                 }
                 if (!uname || !password) {
-                    throw new Error(vscode.l10n.t('missingUsernameOrPassword'));
+                    throw new Error('Username or password not provided');
                 }
 
                 const sid = await vscode.window.withProgress({

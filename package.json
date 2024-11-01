@@ -29,17 +29,17 @@
       ]
     },
     "configuration": {
-      "title": "%cyezoi-helper.name%",
+      "title": "CYEZOI Helper",
       "properties": {
         "cyezoi.server": {
           "type": "string",
           "default": "newoj.cyezoi.com",
-          "description": "%cyezoi-helper.configuration.server%"
+          "description": "The server address of CYEZOI"
         },
         "cyezoi.domain": {
           "type": "string",
           "default": "problemset",
-          "description": "%cyezoi-helper.configuration.domain%"
+          "description": "The domain of CYEZOI"
         }
       }
     },
@@ -47,40 +47,40 @@
       "cyezoi-helper": [
         {
           "id": "cyezoiProblemTreeView",
-          "name": "%cyezoi-helper.views.problem%"
+          "name": "Problem"
         },
         {
           "id": "cyezoiRecordTreeView",
-          "name": "%cyezoi-helper.views.record%"
+          "name": "Record"
         }
       ]
     },
     "treeView": [
       {
         "id": "cyezoiProblemTreeView",
-        "name": "%cyezoi-helper.views.problem%"
+        "name": "Problem"
       },
       {
         "id": "cyezoiRecordTreeView",
-        "name": "%cyezoi-helper.views.record%"
+        "name": "Record"
       }
     ],
     "commands": [
       {
         "command": "cyezoi.login",
-        "title": "%cyezoi-helper.commands.login%"
+        "title": "CYEZOI: Login"
       },
       {
         "command": "cyezoi.openOutput",
-        "title": "%cyezoi-helper.commands.openOutput%"
+        "title": "CYEZOI: Open Output"
       },
       {
         "command": "cyezoi.logout",
-        "title": "%cyezoi-helper.commands.logout%"
+        "title": "CYEZOI: Logout"
       },
       {
         "command": "cyezoi.refreshProblemTree",
-        "title": "%cyezoi-helper.commands.refreshProblemTree%",
+        "title": "CYEZOI: Refresh Problem Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
           "dark": "res/icons/arrow-clockwise-dark.svg"
@@ -88,7 +88,7 @@
       },
       {
         "command": "cyezoi.problemTreeNextPage",
-        "title": "%cyezoi-helper.commands.problemTreeNextPage%",
+        "title": "CYEZOI: Problem Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
@@ -96,7 +96,7 @@
       },
       {
         "command": "cyezoi.problemTreePreviousPage",
-        "title": "%cyezoi-helper.commands.problemTreePreviousPage%",
+        "title": "CYEZOI: Problem Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
@@ -104,7 +104,7 @@
       },
       {
         "command": "cyezoi.openProblem",
-        "title": "%cyezoi-helper.commands.openProblem%",
+        "title": "CYEZOI: Open Problem",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
           "dark": "res/icons/arrow-right-circle-dark.svg"
@@ -112,7 +112,7 @@
       },
       {
         "command": "cyezoi.submitProblem",
-        "title": "%cyezoi-helper.commands.submitProblem%",
+        "title": "CYEZOI: Submit Problem",
         "icon": {
           "light": "res/icons/send-light.svg",
           "dark": "res/icons/send-dark.svg"
@@ -120,7 +120,7 @@
       },
       {
         "command": "cyezoi.refreshRecordTree",
-        "title": "%cyezoi-helper.commands.refreshRecordTree%",
+        "title": "CYEZOI: Refresh Record Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
           "dark": "res/icons/arrow-clockwise-dark.svg"
@@ -128,7 +128,7 @@
       },
       {
         "command": "cyezoi.recordTreeNextPage",
-        "title": "%cyezoi-helper.commands.recordTreeNextPage%",
+        "title": "CYEZOI: Record Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
@@ -136,7 +136,7 @@
       },
       {
         "command": "cyezoi.recordTreePreviousPage",
-        "title": "%cyezoi-helper.commands.recordTreePreviousPage%",
+        "title": "CYEZOI: Record Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
@@ -144,7 +144,7 @@
       },
       {
         "command": "cyezoi.openRecord",
-        "title": "%cyezoi-helper.commands.openRecord%",
+        "title": "CYEZOI: Open Record",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
           "dark": "res/icons/arrow-right-circle-dark.svg"
