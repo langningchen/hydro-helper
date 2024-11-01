@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { io } from './io';
+import { io, outputChannel } from './io';
 import { cyezoiSettings } from './settings';
 
 interface HydroError extends Error {
@@ -30,16 +30,19 @@ export class cyezoiFetch {
     retryCount: number = 0;
 
     constructor(options: fetchOptions) {
+        outputChannel.debug(`Fetching ${options.path}`, options);
         this.options = options;
     }
 
     static getCookiesValue = async (): Promise<string> => {
+        outputChannel.trace(__filename, 'getCookiesValue');
         return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: true }).then((session: vscode.AuthenticationSession) => {
             return session.accessToken;
         }));
     };
 
     doFetch = async (options: fetchOptions): Promise<void> => {
+        outputChannel.trace(__filename, 'doFetch');
         this.response = await fetch(`https://${cyezoiSettings.server}${options.path}`, {
             method: options.body ? 'POST' : 'GET',
             headers: {
@@ -53,15 +56,19 @@ export class cyezoiFetch {
     };
 
     parseResponse = async (): Promise<void> => {
+        outputChannel.trace(__filename, 'parseResponse');
         this.returnValue.status = this.response!.status;
         this.returnValue.cookies = this.response!.headers.getSetCookie();
         this.returnValue.json = await this.response!.json();
         if (typeof this.returnValue.json.UserContext === 'string') {
             this.returnValue.json.UserContext = JSON.parse(this.returnValue.json.UserContext);
         }
+        outputChannel.info('Fetched', this.options.path, 'status', this.returnValue.status);
+        outputChannel.debug('Response', this.returnValue);
     };
 
     checkError = async (): Promise<void> => {
+        outputChannel.trace(__filename, 'checkError');
         if (this.returnValue.json.error) {
             const errorData = <HydroError>this.returnValue.json.error;
             const message = errorData.message.replace(/{(\d+)}/g, (match, number) => {
@@ -76,6 +83,7 @@ export class cyezoiFetch {
     };
 
     checkLogin = async (): Promise<void> => {
+        outputChannel.trace(__filename, 'checkLogin');
         if (!this.options.ignoreLogin) {
             if (!this.returnValue.json.UserContext) {
                 throw new Error('No UserContext in response');
@@ -89,6 +97,7 @@ export class cyezoiFetch {
     };
 
     start = async (): Promise<fetchReturn> => {
+        outputChannel.trace(__filename, 'start');
         if (this.retryCount > 3) {
             throw new Error('Retry limit exceeded');
         }

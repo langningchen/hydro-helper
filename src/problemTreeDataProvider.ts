@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { cyezoiFetch } from './fetch';
 import path from 'path';
 import { statusIcon, statusName, ProblemDoc, ProblemStatusDoc, RecordDoc, languageDisplayName } from './static';
-import { io } from './io';
+import { io, outputChannel } from './io';
 import { cyezoiSettings } from './settings';
 import { Record } from './recordTreeDataProvider';
 import { cyezoiStorage } from './storage';
@@ -15,15 +15,18 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshProblemTree', () => {
+            outputChannel.trace(__filename, 'refreshProblemTree');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreeNextPage', () => {
+            outputChannel.trace(__filename, 'problemTreeNextPage');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreePreviousPage', () => {
+            outputChannel.trace(__filename, 'problemTreePreviousPage');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -32,15 +35,15 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
     }
 
     getTreeItem(element: Problem): vscode.TreeItem {
+        outputChannel.trace(__filename, 'getTreeItem', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Problem[] | ProblemRecord[]> {
+        outputChannel.trace(__filename, 'getChildren', arguments);
         try {
             if (element === undefined) {
-                io.log('Fetching problem list...');
                 const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p?page=${this.page}`, addCookie: true }).start();
-                io.log('Problem list fetched.');
                 this.pageCounter = response.json.ppcount;
                 const problems: Problem[] = [];
                 for (const pdoc of response.json.pdocs) {
@@ -49,10 +52,7 @@ export class cyezoiProblemTreeDataProvider implements vscode.TreeDataProvider<Pr
                 return problems;
             }
             else {
-                io.log('Fetching record list...');
                 const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record?uidOrName=${await cyezoiStorage.username}&pid=${(element.label as string).substring(1)}`, addCookie: true, }).start();
-                io.log(JSON.stringify(response));
-                io.log('Record list fetched.');
                 const records: Record[] = [];
                 for (const rdoc of response.json.rdocs) {
                     records.push(new ProblemRecord(rdoc));

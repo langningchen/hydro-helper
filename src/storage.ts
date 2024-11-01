@@ -1,14 +1,18 @@
 import * as vscode from 'vscode';
+import { outputChannel } from './io';
 
 export class storage {
     secretStorage: vscode.SecretStorage | undefined;
     private async get(key: string): Promise<string | undefined> {
+        outputChannel.trace(__filename, key, 'get');
         return this.secretStorage!.get(key);
     }
     private async store(key: string, value: string | undefined): Promise<void> {
         if (value === undefined) {
+            outputChannel.trace(__filename, key, 'delete');
             this.secretStorage!.delete(key);
         } else {
+            outputChannel.trace(__filename, key, 'store');
             this.secretStorage!.store(key, value);
         }
     }

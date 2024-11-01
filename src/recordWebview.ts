@@ -1,6 +1,6 @@
 import path from 'path';
 import * as vscode from 'vscode';
-import { io } from './io';
+import { io, outputChannel } from './io';
 import { cyezoiFetch } from './fetch';
 import { cyezoiSettings } from './settings';
 
@@ -26,6 +26,8 @@ export class recordWebview {
     private _extensionPath: string;
 
     constructor(rid: string, extensionPath: string) {
+        outputChannel.trace(__filename, 'constructor', arguments);
+        outputChannel.info(`Open record ${rid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             recordWebview.viewType,
             'CYEZOI - R' + rid,

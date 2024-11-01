@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { cyezoiFetch } from './fetch';
 import path from 'path';
 import { languageDisplayName, ProblemDoc, RecordDoc, statusIcon, statusName, UserDoc } from './static';
-import { io } from './io';
+import { io, outputChannel } from './io';
 import { cyezoiSettings } from './settings';
 
 export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Record> {
@@ -12,13 +12,16 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshRecordTree', () => {
+            outputChannel.trace(__filename, 'refreshRecordTree');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.recordTreeNextPage', () => {
+            outputChannel.trace(__filename, 'recordTreeNextPage');
             this.page++;
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.recordTreePreviousPage', () => {
+            outputChannel.trace(__filename, 'recordTreePreviousPage');
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
             return this._onDidChangeTreeData.fire(undefined);
@@ -26,14 +29,14 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
     }
 
     getTreeItem(element: Record): vscode.TreeItem {
+        outputChannel.trace(__filename, 'getTreeItem', arguments);
         return element;
     }
 
     async getChildren(): Promise<Record[]> {
+        outputChannel.trace(__filename, 'getChildren');
         try {
-            io.log('Fetching record list...');
             const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record?page=${this.page}`, addCookie: true }).start();
-            io.log('Record list fetched.');
             const problems: Record[] = [];
             for (const rdoc of response.json.rdocs) {
                 problems.push(new Record(rdoc, response.json.pdict[rdoc.pid], response.json.udict[rdoc.uid]));

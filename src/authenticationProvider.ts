@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { cyezoiFetch } from './fetch';
-import { io } from './io';
+import { io, outputChannel } from './io';
 import { cyezoiStorage } from './storage';
 
 
@@ -35,7 +35,6 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     private ensureInitialized(): void {
-        io.log("ensureInitialized");
         if (this.initializedDisposable === undefined) {
             void this.cacheTokenFromStorage();
 
@@ -50,7 +49,6 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     private async checkForUpdates(): Promise<void> {
-        io.log("checkForUpdates");
         const added: vscode.AuthenticationSession[] = [];
         const removed: vscode.AuthenticationSession[] = [];
         const changed: vscode.AuthenticationSession[] = [];
@@ -83,7 +81,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     async getSessions(scopes?: readonly string[], options?: vscode.AuthenticationProviderSessionOptions): Promise<vscode.AuthenticationSession[]> {
-        io.log("getSessions");
+        outputChannel.trace(__filename, 'getSessions', arguments);
         this.ensureInitialized();
         const token = await this.cacheTokenFromStorage();
         const name = await this.cacheNameFromStorage();
@@ -96,7 +94,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     async createSession(_scopes: string[]): Promise<vscode.AuthenticationSession> {
-        io.log("createSession");
+        outputChannel.trace(__filename, 'createSession', arguments);
         this.ensureInitialized();
         return new Promise(async (resolve, reject) => {
             try {
@@ -146,6 +144,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
     }
 
     async removeSession(_sessionId: string): Promise<void> {
+        outputChannel.trace(__filename, 'removeSession', arguments);
         const token = await this.currentToken;
         const name = await this.currentName;
         if (!token || !name) {

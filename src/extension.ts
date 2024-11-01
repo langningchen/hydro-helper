@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import { cyezoiAuthenticationProvider } from './authenticationProvider';
-import { outputChannel } from './outputChannel';
 import { cyezoiFetch } from './fetch';
-import { io } from './io';
+import { outputChannel, io } from './io';
 import { WebSocket } from 'ws';
 import { cyezoiStorage } from './storage';
 import { statusEnded, statusName } from './static';
@@ -19,13 +18,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
 
 	disposables.push(outputChannel);
-	disposables.push(vscode.commands.registerCommand('cyezoi.openOutput', () => {
-		outputChannel.show();
-	}));
-
 	disposables.push(vscode.authentication.registerAuthenticationProvider('cyezoi', 'CYEZOI', new cyezoiAuthenticationProvider()));
+
 	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
-		io.log('cyezoi.login');
 		const session = await vscode.authentication.getSession(cyezoiAuthenticationProvider.id, [], { createIfNone: true });
 		if (!session) { return; }
 		const response = await vscode.window.withProgress({
@@ -144,7 +139,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 				var interval: NodeJS.Timeout;
 				ws.on('open', function open() {
-					io.log('Connection opened');
 					interval = setInterval(() => {
 						ws.send('ping');
 					}, 3e4);
@@ -175,7 +169,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 				ws.on('close', (code, reason) => {
 					clearInterval(interval);
-					io.log('Connection closed, code: ' + code + ', reason: ' + reason);
 					resolve(rid);
 				});
 			});
@@ -202,7 +195,9 @@ export function activate(context: vscode.ExtensionContext) {
 	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new cyezoiProblemTreeDataProvider()));
 	disposables.push(vscode.window.registerTreeDataProvider('cyezoiRecordTreeView', new cyezoiRecordTreeDataProvider()));
 
-	outputChannel.appendLine('CYEZOI Helper is now active');
+	outputChannel.info('Extension activated');
 }
 
-export function deactivate() { }
+export function deactivate() {
+	outputChannel.info('Extension deactivated');
+}

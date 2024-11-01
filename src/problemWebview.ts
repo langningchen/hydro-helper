@@ -1,6 +1,6 @@
 import path from 'path';
 import * as vscode from 'vscode';
-import { io } from './io';
+import { io, outputChannel } from './io';
 import { cyezoiFetch } from './fetch';
 import { marked } from 'marked';
 import { cyezoiSettings } from './settings';
@@ -12,6 +12,8 @@ export class problemWebview {
     private _extensionPath: string;
 
     constructor(problemId: string, extensionPath: string) {
+        outputChannel.trace(__filename, 'constructor', arguments);
+        outputChannel.info(`Open problem ${problemId} webview`);
         this._panel = vscode.window.createWebviewPanel(
             problemWebview.viewType,
             'CYEZOI - P' + problemId,
