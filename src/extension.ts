@@ -71,7 +71,9 @@ export function activate(context: vscode.ExtensionContext) {
 			pid = pid.command?.arguments?.[0];
 		}
 		if (pid === undefined) {
-			pid = await io.input(vscode.l10n.t('inputPid'));
+			pid = await io.input(vscode.l10n.t('inputPid'), {
+				value: vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0],
+			});
 			if (pid === undefined) {
 				return;
 			}
@@ -91,12 +93,14 @@ export function activate(context: vscode.ExtensionContext) {
 		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
 			label: langs[key],
 			description: key,
-		}), {
-			placeHolder: vscode.l10n.t('selectLanguage'),
-		})))?.description;
+		})), {
+			title: vscode.l10n.t('selectLanguage'),
+			placeHolder: await cyezoiStorage.lastLanguage,
+		}))?.description;
 		if (lang === undefined) {
 			return;
 		}
+		cyezoiStorage.lastLanguage = lang;
 
 		const file = await vscode.window.showOpenDialog({
 			title: vscode.l10n.t('selectSourceCode'),

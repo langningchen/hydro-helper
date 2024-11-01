@@ -20,6 +20,8 @@ export class storage {
     set token(value: string | undefined) { this.store('cyezoiToken', value); }
     get name(): Thenable<string | undefined> { return this.get('cyezoiName'); }
     set name(value: string | undefined) { this.store('cyezoiName', value); }
+    get lastLanguage(): Thenable<string | undefined> { return this.get('lastLanguage'); }
+    set lastLanguage(value: string | undefined) { this.store('lastLanguage', value); }
 }
 
 export const cyezoiStorage: storage = new storage();
