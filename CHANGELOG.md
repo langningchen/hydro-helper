@@ -2,6 +2,12 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.13
+
+- Remember the last selected language
+- Revert localizing due to some bugs
+- Refactor output panel
+
 ## v0.0.12
 
 - Localize some contents
