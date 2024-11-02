@@ -29,7 +29,7 @@ export class problemWebview {
         this._panel.webview.onDidReceiveMessage(async (message) => {
             switch (message.command) {
                 case 'submitProblem':
-                    vscode.commands.executeCommand('cyezoi.submitProblem', message.problemId);
+                    vscode.commands.executeCommand('cyezoi.submitProblem', message.problemId, tid);
                     break;
             }
         });
