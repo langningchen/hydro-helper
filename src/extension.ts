@@ -19,7 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
 
 	disposables.push(outputChannel);
-	disposables.push(vscode.authentication.registerAuthenticationProvider('cyezoi', 'CYEZOI', new cyezoiAuthenticationProvider()));
+	disposables.push(vscode.authentication.registerAuthenticationProvider('cyezoi', 'CYEZOI', new cyezoiAuthenticationProvider(), {
+		supportsMultipleAccounts: false,
+	}));
 
 	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
 		const session = await vscode.authentication.getSession(cyezoiAuthenticationProvider.id, [], { createIfNone: true });

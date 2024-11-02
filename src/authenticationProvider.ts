@@ -135,6 +135,7 @@ export class cyezoiAuthenticationProvider implements vscode.AuthenticationProvid
                 cyezoiStorage.password = password;
                 cyezoiStorage.token = sid;
                 cyezoiStorage.name = uname;
+                this._onDidChangeSessions.fire({ added: [new cyezoiSession(sid, uname)], removed: [], changed: [] });
                 resolve(await new cyezoiSession(sid, uname));
             }
             catch (e) {
