@@ -46,6 +46,9 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 		io.info(`Hi ${session.account.label}, you have successfully logged in!`);
+		vscode.commands.executeCommand('cyezoi.refreshProblemTree');
+		vscode.commands.executeCommand('cyezoi.refreshRecordTree');
+		vscode.commands.executeCommand('cyezoi.refreshContestTree');
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.logout', async () => {
 		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
