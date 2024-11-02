@@ -156,16 +156,30 @@ export interface RecordDoc {
     _id: string
     status: number
     uid: number
+    code?: string
     lang: string
     pid: number
     domainId: string
     score: number
     time: number
     memory: number
+    judgeTexts?: string[]
+    compilerTexts?: string[]
+    testCases?: {
+        id: number
+        subtaskId: number
+        status: number
+        score: number
+        time: number
+        memory: number
+        message: string
+    }[]
     judger: number
     judgeAt: string
     rejudged: boolean
-    files: object
+    contest?: string
+    files: any
+    subtasks?: { [key: string]: { type: string, score: number, status: number } }
 }
 export interface UserDoc {
     uname: string
@@ -235,4 +249,11 @@ export interface ContestProblemDoc {
         timeMax: number
         type: string
     }
+}
+export interface ContestProblemStatusDoc {
+    rid: string
+    pid: number
+    status: number
+    score: number
+    subtasks: { [key: string]: { type: string, score: number, status: number } }
 }

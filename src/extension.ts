@@ -55,7 +55,7 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined, cid?: string) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			pid = undefined;
 		}
@@ -65,7 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		};
-		new problemWebview(context.extensionPath, pid, cid);
+		new problemWebview(context.extensionPath, pid, tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined) => {
 		if (pid instanceof vscode.TreeItem) {

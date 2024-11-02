@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import { cyezoiFetch } from './fetch';
-import { statusName, ContestDoc, contestRuleName, ContestProblemDoc } from './static';
+import { statusName, ContestDoc, contestRuleName, ContestProblemDoc, ContestProblemStatusDoc, statusIcon, RecordDoc } from './static';
 import { io, outputChannel } from './io';
 import { cyezoiSettings } from './settings';
+import path from 'path';
 
 export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Contest> {
     private _onDidChangeTreeData: vscode.EventEmitter<Contest | undefined> = new vscode.EventEmitter<any | undefined>();
@@ -36,7 +37,7 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
         return element;
     }
 
-    async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[]> {
+    async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[] | ContestRecord[]> {
         outputChannel.trace('contestTreeDataProvider', 'getChildren', arguments);
         try {
             if (element === undefined) {
@@ -48,11 +49,22 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
                 }
                 return contests;
             }
-            else {
-                const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest/${element.id}/problems`, addCookie: true, }).start();
+            else if (element.contextValue === 'contest') {
+                const tid = (element as Contest).id!;
+                const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
                 const records: ContestProblem[] = [];
                 for (const rdoc of Object.keys(response.json.pdict)) {
-                    records.push(new ContestProblem(response.json.pdict[rdoc]));
+                    records.push(new ContestProblem(tid, response.json.pdict[rdoc], response.json.psdict[rdoc]));
+                }
+                return records;
+            } else {
+                const [tid, pid] = (element as ContestProblem).id!.split('-');
+                const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
+                const records: ContestRecord[] = [];
+                for (const rdoc of Object.keys(response.json.rdocs)) {
+                    if (response.json.rdocs[rdoc].pid === parseInt(pid)) {
+                        records.push(new ContestRecord(response.json.rdocs[rdoc]));
+                    }
                 }
                 return records;
             }
@@ -80,14 +92,45 @@ export class Contest extends vscode.TreeItem {
 }
 
 export class ContestProblem extends vscode.TreeItem {
-    constructor(pdoc: ContestProblemDoc) {
-        super(pdoc.docId.toString(), vscode.TreeItemCollapsibleState.None);
-        this.contextValue = 'contestProblem';
+    constructor(tid: string, pdoc: ContestProblemDoc, psdoc?: ContestProblemStatusDoc) {
+        super(pdoc.docId.toString(), (psdoc ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        this.id = tid + '-' + pdoc.docId;
+        this.contextValue = 'problem';
         this.description = pdoc.title;
+        const tooltipDoc = new vscode.MarkdownString();
+        if (psdoc) {
+            this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[psdoc.status] + '.svg');
+            tooltipDoc.appendMarkdown(`- **Status**: ${statusName[psdoc.status]}\n`);
+            tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
+        }
+        tooltipDoc.appendMarkdown(`- **Memory**: ${pdoc.config.memoryMin} ~ ${pdoc.config.memoryMax}\n`);
+        tooltipDoc.appendMarkdown(`- **Time**: ${pdoc.config.timeMin} ~ ${pdoc.config.timeMax}\n`);
+        this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openProblem',
             title: 'Open Problem',
-            arguments: [pdoc.docId],
+            arguments: [pdoc.docId, tid],
+        };
+    }
+}
+
+export class ContestRecord extends vscode.TreeItem {
+    constructor(rdoc: RecordDoc) {
+        super(rdoc.score + ' ' + statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
+        this.contextValue = 'record';
+        this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[rdoc.status] + '.svg');
+        const tooltipDoc = new vscode.MarkdownString();
+        tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
+        tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
+        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${rdoc.time}ms\n`); }
+        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${rdoc.memory}KB\n`); }
+        tooltipDoc.appendMarkdown(`- **Lang**: ${rdoc.lang}\n`);
+        tooltipDoc.appendMarkdown(`- **Judge At**: ${rdoc.judgeAt}\n`);
+        this.tooltip = tooltipDoc;
+        this.command = {
+            command: 'cyezoi.openRecord',
+            title: 'Open Record',
+            arguments: [rdoc._id],
         };
     }
 }

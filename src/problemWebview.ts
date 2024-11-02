@@ -11,12 +11,12 @@ export class problemWebview {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
-    constructor(extensionPath: string, pid: string, cid?: string) {
+    constructor(extensionPath: string, pid: string, tid?: string) {
         outputChannel.trace('problemWebview', 'constructor', arguments);
         outputChannel.info(`Open problem ${pid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             problemWebview.viewType,
-            'CYEZOI - P' + pid,
+            'CYEZOI - P' + pid + (tid !== undefined ? ` - T${tid}` : ''),
             vscode.ViewColumn.Beside,
             {
                 enableScripts: true,
@@ -34,7 +34,10 @@ export class problemWebview {
             }
         });
 
-        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/p/${pid}`, addCookie: true }).start().then(async (problemDetail) => {
+        new cyezoiFetch({
+            path: `/d/${cyezoiSettings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '')
+            , addCookie: true
+        }).start().then(async (problemDetail) => {
             if (problemDetail?.json !== undefined) {
                 const problemContent = JSON.parse(problemDetail.json.pdoc.content);
                 const markdownContent: { [key: string]: string } = {};
