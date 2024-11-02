@@ -2,9 +2,23 @@
 
 CYEZOI is an extension that can help user get and submit problems without opening the browser.
 
+![](assets/image-1.png)
+
 ## Features
 
-TODO
+This extension provides the following features:
+
+- Problem
+  - Submit problem
+  - Fetch statement
+- Record
+  - View record
+- Contest
+  - View scoreboard
+  - Submit problem
+  - Fetch statement
+
+All the features are available in the VS Code sidebar.
 
 ## Requirements
 
@@ -14,10 +28,10 @@ Users using this extension should have [an CYEZOI account](https://newoj.cyezoi.
 
 Currently there are no extension settings.
 
-<!-- This extension contributes the following settings:
+This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something. -->
+* `cyezoi.server`: The server address of CYEZOI. Default is `newoj.cyezoi.com`.
+* `cyezoi.domain`: The Hydro domain of CYEZOI. Default is `problemset`.
 
 ## Known Issues
 

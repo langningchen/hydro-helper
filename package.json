@@ -48,12 +48,12 @@
         "cyezoi.server": {
           "type": "string",
           "default": "newoj.cyezoi.com",
-          "description": "The server address of CYEZOI"
+          "description": "The server address of CYEZOI, without protocol"
         },
         "cyezoi.domain": {
           "type": "string",
           "default": "problemset",
-          "description": "The domain of CYEZOI"
+          "description": "The Hydro domain of CYEZOI"
         }
       }
     },

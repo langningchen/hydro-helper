@@ -2,6 +2,14 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.14
+
+- **Add support for contests** ![](assets/image.png)
+- Optimize the login logic
+- Set the default file to the current active file when submitting
+- Fetch with UA
+- Update README to include pictures
+
 ## v0.0.13
 
 - Remember the last selected language
