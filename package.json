@@ -19,6 +19,20 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "cyezoiProblemTreeView",
+        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
+      },
+      {
+        "view": "cyezoiRecordTreeView",
+        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
+      },
+      {
+        "view": "cyezoiContestTreeView",
+        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
