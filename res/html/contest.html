@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        @font-face {
+            font-family: 'hydro-icons';
+            src: url('{{hydroIconsFile}}') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    {{staticFiles}}
+</head>
+
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;" id="loading">
+        <vscode-progress-ring></vscode-progress-ring>
+    </div>
+    <div id="content" style="display: none;">
+        <h1 id="title"></h1>
+        <vscode-tabs selected-index="1">
+            <vscode-tab-header slot="header">Info</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="info"></div>
+            </vscode-tab-panel>
+            <vscode-tab-header slot="header">Scoreboard</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="scoreboard"></div>
+            </vscode-tab-panel>
+        </vscode-tabs>
+    </div>
+</body>
+
+</html>

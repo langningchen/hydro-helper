@@ -11,6 +11,7 @@ import { cyezoiSettings } from './settings';
 import { cyezoiProblemTreeDataProvider } from './problemTreeDataProvider';
 import { cyezoiRecordTreeDataProvider } from './recordTreeDataProvider';
 import { cyezoiContestTreeDataProvider } from './contestTreeDataProvider';
+import { contestWebview } from './contestWebview';
 
 export function activate(context: vscode.ExtensionContext) {
 	cyezoiStorage.secretStorage = context.secrets;
@@ -55,22 +56,13 @@ export function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
-		if (pid instanceof vscode.TreeItem) {
-			pid = undefined;
-		}
-		if (pid === undefined) {
-			pid = await io.input('Please input the problem ID');
-			if (pid === undefined) {
-				return;
-			}
-		};
-		new problemWebview(context.extensionPath, pid, tid);
-	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined) => {
 		var tid: string | undefined;
 		if (pid instanceof vscode.TreeItem) {
-			[pid, tid] = pid.command?.arguments;
+			const args = pid.command?.arguments;
+			if (args && args[Symbol.iterator]) {
+				[pid, tid] = args;
+			}
 		}
 		if (pid === undefined) {
 			pid = await io.input('Please input the problem ID', {
@@ -199,6 +191,19 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.commands.executeCommand('cyezoi.openRecord', rid);
 		}
 	}));
+
+	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
+		if (pid instanceof vscode.TreeItem) {
+			pid = undefined;
+		}
+		if (pid === undefined) {
+			pid = await io.input('Please input the problem ID');
+			if (pid === undefined) {
+				return;
+			}
+		};
+		new problemWebview(context.extensionPath, pid, tid);
+	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openRecord', async (rid: vscode.TreeItem | string | undefined) => {
 		if (rid instanceof vscode.TreeItem) {
 			rid = undefined;
@@ -210,6 +215,18 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		}
 		new recordWebview(context.extensionPath, rid);
+	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.openContest', async (tid: vscode.TreeItem | string | undefined) => {
+		if (tid instanceof vscode.TreeItem) {
+			tid = undefined;
+		}
+		if (tid === undefined) {
+			tid = await io.input('Please input the contest ID');
+			if (tid === undefined) {
+				return;
+			}
+		}
+		new contestWebview(context.extensionPath, tid);
 	}));
 
 	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new cyezoiProblemTreeDataProvider()));

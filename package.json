@@ -161,6 +161,14 @@
         }
       },
       {
+        "command": "cyezoi.openContest",
+        "title": "CYEZOI: Open Contest",
+        "icon": {
+          "light": "res/icons/arrow-right-circle-light.svg",
+          "dark": "res/icons/arrow-right-circle-dark.svg"
+        }
+      },
+      {
         "command": "cyezoi.refreshRecordTree",
         "title": "CYEZOI: Refresh Record Tree",
         "icon": {
@@ -256,6 +264,11 @@
           "command": "cyezoi.contestTreeNextPage",
           "when": "view == cyezoiContestTreeView",
           "group": "navigation@3"
+        },
+        {
+          "command": "cyezoi.openContest",
+          "when": "view == cyezoiContestTreeView",
+          "group": "navigation@4"
         }
       ]
     }

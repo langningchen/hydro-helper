@@ -88,6 +88,11 @@ export class Contest extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Rated**: ${cdoc.rated ? 'Yes' : 'No'}\n`);
         tooltipDoc.appendMarkdown(`- **Allow View Code**: ${cdoc.allowViewCode ? 'Yes' : 'No'}\n`);
         this.tooltip = tooltipDoc;
+        this.command = {
+            command: 'cyezoi.openContest',
+            title: 'Open Contest',
+            arguments: [cdoc._id],
+        };
     }
 }
 

@@ -14,6 +14,8 @@
 		"CYEZOI",
 		"foldcode",
 		"foldgutter",
+		"ICPC",
+		"ledo",
 		"loginat",
 		"mathjax",
 		"newoj",
@@ -30,8 +32,11 @@
 		"rdocs",
 		"realname",
 		"regat",
+		"strictioi",
+		"tdoc",
 		"tdocs",
 		"tpcount",
+		"udict",
 		"udoc"
 	],
 	"explorer.excludeGitIgnore": true
