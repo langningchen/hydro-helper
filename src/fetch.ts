@@ -49,6 +49,7 @@ export class cyezoiFetch {
                 'accept': 'application/json',
                 'content-type': 'application/json',
                 'cookie': options.addCookie ? await cyezoiFetch.getCookiesValue() : '',
+                'user-agent': 'VSCode-CYEZOIHelper',
             },
             body: options.body ? JSON.stringify(options.body) : undefined,
             signal: options.abortController?.signal,
