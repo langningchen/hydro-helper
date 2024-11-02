@@ -27,7 +27,6 @@ export class cyezoiFetch {
     response: Response | undefined;
     options: fetchOptions;
     returnValue: fetchReturn = { status: 0 };
-    retryCount: number = 0;
 
     constructor(options: fetchOptions) {
         outputChannel.debug(`Fetching ${options.path}`, options);
@@ -36,7 +35,10 @@ export class cyezoiFetch {
 
     static getCookiesValue = async (): Promise<string> => {
         outputChannel.trace('fetch', 'getCookiesValue');
-        return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: true }).then((session: vscode.AuthenticationSession) => {
+        return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: false }).then((session: vscode.AuthenticationSession | undefined) => {
+            if (!session) {
+                return '';
+            }
             return session.accessToken;
         }));
     };
@@ -90,18 +92,13 @@ export class cyezoiFetch {
                 throw new Error('No UserContext in response');
             }
             if (this.returnValue.json.UserContext._id === 0) {
-                vscode.commands.executeCommand('cyezoi.login');
-                this.retryCount++;
-                this.returnValue = await this.start();
+                throw new Error('Not logged in');
             }
         }
     };
 
     start = async (): Promise<fetchReturn> => {
         outputChannel.trace('fetch', 'start');
-        if (this.retryCount > 3) {
-            throw new Error('Retry limit exceeded');
-        }
         await this.doFetch(this.options);
         await this.parseResponse();
         await this.checkError();
