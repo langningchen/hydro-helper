@@ -68,8 +68,9 @@ export function activate(context: vscode.ExtensionContext) {
 		new problemWebview(context.extensionPath, pid, tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined) => {
+		var tid: string | undefined;
 		if (pid instanceof vscode.TreeItem) {
-			pid = pid.command?.arguments?.[0];
+			[pid, tid] = pid.command?.arguments;
 		}
 		if (pid === undefined) {
 			pid = await io.input('Please input the problem ID', {
@@ -89,7 +90,10 @@ export function activate(context: vscode.ExtensionContext) {
 			token.onCancellationRequested(() => {
 				abortController.abort();
 			});
-			return await new cyezoiFetch({ path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit', addCookie: true, abortController }).start();
+			return await new cyezoiFetch({
+				path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit' + (tid ? '?tid=' + tid : ''),
+				addCookie: true, abortController
+			}).start();
 		}).then(response => response.json.langRange);
 
 		const lastLanguage = await cyezoiStorage.lastLanguage;
@@ -132,7 +136,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}, async (progress) => {
 			progress.report({ message: 'Submitting' });
 			const response = await new cyezoiFetch({
-				path: `/d/${cyezoiSettings.domain}/p/${pid}/submit`,
+				path: `/d/${cyezoiSettings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 				body: {
 					lang,
 					code: code.toString(),
