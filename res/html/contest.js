@@ -1,33 +1,3 @@
-const contestRuleName = {
-    'acm': 'ACM/ICPC',
-    'oi': 'OI',
-    'ioi': 'IOI',
-    'strictioi': 'IOI(Strict)',
-    'ledo': 'Ledo',
-    'homework': 'Assignment',
-};
-const scoreColor = [
-    '#ff4f4f',
-    '#ff694f',
-    '#f8603a',
-    '#fc8354',
-    '#fa9231',
-    '#f7bb3b',
-    '#ecdb44',
-    '#e2ec52',
-    '#b0d628',
-    '#93b127',
-    '#25ad40',
-];
-
-const vscode = acquireVsCodeApi();
-window.MathJax = {
-    tex: {
-        inlineMath: [['$', '$']],
-        displayMath: [['$$', '$$']],
-    },
-};
-
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
@@ -58,7 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Duration</vscode-table-cell>
-                            <vscode-table-cell>${(new Date(data.tdoc.endAt).getTime() - new Date(data.tdoc.beginAt).getTime()) / 1000 / 60} minutes</vscode-table-cell>
+                            <vscode-table-cell>${toTime(new Date(data.tdoc.endAt).getTime() - new Date(data.tdoc.beginAt).getTime())}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Rule</vscode-table-cell>

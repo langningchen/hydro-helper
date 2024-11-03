@@ -63,6 +63,7 @@ export default class {
         const staticFiles = [
             { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
             { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
+            { 'path': ['res', 'html', 'static.js'] },
             { 'path': ['res', 'html', 'contest.js'] },
         ];
         let recordHtml = path.join(this._extensionPath, 'res', 'html', 'contest.html');

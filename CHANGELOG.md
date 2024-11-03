@@ -2,6 +2,10 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
+## v0.0.15
+
+- **View solution for problems** ![](assets/image-2.png)
+
 ## v0.0.14
 
 - **Add support for contests** ![](assets/image.png)

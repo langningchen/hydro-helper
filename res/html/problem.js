@@ -1,11 +1,3 @@
-const vscode = window.acquireVsCodeApi();
-window.MathJax = {
-    tex: {
-        inlineMath: [['$', '$']],
-        displayMath: [['$$', '$$']],
-    },
-};
-
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');

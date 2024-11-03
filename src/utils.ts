@@ -6,7 +6,7 @@ export const getUnit = (data: number, unit: string) => {
     else { return data + ' ' + unit + 's'; }
 };
 export const toTime = (time: number): string => {
-    if (time < 1000) { return time + 'ms'; } time /= 1000;
+    if (time < 1000) { return time.toFixed(0) + 'ms'; } time /= 1000;
     if (time < 60) { return time.toFixed(2) + 's'; } time /= 60;
     if (time < 60) { return time.toFixed(2) + getUnit(time, 'minute'); } time /= 60;
     if (time < 24) { return time.toFixed(2) + getUnit(time, 'hour'); } time /= 24;
@@ -15,7 +15,7 @@ export const toTime = (time: number): string => {
     return 'about ' + Math.floor(time) + getUnit(time, 'year');
 };
 export const toMemory = (time: number): string => {
-    if (time < 1024) { return time + 'B'; } time /= 1024;
+    if (time < 1024) { return time.toFixed(0) + 'B'; } time /= 1024;
     if (time < 1024) { return time.toFixed(2) + 'KiB'; } time /= 1024;
     if (time < 1024) { return time.toFixed(2) + 'MiB'; } time /= 1024;
     return time.toFixed(2) + 'GiB';

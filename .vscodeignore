@@ -2,6 +2,7 @@
 .npmrc
 .vscode
 .vscodeignore
+assets/
 esbuild.js
 eslint.config.mjs
 node_modules/
