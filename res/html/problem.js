@@ -52,6 +52,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'solution':
                 solution.innerHTML = '';
+                if (message.data.psdocs.length === 0) {
+                    solution.innerHTML = '<p>No solution yet.</p>';
+                    break;
+                }
                 for (let i = 0; i < message.data.psdocs.length; i++) {
                     solution.innerHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${message.data.udict[message.data.psdocs[i].owner].uname}</vscode-badge>
                     <vscode-badge variant="counter">${message.data.psdocs[i].vote}</vscode-badge>`;

@@ -93,7 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 const compilerTextsData = data.rdoc.compilerTexts.join();
                 if (compilerTextsData === '') {
-                    compilerTexts.innerHTML = `No compiler texts`;
+                    compilerTexts.innerHTML = `<p>No compiler texts</p>`;
                 } else {
                     const compilerTextsEditor = window.CodeMirror(compilerTexts, {
                         autoRefresh: true,
@@ -145,7 +145,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 record.innerHTML = recordHTML;
 
                 if (data.rdoc.code === '') {
-                    lastCode.innerHTML = `Code is not available to display`;
+                    lastCode.innerHTML = `<p>Code is not available to display</p>`;
                 } else {
                     const lastCodeEditor = window.CodeMirror(lastCode, {
                         autoRefresh: true,

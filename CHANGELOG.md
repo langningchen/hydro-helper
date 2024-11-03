@@ -5,6 +5,7 @@ All notable changes to the "cyezoi" extension will be documented in this file.
 ## v0.0.15
 
 - **View solution for problems** ![](assets/image-2.png)
+- Display a message when there is no source code
 
 ## v0.0.14
 
