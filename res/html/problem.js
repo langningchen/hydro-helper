@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
     const problem = document.getElementById('problem');
+    const solution = document.getElementById('solution');
     window.addEventListener('message', event => {
         const message = event.data;
         switch (message.command) {
@@ -26,10 +27,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 submitProblem.disabled = false;
                 problem.innerHTML = message.data.markdownContent.zh;
                 window.MathJax.typeset();
-                const pre = problem.getElementsByTagName('pre');
-                const editors = [];
-                for (let i = 0; i < pre.length; i++) {
-                    const code = pre[i].innerText.trim();
+                const problemPre = problem.getElementsByTagName('pre');
+                const problemEditors = [];
+                for (let i = 0; i < problemPre.length; i++) {
+                    const code = problemPre[i].innerText.trim();
                     const codeElement = document.createElement('div');
                     const copyButton = document.createElement('vscode-button');
                     copyButton.innerText = 'Copy';
@@ -45,16 +46,64 @@ window.addEventListener('DOMContentLoaded', () => {
                     codeElement.appendChild(copyButton);
                     const editorElement = document.createElement('div');
                     codeElement.appendChild(editorElement);
-                    editors.push(window.CodeMirror(editorElement, {
+                    problemEditors.push(window.CodeMirror(editorElement, {
                         autoRefresh: true,
                         value: code,
                         readOnly: true,
                         theme: 'material',
                     }));
-                    pre[i].parentNode.replaceChild(codeElement, pre[i]);
+                    problemPre[i].parentNode.replaceChild(codeElement, problemPre[i]);
                 }
-                for (let i = 0; i < editors.length; i++) {
-                    editors[i].setSize('100%', 'auto');
+                for (let i = 0; i < problemEditors.length; i++) {
+                    problemEditors[i].setSize('100%', 'auto');
+                }
+                break;
+            case 'solution':
+                solution.innerHTML = '';
+                for (let i = 0; i < message.data.psdocs.length; i++) {
+                    solution.innerHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${message.data.udict[message.data.psdocs[i].owner].uname}</vscode-badge>
+                    <vscode-badge variant="counter">${message.data.psdocs[i].vote}</vscode-badge>`;
+                    solution.innerHTML += `<p>${message.data.psdocs[i].content}</p>`;
+                    if (message.data.psdocs[i].reply.length > 0) {
+                        const collapsible = document.createElement('vscode-collapsible');
+                        solution.appendChild(collapsible);
+                        collapsible.setAttribute('title', 'Reply');
+                        for (let j = 0; j < message.data.psdocs[i].reply.length; j++) {
+                            debugger;
+                            collapsible.innerHTML += `<div style="padding: 10px">
+                            <vscode-badge>${message.data.udict[message.data.psdocs[i].reply[j].owner].uname}</vscode-badge>
+                                ${message.data.psdocs[i].reply[j].content}
+                            </div>`;
+                        }
+                    }
+                    solution.innerHTML += `<vscode-divider></vscode-divider>`;
+                }
+                window.MathJax.typeset();
+                const solutionPre = solution.getElementsByTagName('pre');
+                const solutionEditors = [];
+                for (let i = 0; i < solutionPre.length; i++) {
+                    const code = solutionPre[i].innerText.trim();
+                    const codeElement = document.createElement('div');
+                    const editorElement = document.createElement('div');
+                    codeElement.appendChild(editorElement);
+                    solutionEditors.push(window.CodeMirror(editorElement, {
+                        autoRefresh: true,
+                        value: code,
+                        readOnly: true,
+                        theme: 'material',
+                        lineNumbers: true,
+                        mode: 'text/x-c++src',
+                        gutters: [
+                            'CodeMirror-linenumbers',
+                            'CodeMirror-foldgutter',
+                        ],
+                        foldGutter: true,
+                        styleActiveLine: true,
+                    }));
+                    solutionPre[i].parentNode.replaceChild(codeElement, solutionPre[i]);
+                }
+                for (let i = 0; i < solutionEditors.length; i++) {
+                    solutionEditors[i].setSize('100%', 'auto');
                 }
                 break;
             default:

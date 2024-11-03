@@ -20,7 +20,18 @@
     <div id="content" style="display: none;">
         <h1 id="title"></h1>
         <vscode-button disabled icon="check" id="submitProblem">Submit</vscode-button>
-        <div id="problem"></div>
+        <vscode-tabs selected-index="0">
+            <vscode-tab-header slot="header">Problem</vscode-tab-header>
+            <vscode-tab-panel>
+                <div id="problem"></div>
+            </vscode-tab-panel>
+            <vscode-tab-header slot="header">Solution</vscode-tab-header>
+            <vscode-tab-panel>
+                <p id="solution">
+                    There is no solution available for this problem.
+                </p>
+            </vscode-tab-panel>
+        </vscode-tabs>
     </div>
 </body>
 

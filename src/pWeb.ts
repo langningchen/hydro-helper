@@ -57,6 +57,26 @@ export default class {
         }).catch(async (e: Error) => {
             io.error(e.message);
         });
+
+        if (tid === undefined) {
+            new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (solutionDetail) => {
+                if (solutionDetail?.json !== undefined) {
+                    for (const solution of solutionDetail.json.psdocs) {
+                        solution.content = await marked(solution.content);
+                        for (const reply of solution.reply) {
+                            reply.content = await marked(reply.content);
+                        }
+                    }
+                    const message = {
+                        command: 'solution',
+                        data: solutionDetail.json,
+                    };
+                    this._panel.webview.postMessage(message);
+                }
+            }).catch(async (e: Error) => {
+                io.error(e.message);
+            });
+        }
     }
 
     private getRealPath(relativePath: string[]): vscode.Uri {
@@ -73,6 +93,13 @@ export default class {
             { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.css'] },
             { 'path': ['res', 'libs', 'codemirror', 'theme', 'material.min.css'] },
+            { 'path': ['res', 'libs', 'codemirror', 'mode', 'clike', 'clike.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'foldcode.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'foldgutter.min.css'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'foldgutter.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'brace-fold.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'comment-fold.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'indent-fold.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'section', 'active-line.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'display', 'autorefresh.min.js'] },
             { 'path': ['res', 'html', 'problem.css'] },
