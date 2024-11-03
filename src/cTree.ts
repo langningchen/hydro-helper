@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import fetch from './fetch';
-import { statusName, ContestDoc, contestRuleName, ContestProblemDoc, ContestProblemStatusDoc, statusIcon, RecordDoc } from './static';
+import { statusName, ContestDoc, contestRuleName, ContestProblemDoc, ContestProblemStatusDoc, statusIcon, RecordDoc, ContestStatusDoc } from './static';
 import { io, outputChannel } from './io';
 import settings from './settings';
 import path from 'path';
@@ -45,8 +45,8 @@ export default class implements vscode.TreeDataProvider<Contest> {
                 const response = await new fetch({ path: `/d/${settings.domain}/contest?page=${this.page}`, addCookie: true }).start();
                 this.pageCounter = response.json.tpcount;
                 const contests: Contest[] = [];
-                for (const pdoc of response.json.tdocs) {
-                    contests.push(new Contest(pdoc));
+                for (const tdoc of response.json.tdocs) {
+                    contests.push(new Contest(tdoc, response.json.tsdict[tdoc._id]?.attend));
                 }
                 return contests;
             }
@@ -77,8 +77,8 @@ export default class implements vscode.TreeDataProvider<Contest> {
 }
 
 export class Contest extends vscode.TreeItem {
-    constructor(tdoc: ContestDoc) {
-        super(tdoc.title, vscode.TreeItemCollapsibleState.Collapsed);
+    constructor(tdoc: ContestDoc, showProblem: boolean) {
+        super(tdoc.title, showProblem ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None);
         this.id = tdoc._id;
         this.contextValue = 'contest';
         this.description = toTime(new Date(tdoc.endAt).getTime() - new Date(tdoc.beginAt).getTime());
@@ -90,11 +90,19 @@ export class Contest extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Rated**: ${tdoc.rated ? 'Yes' : 'No'}\n`);
         tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
         this.tooltip = tooltipDoc;
-        this.command = {
-            command: 'cyezoi.openC',
-            title: 'Open Contest',
-            arguments: [tdoc._id],
-        };
+        if (showProblem) {
+            this.command = {
+                command: 'cyezoi.openC',
+                title: 'Open Contest',
+                arguments: [tdoc._id],
+            };
+        } else {
+            this.command = {
+                command: 'cyezoi.attendC',
+                title: 'Attend Contest',
+                arguments: [tdoc._id],
+            };
+        }
     }
 }
 

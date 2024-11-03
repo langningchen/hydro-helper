@@ -169,6 +169,10 @@
         }
       },
       {
+        "command": "attendC",
+        "title": "CYEZOI: Attend Contest"
+      },
+      {
         "command": "cyezoi.refreshRTree",
         "title": "CYEZOI: Refresh Record Tree",
         "icon": {
