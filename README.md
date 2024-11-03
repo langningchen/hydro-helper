@@ -2,8 +2,6 @@
 
 CYEZOI is an extension that can help user get and submit problems without opening the browser.
 
-![](assets/image-1.png)
-
 ## Features
 
 This extension provides the following features:
