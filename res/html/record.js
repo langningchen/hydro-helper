@@ -144,21 +144,25 @@ window.addEventListener('DOMContentLoaded', () => {
                 </vscode-table>`;
                 record.innerHTML = recordHTML;
 
-                const lastCodeEditor = window.CodeMirror(lastCode, {
-                    autoRefresh: true,
-                    value: data.rdoc.code,
-                    readOnly: true,
-                    theme: 'material',
-                    lineNumbers: true,
-                    mode: 'text/x-c++src',
-                    gutters: [
-                        'CodeMirror-linenumbers',
-                        'CodeMirror-foldgutter',
-                    ],
-                    foldGutter: true,
-                    styleActiveLine: true,
-                });
-                lastCodeEditor.setSize('100%', 'auto');
+                if (data.rdoc.code === '') {
+                    lastCode.innerHTML = `Code is not available to display`;
+                } else {
+                    const lastCodeEditor = window.CodeMirror(lastCode, {
+                        autoRefresh: true,
+                        value: data.rdoc.code,
+                        readOnly: true,
+                        theme: 'material',
+                        lineNumbers: true,
+                        mode: 'text/x-c++src',
+                        gutters: [
+                            'CodeMirror-linenumbers',
+                            'CodeMirror-foldgutter',
+                        ],
+                        foldGutter: true,
+                        styleActiveLine: true,
+                    });
+                    lastCodeEditor.setSize('100%', 'auto');
+                }
                 break;
             default:
                 break;
