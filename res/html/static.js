@@ -114,6 +114,19 @@ const contestRuleName = {
     "ledo": "Ledo",
     "homework": "Assignment",
 };
+const scoreColor = [
+    '#ff4f4f',
+    '#ff694f',
+    '#f8603a',
+    '#fc8354',
+    '#fa9231',
+    '#f7bb3b',
+    '#ecdb44',
+    '#e2ec52',
+    '#b0d628',
+    '#93b127',
+    '#25ad40',
+];
 
 const getUnit = (data, unit) => {
     if (data >= 1 && data < 2) { return data + ' ' + unit; }
