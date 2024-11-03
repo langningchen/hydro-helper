@@ -115,8 +115,6 @@ export const contestRuleName: { [key: string]: string } = {
     "homework": "Assignment",
 };
 
-
-
 export interface ProblemDoc {
     _id: string
     owner: number

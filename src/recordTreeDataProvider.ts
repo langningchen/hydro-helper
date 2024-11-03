@@ -4,6 +4,7 @@ import path from 'path';
 import { languageDisplayName, ProblemDoc, RecordDoc, statusIcon, statusName, UserDoc } from './static';
 import { io, outputChannel } from './io';
 import { cyezoiSettings } from './settings';
+import { toMemory, toRelativeTime, toTime } from './utils';
 
 export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Record> {
     private _onDidChangeTreeData: vscode.EventEmitter<Record | undefined> = new vscode.EventEmitter<any | undefined>();
@@ -59,10 +60,10 @@ export class Record extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
         tooltipDoc.appendMarkdown(`- **User**: ${udoc.uname}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
-        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${rdoc.time}ms\n`); }
-        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${rdoc.memory}KB\n`); }
+        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${toTime(rdoc.time)}\n`); }
+        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${toMemory(rdoc.memory)}\n`); }
         tooltipDoc.appendMarkdown(`- **Lang**: ${languageDisplayName[rdoc.lang]}\n`);
-        tooltipDoc.appendMarkdown(`- **Judge At**: ${rdoc.judgeAt}\n`);
+        tooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openRecord',

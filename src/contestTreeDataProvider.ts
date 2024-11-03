@@ -4,6 +4,7 @@ import { statusName, ContestDoc, contestRuleName, ContestProblemDoc, ContestProb
 import { io, outputChannel } from './io';
 import { cyezoiSettings } from './settings';
 import path from 'path';
+import { toMemory, toRelativeTime, toTime } from './utils';
 
 export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Contest> {
     private _onDidChangeTreeData: vscode.EventEmitter<Contest | undefined> = new vscode.EventEmitter<any | undefined>();
@@ -76,22 +77,23 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
 }
 
 export class Contest extends vscode.TreeItem {
-    constructor(cdoc: ContestDoc) {
-        super(cdoc.title, vscode.TreeItemCollapsibleState.Collapsed);
-        this.id = cdoc._id;
+    constructor(tdoc: ContestDoc) {
+        super(tdoc.title, vscode.TreeItemCollapsibleState.Collapsed);
+        this.id = tdoc._id;
         this.contextValue = 'contest';
+        this.description = toTime(new Date(tdoc.endAt).getTime() - new Date(tdoc.beginAt).getTime());
         const tooltipDoc = new vscode.MarkdownString();
-        tooltipDoc.appendMarkdown(`- **Rule**: ${contestRuleName[cdoc.rule]}\n`);
-        tooltipDoc.appendMarkdown(`- **Attend**: ${cdoc.attend} people\n`);
-        tooltipDoc.appendMarkdown(`- **Begin At**: ${cdoc.beginAt}\n`);
-        tooltipDoc.appendMarkdown(`- **End At**: ${cdoc.endAt}\n`);
-        tooltipDoc.appendMarkdown(`- **Rated**: ${cdoc.rated ? 'Yes' : 'No'}\n`);
-        tooltipDoc.appendMarkdown(`- **Allow View Code**: ${cdoc.allowViewCode ? 'Yes' : 'No'}\n`);
+        tooltipDoc.appendMarkdown(`- **Rule**: ${contestRuleName[tdoc.rule]}\n`);
+        tooltipDoc.appendMarkdown(`- **Attend**: ${tdoc.attend} people\n`);
+        tooltipDoc.appendMarkdown(`- **Begin At**: ${toRelativeTime(new Date(tdoc.beginAt).getTime())}\n`);
+        tooltipDoc.appendMarkdown(`- **End At**: ${toRelativeTime(new Date(tdoc.endAt).getTime())}\n`);
+        tooltipDoc.appendMarkdown(`- **Rated**: ${tdoc.rated ? 'Yes' : 'No'}\n`);
+        tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openContest',
             title: 'Open Contest',
-            arguments: [cdoc._id],
+            arguments: [tdoc._id],
         };
     }
 }
@@ -127,10 +129,10 @@ export class ContestRecord extends vscode.TreeItem {
         const tooltipDoc = new vscode.MarkdownString();
         tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
-        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${rdoc.time}ms\n`); }
-        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${rdoc.memory}KB\n`); }
+        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${toTime(rdoc.time)}\n`); }
+        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${toMemory(rdoc.memory * 1024)}\n`); }
         tooltipDoc.appendMarkdown(`- **Lang**: ${rdoc.lang}\n`);
-        tooltipDoc.appendMarkdown(`- **Judge At**: ${rdoc.judgeAt}\n`);
+        tooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openRecord',
