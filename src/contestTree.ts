@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
-import { cyezoiFetch } from './fetch';
+import fetch from './fetch';
 import { statusName, ContestDoc, contestRuleName, ContestProblemDoc, ContestProblemStatusDoc, statusIcon, RecordDoc } from './static';
 import { io, outputChannel } from './io';
-import { cyezoiSettings } from './settings';
+import settings from './settings';
 import path from 'path';
 import { toMemory, toRelativeTime, toTime } from './utils';
 
-export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Contest> {
+export default class implements vscode.TreeDataProvider<Contest> {
     private _onDidChangeTreeData: vscode.EventEmitter<Contest | undefined> = new vscode.EventEmitter<any | undefined>();
     readonly onDidChangeTreeData: vscode.Event<Contest | undefined> = this._onDidChangeTreeData.event;
     private page: number = 1;
@@ -14,18 +14,18 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshContestTree', () => {
-            outputChannel.trace('[contestTreeDataProvider]', '"refreshContestTree"');
+            outputChannel.trace('[contestTree]', '"refreshContestTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.contestTreeNextPage', () => {
-            outputChannel.trace('[contestTreeDataProvider]', '"contestTreeNextPage"');
+            outputChannel.trace('[contestTree]', '"contestTreeNextPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.contestTreePreviousPage', () => {
-            outputChannel.trace('[contestTreeDataProvider]', '"contestTreePreviousPage"');
+            outputChannel.trace('[contestTree]', '"contestTreePreviousPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -34,15 +34,15 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
     }
 
     getTreeItem(element: Contest): vscode.TreeItem {
-        outputChannel.trace('[contestTreeDataProvider]', '"getTreeItem"', arguments);
+        outputChannel.trace('[contestTree]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[] | ContestRecord[]> {
-        outputChannel.trace('[contestTreeDataProvider]', '"getChildren"', arguments);
+        outputChannel.trace('[contestTree]', '"getChildren"', arguments);
         try {
             if (element === undefined) {
-                const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest?page=${this.page}`, addCookie: true }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/contest?page=${this.page}`, addCookie: true }).start();
                 this.pageCounter = response.json.tpcount;
                 const contests: Contest[] = [];
                 for (const pdoc of response.json.tdocs) {
@@ -52,7 +52,7 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
             }
             else if (element.contextValue === 'contest') {
                 const tid = (element as Contest).id!;
-                const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
                 const records: ContestProblem[] = [];
                 for (const rdoc of Object.keys(response.json.pdict)) {
                     records.push(new ContestProblem(tid, response.json.pdict[rdoc], response.json.psdict[rdoc]));
@@ -60,7 +60,7 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
                 return records;
             } else {
                 const [tid, pid] = (element as ContestProblem).id!.split('-');
-                const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
                 const records: ContestRecord[] = [];
                 for (const rdoc of Object.keys(response.json.rdocs)) {
                     if (response.json.rdocs[rdoc].pid === parseInt(pid)) {

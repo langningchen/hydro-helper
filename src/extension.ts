@@ -1,31 +1,32 @@
 import * as vscode from 'vscode';
-import { cyezoiAuthenticationProvider } from './authenticationProvider';
-import { cyezoiFetch } from './fetch';
+import auth from './auth';
+import fetch from './fetch';
 import { outputChannel, io } from './io';
 import { WebSocket } from 'ws';
-import { cyezoiStorage } from './storage';
+import storage from './storage';
 import { statusEnded, statusName } from './static';
-import { recordWebview } from './recordWebview';
-import { problemWebview } from './problemWebview';
-import { cyezoiSettings } from './settings';
-import { cyezoiProblemTreeDataProvider } from './problemTreeDataProvider';
-import { cyezoiRecordTreeDataProvider } from './recordTreeDataProvider';
-import { cyezoiContestTreeDataProvider } from './contestTreeDataProvider';
-import { contestWebview } from './contestWebview';
+import recordWebview from './recordWebview';
+import problemWebview from './problemWebview';
+import contestWebview from './contestWebview';
+import settings from './settings';
+import problemTree from './problemTree';
+import recordTree from './recordTree';
+import contestTree from './contestTree';
+import { getCookiesValue } from './utils';
 
 export function activate(context: vscode.ExtensionContext) {
-	cyezoiStorage.secretStorage = context.secrets;
+	storage.secretStorage = context.secrets;
 
 	const disposables: vscode.Disposable[] = [];
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
 
 	disposables.push(outputChannel);
-	disposables.push(vscode.authentication.registerAuthenticationProvider('cyezoi', 'CYEZOI', new cyezoiAuthenticationProvider(), {
+	disposables.push(vscode.authentication.registerAuthenticationProvider('cyezoi', 'CYEZOI', new auth(), {
 		supportsMultipleAccounts: false,
 	}));
 
 	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
-		const session = await vscode.authentication.getSession(cyezoiAuthenticationProvider.id, [], { createIfNone: true });
+		const session = await vscode.authentication.getSession(auth.id, [], { createIfNone: true });
 		if (!session) { return; }
 		const response = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -36,12 +37,12 @@ export function activate(context: vscode.ExtensionContext) {
 			token.onCancellationRequested(() => {
 				abortController.abort();
 			});
-			return new cyezoiFetch({ path: '/', addCookie: true, abortController, ignoreLogin: true }).start();
+			return new fetch({ path: '/', addCookie: true, abortController, ignoreLogin: true }).start();
 		});
 		const userContext = response.json.UserContext;
 		if (userContext._id === 0) {
-			cyezoiStorage.token = undefined;
-			cyezoiStorage.name = undefined;
+			storage.token = undefined;
+			storage.name = undefined;
 			vscode.commands.executeCommand('cyezoi.login');
 			io.warn('Login expired, please login again.');
 			return;
@@ -82,13 +83,13 @@ export function activate(context: vscode.ExtensionContext) {
 			token.onCancellationRequested(() => {
 				abortController.abort();
 			});
-			return await new cyezoiFetch({
-				path: '/d/' + cyezoiSettings.domain + '/p/' + pid + '/submit' + (tid ? '?tid=' + tid : ''),
+			return await new fetch({
+				path: '/d/' + settings.domain + '/p/' + pid + '/submit' + (tid ? '?tid=' + tid : ''),
 				addCookie: true, abortController
 			}).start();
 		}).then(response => response.json.langRange);
 
-		const lastLanguage = await cyezoiStorage.lastLanguage;
+		const lastLanguage = await storage.lastLanguage;
 		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
 			label: langs[key],
 			description: key,
@@ -106,7 +107,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (lang === undefined) {
 			return;
 		}
-		cyezoiStorage.lastLanguage = lang;
+		storage.lastLanguage = lang;
 
 		const file = await vscode.window.showOpenDialog({
 			title: 'Select the source code file',
@@ -127,8 +128,8 @@ export function activate(context: vscode.ExtensionContext) {
 			cancellable: false,
 		}, async (progress) => {
 			progress.report({ message: 'Submitting' });
-			const response = await new cyezoiFetch({
-				path: `/d/${cyezoiSettings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
+			const response = await new fetch({
+				path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 				body: {
 					lang,
 					code: code.toString(),
@@ -143,9 +144,9 @@ export function activate(context: vscode.ExtensionContext) {
 			progress.report({ message: 'Waiting for judge response' });
 
 			return new Promise<number>(async (resolve) => {
-				const ws = new WebSocket(`wss://${cyezoiSettings.server}/record-detail-conn?domainId=${cyezoiSettings.domain}&rid=${rid}`, {
+				const ws = new WebSocket(`wss://${settings.server}/record-detail-conn?domainId=${settings.domain}&rid=${rid}`, {
 					headers: {
-						'cookie': await cyezoiFetch.getCookiesValue(),
+						'cookie': await getCookiesValue(),
 					},
 				});
 
@@ -229,9 +230,9 @@ export function activate(context: vscode.ExtensionContext) {
 		new contestWebview(context.extensionPath, tid);
 	}));
 
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new cyezoiProblemTreeDataProvider()));
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoiRecordTreeView', new cyezoiRecordTreeDataProvider()));
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoiContestTreeView', new cyezoiContestTreeDataProvider()));
+	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new problemTree()));
+	disposables.push(vscode.window.registerTreeDataProvider('cyezoiRecordTreeView', new recordTree()));
+	disposables.push(vscode.window.registerTreeDataProvider('cyezoiContestTreeView', new contestTree()));
 
 	outputChannel.info('Extension activated');
 }

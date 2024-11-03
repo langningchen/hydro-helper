@@ -1,3 +1,6 @@
+import * as vscode from 'vscode';
+import { outputChannel } from "./io";
+
 export const getUnit = (data: number, unit: string) => {
     if (data >= 1 && data < 2) { return data + ' ' + unit; }
     else { return data + ' ' + unit + 's'; }
@@ -27,4 +30,13 @@ export const toRelativeTime = (time: number): string => {
     if (delta < 30) { return delta + getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
     if (delta < 12) { return 'about ' + delta + getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
     return 'about ' + delta + getUnit(delta, 'year') + ' ' + suffix;
+};
+export const getCookiesValue = async (): Promise<string> => {
+    outputChannel.trace('[utils]', '"getCookiesValue"');
+    return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: false }).then((session: vscode.AuthenticationSession | undefined) => {
+        if (!session) {
+            return '';
+        }
+        return session.accessToken;
+    }));
 };

@@ -1,13 +1,11 @@
 import path from 'path';
 import * as vscode from 'vscode';
 import { io, outputChannel } from './io';
-import { cyezoiFetch } from './fetch';
-import { cyezoiSettings } from './settings';
+import fetch from './fetch';
+import settings from './settings';
 import { marked } from 'marked';
 
-export class contestWebview {
-    private static readonly viewType = 'contest';
-
+export default class {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
@@ -15,7 +13,7 @@ export class contestWebview {
         outputChannel.trace('[contestWebview]', '"constructor"', arguments);
         outputChannel.info(`Open contest ${tid} webview`);
         this._panel = vscode.window.createWebviewPanel(
-            contestWebview.viewType,
+            'contest',
             'CYEZOI - T' + tid,
             vscode.ViewColumn.Active,
             {
@@ -37,8 +35,8 @@ export class contestWebview {
             }
         });
 
-        new cyezoiFetch({
-            path: `/d/${cyezoiSettings.domain}/contest/${tid}/scoreboard`
+        new fetch({
+            path: `/d/${settings.domain}/contest/${tid}/scoreboard`
             , addCookie: true
         }).start().then(async (contestDetail) => {
             if (contestDetail?.json !== undefined) {

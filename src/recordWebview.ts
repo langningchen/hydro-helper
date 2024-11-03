@@ -1,27 +1,10 @@
 import path from 'path';
 import * as vscode from 'vscode';
 import { io, outputChannel } from './io';
-import { cyezoiFetch } from './fetch';
-import { cyezoiSettings } from './settings';
+import fetch from './fetch';
+import settings from './settings';
 
-interface TestCase {
-    id: number;
-    subtaskId: number;
-    status: number;
-    score: number;
-    time: number;
-    memory: number;
-    message: string;
-}
-interface Subtask {
-    type: string;
-    score: number;
-    status: number;
-}
-
-export class recordWebview {
-    private static readonly viewType = 'record';
-
+export default class {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
@@ -29,7 +12,7 @@ export class recordWebview {
         outputChannel.trace('[recordWebview]', '"constructor"', arguments);
         outputChannel.info(`Open record ${rid} webview`);
         this._panel = vscode.window.createWebviewPanel(
-            recordWebview.viewType,
+            'record',
             'CYEZOI - R' + rid,
             vscode.ViewColumn.Active,
             {
@@ -48,7 +31,7 @@ export class recordWebview {
             }
         });
 
-        new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
+        new fetch({ path: `/d/${settings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
             if (recordDetail?.json !== undefined) {
                 this._panel.webview.postMessage({
                     command: 'record',

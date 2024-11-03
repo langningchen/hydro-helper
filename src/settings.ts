@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { outputChannel } from './io';
 
-export class cyezoiSettings {
+export default class {
     static get server(): string {
         outputChannel.trace('[settings]', '"server"');
         return vscode.workspace.getConfiguration('cyezoi').get('server') as string;

@@ -1,13 +1,11 @@
 import path from 'path';
 import * as vscode from 'vscode';
 import { io, outputChannel } from './io';
-import { cyezoiFetch } from './fetch';
+import fetch from './fetch';
 import { marked } from 'marked';
-import { cyezoiSettings } from './settings';
+import settings from './settings';
 
-export class problemWebview {
-    private static readonly viewType = 'problem';
-
+export default class {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
@@ -15,7 +13,7 @@ export class problemWebview {
         outputChannel.trace('[problemWebview]', '"constructor"', arguments);
         outputChannel.info(`Open problem ${pid} webview`);
         this._panel = vscode.window.createWebviewPanel(
-            problemWebview.viewType,
+            'problem',
             'CYEZOI - P' + pid + (tid !== undefined ? ` - T${tid}` : ''),
             vscode.ViewColumn.Beside,
             {
@@ -34,8 +32,8 @@ export class problemWebview {
             }
         });
 
-        new cyezoiFetch({
-            path: `/d/${cyezoiSettings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '')
+        new fetch({
+            path: `/d/${settings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '')
             , addCookie: true
         }).start().then(async (problemDetail) => {
             if (problemDetail?.json !== undefined) {
@@ -43,7 +41,7 @@ export class problemWebview {
                 const markdownContent: { [key: string]: string } = {};
                 for (const [key, value] of Object.entries(problemContent)) {
                     let stringValue: string = value as string;
-                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, `https://${cyezoiSettings.server}/d/${cyezoiSettings.domain}/p/${pid}/file/$1`);
+                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, `https://${settings.server}/d/${settings.domain}/p/${pid}/file/$1`);
                     markdownContent[key] = await marked(stringValue);
                 }
                 const message = {

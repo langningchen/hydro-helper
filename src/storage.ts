@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { outputChannel } from './io';
 
-export class storage {
+class storage {
     secretStorage: vscode.SecretStorage | undefined;
     private async get(key: string): Promise<string | undefined> {
         outputChannel.trace('[storage]', '"' + key + '"', 'get');
@@ -28,4 +28,4 @@ export class storage {
     set lastLanguage(value: string | undefined) { this.store('lastLanguage', value); }
 }
 
-export const cyezoiStorage: storage = new storage();
+export default new storage();

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { io, outputChannel } from './io';
-import { cyezoiSettings } from './settings';
+import settings from './settings';
+import { getCookiesValue } from './utils';
 
 interface HydroError extends Error {
     params: any[]
@@ -23,7 +24,7 @@ interface fetchReturn {
     error?: Error
 }
 
-export class cyezoiFetch {
+export default class {
     response: Response | undefined;
     options: fetchOptions;
     returnValue: fetchReturn = { status: 0 };
@@ -33,24 +34,14 @@ export class cyezoiFetch {
         this.options = options;
     }
 
-    static getCookiesValue = async (): Promise<string> => {
-        outputChannel.trace('[fetch]', '"getCookiesValue"');
-        return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: false }).then((session: vscode.AuthenticationSession | undefined) => {
-            if (!session) {
-                return '';
-            }
-            return session.accessToken;
-        }));
-    };
-
     doFetch = async (options: fetchOptions): Promise<void> => {
         outputChannel.trace('[fetch]', '"doFetch"');
-        this.response = await fetch(`https://${cyezoiSettings.server}${options.path}`, {
+        this.response = await fetch(`https://${settings.server}${options.path}`, {
             method: options.body ? 'POST' : 'GET',
             headers: {
                 'accept': 'application/json',
                 'content-type': 'application/json',
-                'cookie': options.addCookie ? await cyezoiFetch.getCookiesValue() : '',
+                'cookie': options.addCookie ? await getCookiesValue() : '',
                 'user-agent': 'VSCode-CYEZOIHelper',
             },
             body: options.body ? JSON.stringify(options.body) : undefined,
