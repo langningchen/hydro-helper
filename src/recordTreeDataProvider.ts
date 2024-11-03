@@ -13,16 +13,16 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshRecordTree', () => {
-            outputChannel.trace('recordTreeDataProvider', 'refreshRecordTree');
+            outputChannel.trace('[recordTreeDataProvider]', '"refreshRecordTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.recordTreeNextPage', () => {
-            outputChannel.trace('recordTreeDataProvider', 'recordTreeNextPage');
+            outputChannel.trace('[recordTreeDataProvider]', '"recordTreeNextPage"');
             this.page++;
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.recordTreePreviousPage', () => {
-            outputChannel.trace('recordTreeDataProvider', 'recordTreePreviousPage');
+            outputChannel.trace('[recordTreeDataProvider]', '"recordTreePreviousPage"');
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
             return this._onDidChangeTreeData.fire(undefined);
@@ -30,12 +30,12 @@ export class cyezoiRecordTreeDataProvider implements vscode.TreeDataProvider<Rec
     }
 
     getTreeItem(element: Record): vscode.TreeItem {
-        outputChannel.trace('recordTreeDataProvider', 'getTreeItem', arguments);
+        outputChannel.trace('[recordTreeDataProvider]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(): Promise<Record[]> {
-        outputChannel.trace('recordTreeDataProvider', 'getChildren');
+        outputChannel.trace('[recordTreeDataProvider]', '"getChildren"');
         try {
             const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/record?page=${this.page}`, addCookie: true }).start();
             const problems: Record[] = [];
@@ -56,15 +56,15 @@ export class Record extends vscode.TreeItem {
         this.contextValue = 'record';
         this.description = 'P' + rdoc.pid + ' ' + pdoc.title;
         this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[rdoc.status] + '.svg');
-        const tooltipDoc = new vscode.MarkdownString();
-        tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
-        tooltipDoc.appendMarkdown(`- **User**: ${udoc.uname}\n`);
-        tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
-        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${toTime(rdoc.time)}\n`); }
-        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${toMemory(rdoc.memory)}\n`); }
-        tooltipDoc.appendMarkdown(`- **Lang**: ${languageDisplayName[rdoc.lang]}\n`);
-        tooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
-        this.tooltip = tooltipDoc;
+        const TooltipDoc = new vscode.MarkdownString();
+        TooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
+        TooltipDoc.appendMarkdown(`- **User**: ${udoc.uname}\n`);
+        TooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
+        if (rdoc.time) { TooltipDoc.appendMarkdown(`- **Time**: ${toTime(rdoc.time)}\n`); }
+        if (rdoc.memory) { TooltipDoc.appendMarkdown(`- **Memory**: ${toMemory(rdoc.memory)}\n`); }
+        TooltipDoc.appendMarkdown(`- **Lang**: ${languageDisplayName[rdoc.lang]}\n`);
+        TooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
+        this.tooltip = TooltipDoc;
         this.command = {
             command: 'cyezoi.openRecord',
             title: 'Open Record',

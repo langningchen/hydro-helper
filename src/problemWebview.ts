@@ -12,7 +12,7 @@ export class problemWebview {
     private _extensionPath: string;
 
     constructor(extensionPath: string, pid: string, tid?: string) {
-        outputChannel.trace('problemWebview', 'constructor', arguments);
+        outputChannel.trace('[problemWebview]', '"constructor"', arguments);
         outputChannel.info(`Open problem ${pid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             problemWebview.viewType,

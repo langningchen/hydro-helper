@@ -14,18 +14,18 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshContestTree', () => {
-            outputChannel.trace('contestTreeDataProvider', 'refreshContestTree');
+            outputChannel.trace('[contestTreeDataProvider]', '"refreshContestTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.contestTreeNextPage', () => {
-            outputChannel.trace('contestTreeDataProvider', 'contestTreeNextPage');
+            outputChannel.trace('[contestTreeDataProvider]', '"contestTreeNextPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.contestTreePreviousPage', () => {
-            outputChannel.trace('contestTreeDataProvider', 'contestTreePreviousPage');
+            outputChannel.trace('[contestTreeDataProvider]', '"contestTreePreviousPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -34,12 +34,12 @@ export class cyezoiContestTreeDataProvider implements vscode.TreeDataProvider<Co
     }
 
     getTreeItem(element: Contest): vscode.TreeItem {
-        outputChannel.trace('contestTreeDataProvider', 'getTreeItem', arguments);
+        outputChannel.trace('[contestTreeDataProvider]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[] | ContestRecord[]> {
-        outputChannel.trace('contestTreeDataProvider', 'getChildren', arguments);
+        outputChannel.trace('[contestTreeDataProvider]', '"getChildren"', arguments);
         try {
             if (element === undefined) {
                 const response = await new cyezoiFetch({ path: `/d/${cyezoiSettings.domain}/contest?page=${this.page}`, addCookie: true }).start();

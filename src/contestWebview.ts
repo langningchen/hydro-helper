@@ -12,7 +12,7 @@ export class contestWebview {
     private _extensionPath: string;
 
     constructor(extensionPath: string, tid: string) {
-        outputChannel.trace('contestWebview', 'constructor', arguments);
+        outputChannel.trace('[contestWebview]', '"constructor"', arguments);
         outputChannel.info(`Open contest ${tid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             contestWebview.viewType,

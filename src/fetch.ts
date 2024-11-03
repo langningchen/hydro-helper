@@ -34,7 +34,7 @@ export class cyezoiFetch {
     }
 
     static getCookiesValue = async (): Promise<string> => {
-        outputChannel.trace('fetch', 'getCookiesValue');
+        outputChannel.trace('[fetch]', '"getCookiesValue"');
         return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: false }).then((session: vscode.AuthenticationSession | undefined) => {
             if (!session) {
                 return '';
@@ -44,7 +44,7 @@ export class cyezoiFetch {
     };
 
     doFetch = async (options: fetchOptions): Promise<void> => {
-        outputChannel.trace('fetch', 'doFetch');
+        outputChannel.trace('[fetch]', '"doFetch"');
         this.response = await fetch(`https://${cyezoiSettings.server}${options.path}`, {
             method: options.body ? 'POST' : 'GET',
             headers: {
@@ -59,7 +59,7 @@ export class cyezoiFetch {
     };
 
     parseResponse = async (): Promise<void> => {
-        outputChannel.trace('fetch', 'parseResponse');
+        outputChannel.trace('[fetch]', '"parseResponse"');
         this.returnValue.status = this.response!.status;
         this.returnValue.cookies = this.response!.headers.getSetCookie();
         this.returnValue.json = await this.response!.json();
@@ -71,7 +71,7 @@ export class cyezoiFetch {
     };
 
     checkError = async (): Promise<void> => {
-        outputChannel.trace('fetch', 'checkError');
+        outputChannel.trace('[fetch]', '"checkError"');
         if (this.returnValue.json.error) {
             const errorData = <HydroError>this.returnValue.json.error;
             const message = errorData.message.replace(/{(\d+)}/g, (match, number) => {
@@ -86,7 +86,7 @@ export class cyezoiFetch {
     };
 
     checkLogin = async (): Promise<void> => {
-        outputChannel.trace('fetch', 'checkLogin');
+        outputChannel.trace('[fetch]', '"checkLogin"');
         if (!this.options.ignoreLogin) {
             if (!this.returnValue.json.UserContext) {
                 throw new Error('No UserContext in response');
@@ -98,7 +98,7 @@ export class cyezoiFetch {
     };
 
     start = async (): Promise<fetchReturn> => {
-        outputChannel.trace('fetch', 'start');
+        outputChannel.trace('[fetch]', '"start"');
         await this.doFetch(this.options);
         await this.parseResponse();
         await this.checkError();
