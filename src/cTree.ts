@@ -13,19 +13,19 @@ export default class implements vscode.TreeDataProvider<Contest> {
     private pageCounter: number = -1;
 
     constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshContestTree', () => {
-            outputChannel.trace('[contestTree   ]', '"refreshContestTree"');
+        vscode.commands.registerCommand('cyezoi.refreshCTree', () => {
+            outputChannel.trace('[cTree   ]', '"refreshCTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.contestTreeNextPage', () => {
-            outputChannel.trace('[contestTree   ]', '"contestTreeNextPage"');
+        vscode.commands.registerCommand('cyezoi.cTreeNxt', () => {
+            outputChannel.trace('[cTree   ]', '"cTreeNxt"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.contestTreePreviousPage', () => {
-            outputChannel.trace('[contestTree   ]', '"contestTreePreviousPage"');
+        vscode.commands.registerCommand('cyezoi.cTreePre', () => {
+            outputChannel.trace('[cTree   ]', '"cTreePre"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -34,12 +34,12 @@ export default class implements vscode.TreeDataProvider<Contest> {
     }
 
     getTreeItem(element: Contest): vscode.TreeItem {
-        outputChannel.trace('[contestTree   ]', '"getTreeItem"', arguments);
+        outputChannel.trace('[cTree   ]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[] | ContestRecord[]> {
-        outputChannel.trace('[contestTree   ]', '"getChildren"', arguments);
+        outputChannel.trace('[cTree   ]', '"getChildren"', arguments);
         try {
             if (element === undefined) {
                 const response = await new fetch({ path: `/d/${settings.domain}/contest?page=${this.page}`, addCookie: true }).start();
@@ -91,7 +91,7 @@ export class Contest extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openContest',
+            command: 'cyezoi.openC',
             title: 'Open Contest',
             arguments: [tdoc._id],
         };
@@ -114,7 +114,7 @@ export class ContestProblem extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Time**: ${pdoc.config.timeMin} ~ ${pdoc.config.timeMax}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openProblem',
+            command: 'cyezoi.openP',
             title: 'Open Problem',
             arguments: [pdoc.docId, tid],
         };
@@ -135,7 +135,7 @@ export class ContestRecord extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openRecord',
+            command: 'cyezoi.openT',
             title: 'Open Record',
             arguments: [rdoc._id],
         };

@@ -12,17 +12,17 @@ export default class implements vscode.TreeDataProvider<Record> {
     private page: number = 1;
 
     constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshRecordTree', () => {
-            outputChannel.trace('[recordTree    ]', '"refreshRecordTree"');
+        vscode.commands.registerCommand('cyezoi.refreshRTree', () => {
+            outputChannel.trace('[rTree   ]', '"refreshRTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.recordTreeNextPage', () => {
-            outputChannel.trace('[recordTree    ]', '"recordTreeNextPage"');
+        vscode.commands.registerCommand('cyezoi.rTreeNxt', () => {
+            outputChannel.trace('[rTree   ]', '"rTreeNxt"');
             this.page++;
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.recordTreePreviousPage', () => {
-            outputChannel.trace('[recordTree    ]', '"recordTreePreviousPage"');
+        vscode.commands.registerCommand('cyezoi.rTreePre', () => {
+            outputChannel.trace('[rTree   ]', '"rTreePre"');
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
             return this._onDidChangeTreeData.fire(undefined);
@@ -30,12 +30,12 @@ export default class implements vscode.TreeDataProvider<Record> {
     }
 
     getTreeItem(element: Record): vscode.TreeItem {
-        outputChannel.trace('[recordTree    ]', '"getTreeItem"', arguments);
+        outputChannel.trace('[rTree   ]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(): Promise<Record[]> {
-        outputChannel.trace('[recordTree    ]', '"getChildren"');
+        outputChannel.trace('[rTree   ]', '"getChildren"');
         try {
             const response = await new fetch({ path: `/d/${settings.domain}/record?page=${this.page}`, addCookie: true }).start();
             const problems: Record[] = [];
@@ -66,7 +66,7 @@ export class Record extends vscode.TreeItem {
         TooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = TooltipDoc;
         this.command = {
-            command: 'cyezoi.openRecord',
+            command: 'cyezoi.openT',
             title: 'Open Record',
             arguments: [rdoc._id],
         };

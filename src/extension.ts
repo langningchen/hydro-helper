@@ -5,13 +5,13 @@ import { outputChannel, io } from './io';
 import { WebSocket } from 'ws';
 import storage from './storage';
 import { statusEnded, statusName } from './static';
-import recordWebview from './recordWebview';
-import problemWebview from './problemWebview';
-import contestWebview from './contestWebview';
+import rWeb from './rWeb';
+import pWeb from './pWeb';
+import cWeb from './cWeb';
 import settings from './settings';
-import problemTree from './problemTree';
-import recordTree from './recordTree';
-import contestTree from './contestTree';
+import pTree from './pTree';
+import rTree from './rTree';
+import cTree from './cTree';
 import { getCookiesValue } from './utils';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -48,9 +48,9 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 		io.info(`Hi ${session.account.label}, you have successfully logged in!`);
-		vscode.commands.executeCommand('cyezoi.refreshProblemTree');
-		vscode.commands.executeCommand('cyezoi.refreshRecordTree');
-		vscode.commands.executeCommand('cyezoi.refreshContestTree');
+		vscode.commands.executeCommand('cyezoi.refreshPTree');
+		vscode.commands.executeCommand('cyezoi.refreshRTree');
+		vscode.commands.executeCommand('cyezoi.refreshCTree');
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.logout', async () => {
 		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
@@ -189,11 +189,11 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 
 		if (rid !== undefined) {
-			vscode.commands.executeCommand('cyezoi.openRecord', rid);
+			vscode.commands.executeCommand('cyezoi.openT', rid);
 		}
 	}));
 
-	disposables.push(vscode.commands.registerCommand('cyezoi.openProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openP', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			pid = undefined;
 		}
@@ -203,9 +203,9 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		};
-		new problemWebview(context.extensionPath, pid, tid);
+		new pWeb(context.extensionPath, pid, tid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openRecord', async (rid: vscode.TreeItem | string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid: vscode.TreeItem | string | undefined) => {
 		if (rid instanceof vscode.TreeItem) {
 			rid = undefined;
 		}
@@ -215,9 +215,9 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		}
-		new recordWebview(context.extensionPath, rid);
+		new rWeb(context.extensionPath, rid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openContest', async (tid: vscode.TreeItem | string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.openC', async (tid: vscode.TreeItem | string | undefined) => {
 		if (tid instanceof vscode.TreeItem) {
 			tid = undefined;
 		}
@@ -227,12 +227,12 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		}
-		new contestWebview(context.extensionPath, tid);
+		new cWeb(context.extensionPath, tid);
 	}));
 
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoiProblemTreeView', new problemTree()));
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoiRecordTreeView', new recordTree()));
-	disposables.push(vscode.window.registerTreeDataProvider('cyezoiContestTreeView', new contestTree()));
+	disposables.push(vscode.window.registerTreeDataProvider('pTree', new pTree()));
+	disposables.push(vscode.window.registerTreeDataProvider('rTree', new rTree()));
+	disposables.push(vscode.window.registerTreeDataProvider('cTree', new cTree()));
 
 	outputChannel.info('Extension activated');
 }

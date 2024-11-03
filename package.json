@@ -21,22 +21,22 @@
   "contributes": {
     "viewsWelcome": [
       {
-        "view": "cyezoiProblemTreeView",
+        "view": "pTree",
         "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
       },
       {
-        "view": "cyezoiRecordTreeView",
+        "view": "rTree",
         "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
       },
       {
-        "view": "cyezoiContestTreeView",
+        "view": "cTree",
         "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "cyezoi-helper",
+          "id": "cyezoi",
           "title": "CYEZOI",
           "icon": "res/icons/CYEZ.svg"
         }
@@ -58,32 +58,32 @@
       }
     },
     "views": {
-      "cyezoi-helper": [
+      "cyezoi": [
         {
-          "id": "cyezoiProblemTreeView",
+          "id": "pTree",
           "name": "Problem"
         },
         {
-          "id": "cyezoiRecordTreeView",
+          "id": "rTree",
           "name": "Record"
         },
         {
-          "id": "cyezoiContestTreeView",
+          "id": "cTree",
           "name": "Contest"
         }
       ]
     },
     "treeView": [
       {
-        "id": "cyezoiProblemTreeView",
+        "id": "pTree",
         "name": "Problem"
       },
       {
-        "id": "cyezoiRecordTreeView",
+        "id": "rTree",
         "name": "Record"
       },
       {
-        "id": "cyezoiContestTreeView",
+        "id": "cTree",
         "name": "Contest"
       }
     ],
@@ -97,7 +97,7 @@
         "title": "CYEZOI: Logout"
       },
       {
-        "command": "cyezoi.refreshProblemTree",
+        "command": "cyezoi.refreshPTree",
         "title": "CYEZOI: Refresh Problem Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
@@ -105,7 +105,7 @@
         }
       },
       {
-        "command": "cyezoi.problemTreeNextPage",
+        "command": "cyezoi.pTreeNxt",
         "title": "CYEZOI: Problem Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
@@ -113,7 +113,7 @@
         }
       },
       {
-        "command": "cyezoi.problemTreePreviousPage",
+        "command": "cyezoi.pTreePre",
         "title": "CYEZOI: Problem Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
@@ -121,7 +121,7 @@
         }
       },
       {
-        "command": "cyezoi.openProblem",
+        "command": "cyezoi.openP",
         "title": "CYEZOI: Open Problem",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
@@ -137,7 +137,7 @@
         }
       },
       {
-        "command": "cyezoi.refreshContestTree",
+        "command": "cyezoi.refreshCTree",
         "title": "CYEZOI: Refresh Contest Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
@@ -145,7 +145,7 @@
         }
       },
       {
-        "command": "cyezoi.contestTreeNextPage",
+        "command": "cyezoi.cTreeNxt",
         "title": "CYEZOI: Contest Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
@@ -153,7 +153,7 @@
         }
       },
       {
-        "command": "cyezoi.contestTreePreviousPage",
+        "command": "cyezoi.cTreePre",
         "title": "CYEZOI: Contest Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
@@ -161,7 +161,7 @@
         }
       },
       {
-        "command": "cyezoi.openContest",
+        "command": "cyezoi.openC",
         "title": "CYEZOI: Open Contest",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
@@ -169,7 +169,7 @@
         }
       },
       {
-        "command": "cyezoi.refreshRecordTree",
+        "command": "cyezoi.refreshRTree",
         "title": "CYEZOI: Refresh Record Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
@@ -177,7 +177,7 @@
         }
       },
       {
-        "command": "cyezoi.recordTreeNextPage",
+        "command": "cyezoi.rTreeNxt",
         "title": "CYEZOI: Record Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
@@ -185,7 +185,7 @@
         }
       },
       {
-        "command": "cyezoi.recordTreePreviousPage",
+        "command": "cyezoi.rTreePre",
         "title": "CYEZOI: Record Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
@@ -193,7 +193,7 @@
         }
       },
       {
-        "command": "cyezoi.openRecord",
+        "command": "cyezoi.openT",
         "title": "CYEZOI: Open Record",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
@@ -211,63 +211,63 @@
       ],
       "view/title": [
         {
-          "command": "cyezoi.refreshProblemTree",
-          "when": "view == cyezoiProblemTreeView",
+          "command": "cyezoi.refreshPTree",
+          "when": "view == pTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.problemTreePreviousPage",
-          "when": "view == cyezoiProblemTreeView",
+          "command": "cyezoi.pTreePre",
+          "when": "view == pTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.problemTreeNextPage",
-          "when": "view == cyezoiProblemTreeView",
+          "command": "cyezoi.pTreeNxt",
+          "when": "view == pTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openProblem",
-          "when": "view == cyezoiProblemTreeView",
+          "command": "cyezoi.openP",
+          "when": "view == pTree",
           "group": "navigation@4"
         },
         {
-          "command": "cyezoi.refreshRecordTree",
-          "when": "view == cyezoiRecordTreeView",
+          "command": "cyezoi.refreshRTree",
+          "when": "view == rTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.recordTreePreviousPage",
-          "when": "view == cyezoiRecordTreeView",
+          "command": "cyezoi.rTreePre",
+          "when": "view == rTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.recordTreeNextPage",
-          "when": "view == cyezoiRecordTreeView",
+          "command": "cyezoi.rTreeNxt",
+          "when": "view == rTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openRecord",
-          "when": "view == cyezoiRecordTreeView",
+          "command": "cyezoi.openT",
+          "when": "view == rTree",
           "group": "navigation@4"
         },
         {
-          "command": "cyezoi.refreshContestTree",
-          "when": "view == cyezoiContestTreeView",
+          "command": "cyezoi.refreshCTree",
+          "when": "view == cTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.contestTreePreviousPage",
-          "when": "view == cyezoiContestTreeView",
+          "command": "cyezoi.cTreePre",
+          "when": "view == cTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.contestTreeNextPage",
-          "when": "view == cyezoiContestTreeView",
+          "command": "cyezoi.cTreeNxt",
+          "when": "view == cTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openContest",
-          "when": "view == cyezoiContestTreeView",
+          "command": "cyezoi.openC",
+          "when": "view == cTree",
           "group": "navigation@4"
         }
       ]

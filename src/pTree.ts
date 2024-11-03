@@ -4,7 +4,7 @@ import path from 'path';
 import { statusIcon, statusName, ProblemDoc, ProblemStatusDoc, RecordDoc, languageDisplayName } from './static';
 import { io, outputChannel } from './io';
 import settings from './settings';
-import { Record } from './recordTree';
+import { Record } from './rTree';
 import storage from './storage';
 import { toMemory, toRelativeTime, toTime } from './utils';
 
@@ -15,19 +15,19 @@ export default class implements vscode.TreeDataProvider<Problem> {
     private pageCounter: number = -1;
 
     constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshProblemTree', () => {
-            outputChannel.trace('[problemTree   ]', '"refreshProblemTree"');
+        vscode.commands.registerCommand('cyezoi.refreshPTree', () => {
+            outputChannel.trace('[pTree   ]', '"refreshPTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.problemTreeNextPage', () => {
-            outputChannel.trace('[problemTree   ]', '"problemTreeNextPage"');
+        vscode.commands.registerCommand('cyezoi.pTreeNxt', () => {
+            outputChannel.trace('[pTree   ]', '"pTreeNxt"');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.problemTreePreviousPage', () => {
-            outputChannel.trace('[problemTree   ]', '"problemTreePreviousPage"');
+        vscode.commands.registerCommand('cyezoi.pTreePre', () => {
+            outputChannel.trace('[pTree   ]', '"pTreePre"');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -36,12 +36,12 @@ export default class implements vscode.TreeDataProvider<Problem> {
     }
 
     getTreeItem(element: Problem): vscode.TreeItem {
-        outputChannel.trace('[problemTree   ]', '"getTreeItem"', arguments);
+        outputChannel.trace('[pTree   ]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Problem[] | ProblemRecord[]> {
-        outputChannel.trace('[problemTree   ]', '"getChildren"', arguments);
+        outputChannel.trace('[pTree   ]', '"getChildren"', arguments);
         try {
             if (element === undefined) {
                 const response = await new fetch({ path: `/d/${settings.domain}/p?page=${this.page}`, addCookie: true }).start();
@@ -85,7 +85,7 @@ export class Problem extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.stats.AC}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openProblem',
+            command: 'cyezoi.openP',
             title: 'Open Problem',
             arguments: [pdoc.docId],
         };
@@ -106,7 +106,7 @@ export class ProblemRecord extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openRecord',
+            command: 'cyezoi.openT',
             title: 'Open Record',
             arguments: [rdoc._id],
         };

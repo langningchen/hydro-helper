@@ -108,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                     break;
                                 case 'problem':
                                     scoreboardHTML += `<vscode-table-header-cell>
-                                        <span onclick="vscode.postMessage({command:'openProblem',pid:'${cell.raw}'})" style="cursor: pointer;">
+                                        <span onclick="vscode.postMessage({command:'openP',pid:'${cell.raw}'})" style="cursor: pointer;">
                                             ${cell.value} ${data.pdict[cell.raw].title} ${data.pdict[cell.raw].nAccept}/${data.pdict[cell.raw].nSubmit}
                                         </span>
                                     </vscode-table-header-cell>`;
@@ -141,7 +141,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 }
                                 else {
                                     scoreboardHTML += `<vscode-table-cell style="${cell.style ? 'background-color: rgb(217, 240, 199)' : ''}">
-                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openRecord',rid:'${cell.raw}'})">${cell.value}</span>
+                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',rid:'${cell.raw}'})">${cell.value}</span>
                                     </vscode-table-cell>`;
                                 }
                                 break;
@@ -152,7 +152,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                         scoreboardHTML += `<span>-</span>`;
                                     }
                                     else {
-                                        scoreboardHTML += `<span style="cursor: pointer; color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openRecord',rid:'${record.raw}'})">${record.value}</span>`;
+                                        scoreboardHTML += `<span style="cursor: pointer; color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',rid:'${record.raw}'})">${record.value}</span>`;
                                     }
                                     scoreboardHTML += " / ";
                                 }

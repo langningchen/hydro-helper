@@ -32,7 +32,7 @@ export const toRelativeTime = (time: number): string => {
     return 'about ' + delta + getUnit(delta, 'year') + ' ' + suffix;
 };
 export const getCookiesValue = async (): Promise<string> => {
-    outputChannel.trace('[utils         ]', '"getCookiesValue"');
+    outputChannel.trace('[utils   ]', '"getCookiesValue"');
     return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: false }).then((session: vscode.AuthenticationSession | undefined) => {
         if (!session) {
             return '';

@@ -3,18 +3,17 @@ import path from 'path';
 import { io, outputChannel } from './io';
 import fetch from './fetch';
 import settings from './settings';
-import { marked } from 'marked';
 
 export default class {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
-    constructor(extensionPath: string, tid: string) {
-        outputChannel.trace('[contestWebview]', '"constructor"', arguments);
-        outputChannel.info(`Open contest ${tid} webview`);
+    constructor(extensionPath: string, rid: string) {
+        outputChannel.trace('[rWeb    ]', '"constructor"', arguments);
+        outputChannel.info(`Open record ${rid} webview`);
         this._panel = vscode.window.createWebviewPanel(
-            'contest',
-            'CYEZOI - T' + tid,
+            'record',
+            'CYEZOI - R' + rid,
             vscode.ViewColumn.Active,
             {
                 enableScripts: true,
@@ -26,27 +25,18 @@ export default class {
         this._panel.webview.html = this.getHtml();
         this._panel.webview.onDidReceiveMessage(async (message) => {
             switch (message.command) {
-                case 'openProblem':
-                    vscode.commands.executeCommand('cyezoi.openProblem', message.pid, tid);
-                    break;
-                case 'openRecord':
-                    vscode.commands.executeCommand('cyezoi.openRecord', message.rid);
+                case 'openP':
+                    vscode.commands.executeCommand('cyezoi.openP', message.problemId);
                     break;
             }
         });
 
-        new fetch({
-            path: `/d/${settings.domain}/contest/${tid}/scoreboard`
-            , addCookie: true
-        }).start().then(async (contestDetail) => {
-            if (contestDetail?.json !== undefined) {
-                const data = contestDetail.json;
-                data.tdoc.content = await marked(data.tdoc.content);
-                const message = {
-                    command: 'contest',
-                    data,
-                };
-                this._panel.webview.postMessage(message);
+        new fetch({ path: `/d/${settings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
+            if (recordDetail?.json !== undefined) {
+                this._panel.webview.postMessage({
+                    command: 'record',
+                    data: recordDetail.json
+                });
             }
         }).catch(async (e: Error) => {
             io.error(e.message);
@@ -63,20 +53,25 @@ export default class {
         const staticFiles = [
             { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
             { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
-            { 'path': ['res', 'html', 'contest.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'codemirror.min.css'] },
+            { 'path': ['res', 'libs', 'codemirror', 'theme', 'material.min.css'] },
+            { 'path': ['res', 'libs', 'codemirror', 'mode', 'clike', 'clike.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'foldcode.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'foldgutter.min.css'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'foldgutter.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'brace-fold.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'comment-fold.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'indent-fold.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'section', 'active-line.min.js'] },
+            { 'path': ['res', 'libs', 'codemirror', 'addon', 'display', 'autorefresh.min.js'] },
+            { 'path': ['res', 'html', 'record.css'] },
+            { 'path': ['res', 'html', 'record.js'] },
         ];
-        let recordHtml = path.join(this._extensionPath, 'res', 'html', 'contest.html');
+        let recordHtml = path.join(this._extensionPath, 'res', 'html', 'record.html');
         let htmlContent = require('fs').readFileSync(recordHtml, 'utf8');
         htmlContent = htmlContent.replace(/{{staticFiles}}/g, staticFiles.map(file => {
-            let attributes = '';
-            if (file.attributes !== undefined) {
-                attributes = ' ' + Object.entries(file.attributes).map(([key, value]) => {
-                    if (value === undefined) {
-                        return key;
-                    }
-                    return `${key}="${value}"`;
-                }).join(' ');
-            }
+            let attributes = file.attributes === undefined ? '' : ' ' + Object.entries(file.attributes).map(([key, value]) => `${key}="${value}"`).join(' ');
             if (file.path[file.path.length - 1].endsWith('.css')) {
                 return `<link rel="stylesheet" type="text/css" href="${this.getRealPath(file.path)}"${attributes}>`;
             }
