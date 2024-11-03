@@ -1,5 +1,5 @@
-import path from 'path';
 import * as vscode from 'vscode';
+import path from 'path';
 import { io, outputChannel } from './io';
 import fetch from './fetch';
 import settings from './settings';
@@ -9,7 +9,7 @@ export default class {
     private _extensionPath: string;
 
     constructor(extensionPath: string, rid: string) {
-        outputChannel.trace('[recordWebview]', '"constructor"', arguments);
+        outputChannel.trace('[recordWebview ]', '"constructor"', arguments);
         outputChannel.info(`Open record ${rid} webview`);
         this._panel = vscode.window.createWebviewPanel(
             'record',

@@ -18,7 +18,7 @@ export class io {
         return vscode.window.showErrorMessage(message, ...args);
     };
     static input = (placeHolder: string, options?: vscode.InputBoxOptions): Thenable<string | undefined> => {
-        outputChannel.trace('[io]', '"input"', placeHolder, options);
+        outputChannel.trace('[io            ]', '"input"', placeHolder, options);
         return vscode.window.showInputBox({
             ignoreFocusOut: true,
             placeHolder,

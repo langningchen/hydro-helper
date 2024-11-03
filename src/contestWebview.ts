@@ -1,5 +1,5 @@
-import path from 'path';
 import * as vscode from 'vscode';
+import path from 'path';
 import { io, outputChannel } from './io';
 import fetch from './fetch';
 import settings from './settings';

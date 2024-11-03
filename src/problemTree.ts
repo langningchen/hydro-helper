@@ -16,18 +16,18 @@ export default class implements vscode.TreeDataProvider<Problem> {
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshProblemTree', () => {
-            outputChannel.trace('[problemTree]', '"refreshProblemTree"');
+            outputChannel.trace('[problemTree   ]', '"refreshProblemTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreeNextPage', () => {
-            outputChannel.trace('[problemTree]', '"problemTreeNextPage"');
+            outputChannel.trace('[problemTree   ]', '"problemTreeNextPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.problemTreePreviousPage', () => {
-            outputChannel.trace('[problemTree]', '"problemTreePreviousPage"');
+            outputChannel.trace('[problemTree   ]', '"problemTreePreviousPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -36,12 +36,12 @@ export default class implements vscode.TreeDataProvider<Problem> {
     }
 
     getTreeItem(element: Problem): vscode.TreeItem {
-        outputChannel.trace('[problemTree]', '"getTreeItem"', arguments);
+        outputChannel.trace('[problemTree   ]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Problem[] | ProblemRecord[]> {
-        outputChannel.trace('[problemTree]', '"getChildren"', arguments);
+        outputChannel.trace('[problemTree   ]', '"getChildren"', arguments);
         try {
             if (element === undefined) {
                 const response = await new fetch({ path: `/d/${settings.domain}/p?page=${this.page}`, addCookie: true }).start();

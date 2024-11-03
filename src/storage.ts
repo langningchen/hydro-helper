@@ -4,15 +4,15 @@ import { outputChannel } from './io';
 class storage {
     secretStorage: vscode.SecretStorage | undefined;
     private async get(key: string): Promise<string | undefined> {
-        outputChannel.trace('[storage]', '"' + key + '"', 'get');
+        outputChannel.trace('[storage       ]', '"' + key + '"', 'get');
         return this.secretStorage!.get(key);
     }
     private async store(key: string, value: string | undefined): Promise<void> {
         if (value === undefined) {
-            outputChannel.trace('[storage]', '"' + key + '"', 'delete');
+            outputChannel.trace('[storage       ]', '"' + key + '"', 'delete');
             this.secretStorage!.delete(key);
         } else {
-            outputChannel.trace('[storage]', '"' + key + '"', 'store');
+            outputChannel.trace('[storage       ]', '"' + key + '"', 'store');
             this.secretStorage!.store(key, value);
         }
     }

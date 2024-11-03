@@ -76,7 +76,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
     }
 
     async getSessions(scopes?: readonly string[], options?: vscode.AuthenticationProviderSessionOptions): Promise<vscode.AuthenticationSession[]> {
-        outputChannel.trace('[auth]', '"getSessions"', arguments);
+        outputChannel.trace('[auth          ]', '"getSessions"', arguments);
         this.ensureInitialized();
         const token = await this.cacheTokenFromStorage();
         const name = await this.cacheNameFromStorage();
@@ -89,7 +89,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
     }
 
     async createSession(_scopes: string[]): Promise<vscode.AuthenticationSession> {
-        outputChannel.trace('[auth]', '"createSession"', arguments);
+        outputChannel.trace('[auth          ]', '"createSession"', arguments);
         this.ensureInitialized();
         return new Promise(async (resolve, reject) => {
             try {
@@ -140,7 +140,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
     }
 
     async removeSession(_sessionId: string): Promise<void> {
-        outputChannel.trace('[auth]', '"removeSession"', arguments);
+        outputChannel.trace('[auth          ]', '"removeSession"', arguments);
         const token = await this.currentToken;
         const name = await this.currentName;
         if (!token || !name) {

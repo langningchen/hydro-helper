@@ -1,5 +1,4 @@
-import * as vscode from 'vscode';
-import { io, outputChannel } from './io';
+import { outputChannel } from './io';
 import settings from './settings';
 import { getCookiesValue } from './utils';
 
@@ -35,7 +34,7 @@ export default class {
     }
 
     doFetch = async (options: fetchOptions): Promise<void> => {
-        outputChannel.trace('[fetch]', '"doFetch"');
+        outputChannel.trace('[fetch         ]', '"doFetch"');
         this.response = await fetch(`https://${settings.server}${options.path}`, {
             method: options.body ? 'POST' : 'GET',
             headers: {
@@ -50,7 +49,7 @@ export default class {
     };
 
     parseResponse = async (): Promise<void> => {
-        outputChannel.trace('[fetch]', '"parseResponse"');
+        outputChannel.trace('[fetch         ]', '"parseResponse"');
         this.returnValue.status = this.response!.status;
         this.returnValue.cookies = this.response!.headers.getSetCookie();
         this.returnValue.json = await this.response!.json();
@@ -62,7 +61,7 @@ export default class {
     };
 
     checkError = async (): Promise<void> => {
-        outputChannel.trace('[fetch]', '"checkError"');
+        outputChannel.trace('[fetch         ]', '"checkError"');
         if (this.returnValue.json.error) {
             const errorData = <HydroError>this.returnValue.json.error;
             const message = errorData.message.replace(/{(\d+)}/g, (match, number) => {
@@ -77,7 +76,7 @@ export default class {
     };
 
     checkLogin = async (): Promise<void> => {
-        outputChannel.trace('[fetch]', '"checkLogin"');
+        outputChannel.trace('[fetch         ]', '"checkLogin"');
         if (!this.options.ignoreLogin) {
             if (!this.returnValue.json.UserContext) {
                 throw new Error('No UserContext in response');
@@ -89,7 +88,7 @@ export default class {
     };
 
     start = async (): Promise<fetchReturn> => {
-        outputChannel.trace('[fetch]', '"start"');
+        outputChannel.trace('[fetch         ]', '"start"');
         await this.doFetch(this.options);
         await this.parseResponse();
         await this.checkError();

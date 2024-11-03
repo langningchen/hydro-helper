@@ -14,18 +14,18 @@ export default class implements vscode.TreeDataProvider<Contest> {
 
     constructor() {
         vscode.commands.registerCommand('cyezoi.refreshContestTree', () => {
-            outputChannel.trace('[contestTree]', '"refreshContestTree"');
+            outputChannel.trace('[contestTree   ]', '"refreshContestTree"');
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.contestTreeNextPage', () => {
-            outputChannel.trace('[contestTree]', '"contestTreeNextPage"');
+            outputChannel.trace('[contestTree   ]', '"contestTreeNextPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
         vscode.commands.registerCommand('cyezoi.contestTreePreviousPage', () => {
-            outputChannel.trace('[contestTree]', '"contestTreePreviousPage"');
+            outputChannel.trace('[contestTree   ]', '"contestTreePreviousPage"');
             if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
@@ -34,12 +34,12 @@ export default class implements vscode.TreeDataProvider<Contest> {
     }
 
     getTreeItem(element: Contest): vscode.TreeItem {
-        outputChannel.trace('[contestTree]', '"getTreeItem"', arguments);
+        outputChannel.trace('[contestTree   ]', '"getTreeItem"', arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[] | ContestRecord[]> {
-        outputChannel.trace('[contestTree]', '"getChildren"', arguments);
+        outputChannel.trace('[contestTree   ]', '"getChildren"', arguments);
         try {
             if (element === undefined) {
                 const response = await new fetch({ path: `/d/${settings.domain}/contest?page=${this.page}`, addCookie: true }).start();
