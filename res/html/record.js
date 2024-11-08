@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('content');
     const title = document.getElementById('title');
     const gotoProblem = document.getElementById('gotoProblem');
+    const refresh = document.getElementById('refresh');
     const info = document.getElementById('info');
     const compilerTexts = document.getElementById('compilerTexts');
     const record = document.getElementById('record');
@@ -45,6 +46,12 @@ window.addEventListener('DOMContentLoaded', () => {
                     vscode.postMessage({ command: 'openP', problemId: data.rdoc.pid });
                 });
                 gotoProblem.disabled = false;
+                refresh.addEventListener('click', () => {
+                    vscode.postMessage({ command: 'refresh' });
+                    loading.style.display = 'flex';
+                    content.style.display = 'none';
+                });
+                refresh.disabled = false;
 
                 info.innerHTML = `<vscode-table zebra bordered-columns responsive breakpoint="400">
                     <vscode-table-header slot="header">

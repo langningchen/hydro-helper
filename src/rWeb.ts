@@ -28,28 +28,22 @@ export default class {
                 case 'openP':
                     vscode.commands.executeCommand('cyezoi.openP', message.problemId);
                     break;
+                case 'refresh':
+                    this.fetchData(rid);
+                    break;
             }
         });
 
-        new fetch({ path: `/d/${settings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
-            if (recordDetail?.json !== undefined) {
-                this._panel.webview.postMessage({
-                    command: 'record',
-                    data: recordDetail.json
-                });
-            }
-        }).catch(async (e: Error) => {
-            io.error(e.message);
-        });
+        this.fetchData(rid);
     }
 
-    private getRealPath(relativePath: string[]): vscode.Uri {
+    private getRealPath = (relativePath: string[]): vscode.Uri => {
         return this._panel?.webview.asWebviewUri(
             vscode.Uri.file(path.join(this._extensionPath, ...relativePath)),
         );
-    }
+    };
 
-    private getHtml() {
+    private getHtml = () => {
         const staticFiles = [
             { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
             { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
@@ -65,7 +59,7 @@ export default class {
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'indent-fold.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'section', 'active-line.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'display', 'autorefresh.min.js'] },
-            { 'path': ['res', 'html', 'static.js'] },
+            { 'path': ['src', 'utils.js'] },
             { 'path': ['res', 'html', 'record.css'] },
             { 'path': ['res', 'html', 'record.js'] },
         ];
@@ -85,5 +79,18 @@ export default class {
         }).join('\n'));
         htmlContent = htmlContent.replace(/{{hydroIconsFile}}/g, this.getRealPath(['res', 'fonts', 'hydro-icons.woff2']));
         return htmlContent;
-    }
+    };
+
+    private fetchData = async (rid: string) => {
+        new fetch({ path: `/d/${settings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
+            if (recordDetail?.json !== undefined) {
+                this._panel.webview.postMessage({
+                    command: 'record',
+                    data: recordDetail.json
+                });
+            }
+        }).catch(async (e: Error) => {
+            io.error(e.message);
+        });
+    };
 }

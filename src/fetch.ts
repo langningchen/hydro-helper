@@ -1,6 +1,6 @@
+import * as utils from './utils';
 import { outputChannel } from './io';
 import settings from './settings';
-import { getCookiesValue } from './utils';
 import auth from './auth';
 
 interface HydroError extends Error {
@@ -41,7 +41,7 @@ export default class {
             headers: {
                 'accept': 'application/json',
                 'content-type': 'application/json',
-                'cookie': options.addCookie ? await getCookiesValue() : '',
+                'cookie': options.addCookie ? await auth.getCookiesValue() : '',
                 'user-agent': 'VSCode-CYEZOIHelper',
             },
             body: options.body ? JSON.stringify(options.body) : undefined,

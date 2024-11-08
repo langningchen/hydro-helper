@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
+import * as utils from './utils';
 import fetch from './fetch';
-import { statusName, ContestDoc, contestRuleName, ContestProblemDoc, ContestProblemStatusDoc, statusIcon, RecordDoc, ContestStatusDoc } from './static';
 import { io, outputChannel } from './io';
 import settings from './settings';
 import path from 'path';
-import { toMemory, toRelativeTime, toTime } from './utils';
 
 export default class implements vscode.TreeDataProvider<Contest> {
     private _onDidChangeTreeData: vscode.EventEmitter<Contest | undefined> = new vscode.EventEmitter<any | undefined>();
@@ -77,16 +76,16 @@ export default class implements vscode.TreeDataProvider<Contest> {
 }
 
 export class Contest extends vscode.TreeItem {
-    constructor(tdoc: ContestDoc, showProblem: boolean) {
+    constructor(tdoc: utils.ContestDoc, showProblem: boolean) {
         super(tdoc.title, showProblem ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None);
         this.id = tdoc._id;
         this.contextValue = 'contest';
-        this.description = toTime(new Date(tdoc.endAt).getTime() - new Date(tdoc.beginAt).getTime());
+        this.description = utils.toTime(new Date(tdoc.endAt).getTime() - new Date(tdoc.beginAt).getTime());
         const tooltipDoc = new vscode.MarkdownString();
-        tooltipDoc.appendMarkdown(`- **Rule**: ${contestRuleName[tdoc.rule]}\n`);
+        tooltipDoc.appendMarkdown(`- **Rule**: ${utils.contestRuleName[tdoc.rule]}\n`);
         tooltipDoc.appendMarkdown(`- **Attend**: ${tdoc.attend} people\n`);
-        tooltipDoc.appendMarkdown(`- **Begin At**: ${toRelativeTime(new Date(tdoc.beginAt).getTime())}\n`);
-        tooltipDoc.appendMarkdown(`- **End At**: ${toRelativeTime(new Date(tdoc.endAt).getTime())}\n`);
+        tooltipDoc.appendMarkdown(`- **Begin At**: ${utils.toRelativeTime(new Date(tdoc.beginAt).getTime())}\n`);
+        tooltipDoc.appendMarkdown(`- **End At**: ${utils.toRelativeTime(new Date(tdoc.endAt).getTime())}\n`);
         tooltipDoc.appendMarkdown(`- **Rated**: ${tdoc.rated ? 'Yes' : 'No'}\n`);
         tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
         this.tooltip = tooltipDoc;
@@ -107,15 +106,15 @@ export class Contest extends vscode.TreeItem {
 }
 
 export class ContestProblem extends vscode.TreeItem {
-    constructor(tid: string, pdoc: ContestProblemDoc, psdoc?: ContestProblemStatusDoc) {
+    constructor(tid: string, pdoc: utils.ContestProblemDoc, psdoc?: utils.ContestProblemStatusDoc) {
         super(pdoc.docId.toString(), (psdoc ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
         this.id = tid + '-' + pdoc.docId;
         this.contextValue = 'problem';
         this.description = pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
         if (psdoc) {
-            this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[psdoc.status] + '.svg');
-            tooltipDoc.appendMarkdown(`- **Status**: ${statusName[psdoc.status]}\n`);
+            this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
+            tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
         }
         tooltipDoc.appendMarkdown(`- **Memory**: ${pdoc.config.memoryMin} ~ ${pdoc.config.memoryMax}\n`);
@@ -130,17 +129,17 @@ export class ContestProblem extends vscode.TreeItem {
 }
 
 export class ContestRecord extends vscode.TreeItem {
-    constructor(rdoc: RecordDoc) {
-        super(rdoc.score + ' ' + statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
+    constructor(rdoc: utils.RecordDoc) {
+        super(rdoc.score + ' ' + utils.statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.contextValue = 'record';
-        this.iconPath = path.join(__dirname, '..', 'res', 'icons', statusIcon[rdoc.status] + '.svg');
+        this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
         const tooltipDoc = new vscode.MarkdownString();
-        tooltipDoc.appendMarkdown(`- **Status**: ${statusName[rdoc.status]}\n`);
+        tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[rdoc.status]}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
-        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${toTime(rdoc.time)}\n`); }
-        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${toMemory(rdoc.memory * 1024)}\n`); }
+        if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${utils.toTime(rdoc.time)}\n`); }
+        if (rdoc.memory) { tooltipDoc.appendMarkdown(`- **Memory**: ${utils.toMemory(rdoc.memory * 1024)}\n`); }
         tooltipDoc.appendMarkdown(`- **Lang**: ${rdoc.lang}\n`);
-        tooltipDoc.appendMarkdown(`- **Judge At**: ${toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
+        tooltipDoc.appendMarkdown(`- **Judge At**: ${utils.toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openT',

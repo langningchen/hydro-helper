@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
+import * as utils from './utils';
 import auth from './auth';
 import fetch from './fetch';
 import { outputChannel, io } from './io';
 import { WebSocket } from 'ws';
 import storage from './storage';
-import { statusEnded, statusName } from './static';
 import rWeb from './rWeb';
 import pWeb from './pWeb';
 import cWeb from './cWeb';
@@ -12,7 +12,6 @@ import settings from './settings';
 import pTree from './pTree';
 import rTree from './rTree';
 import cTree from './cTree';
-import { getCookiesValue } from './utils';
 
 export async function activate(context: vscode.ExtensionContext) {
 	storage.secretStorage = context.secrets;
@@ -131,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			return new Promise<number>(async (resolve) => {
 				const ws = new WebSocket(`wss://${settings.server}/record-detail-conn?domainId=${settings.domain}&rid=${rid}`, {
 					headers: {
-						'cookie': await getCookiesValue(),
+						'cookie': await auth.getCookiesValue(),
 					},
 				});
 
@@ -155,8 +154,8 @@ export async function activate(context: vscode.ExtensionContext) {
 					if (responseJSON.error === 'PermissionError' || responseJSON.error === 'PrivilegeError') {
 						ws.close();
 					}
-					progress.report({ message: statusName[responseJSON.status] });
-					if (statusEnded[responseJSON.status]) {
+					progress.report({ message: utils.statusName[responseJSON.status] });
+					if (utils.statusEnded[responseJSON.status]) {
 						ws.emit('close', 0, 'CYEZOI: Judged');
 					}
 				});

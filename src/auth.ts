@@ -30,6 +30,15 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         this.initializedDisposable?.dispose();
     }
 
+    static getCookiesValue = async (): Promise<string> => {
+        return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi']).then((session: vscode.AuthenticationSession | undefined) => {
+            if (!session) {
+                return '';
+            }
+            return session.accessToken;
+        }));
+    };
+
     private ensureInitialized(): void {
         if (this.initializedDisposable === undefined) {
             void this.cacheTokenFromStorage();

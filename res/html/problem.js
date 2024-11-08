@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const content = document.getElementById('content');
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
+    const refresh = document.getElementById('refresh');
     const problem = document.getElementById('problem');
     const solution = document.getElementById('solution');
     window.addEventListener('message', event => {
@@ -13,10 +14,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 content.style.display = '';
 
                 title.innerText = '#' + message.data.problemId + '. ' + message.data.title;
+
                 submitProblem.addEventListener('click', () => {
                     vscode.postMessage({ command: 'submitProblem', problemId: message.data.problemId });
                 });
                 submitProblem.disabled = false;
+                refresh.addEventListener('click', () => {
+                    vscode.postMessage({ command: 'refresh' });
+                    loading.style.display = 'flex';
+                    content.style.display = 'none';
+                });
+                refresh.disabled = false;
+
                 problem.innerHTML = message.data.markdownContent.zh;
                 window.MathJax.typeset();
                 const problemPre = problem.getElementsByTagName('pre');

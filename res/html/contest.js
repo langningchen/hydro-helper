@@ -2,6 +2,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
+    const refresh = document.getElementById('refresh');
     const info = document.getElementById('info');
     const scoreboard = document.getElementById('scoreboard');
     window.addEventListener('message', event => {
@@ -14,6 +15,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 const data = message.data;
 
                 title.innerHTML = `${data.tdoc.title}`;
+
+                refresh.addEventListener('click', () => {
+                    vscode.postMessage({ command: 'refresh' });
+                    loading.style.display = 'flex';
+                    content.style.display = 'none';
+                });
+                refresh.disabled = false;
 
                 // TODO: display the owner name
                 info.innerHTML = `<vscode-table zebra bordered-columns responsive breakpoint="400">
