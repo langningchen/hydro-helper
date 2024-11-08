@@ -80,11 +80,11 @@ export default class {
         outputChannel.trace('[fetch   ]', '"checkLogin"');
         if (!this.options.ignoreLogin) {
             if (!this.returnValue.json.UserContext) {
-                auth.setLoginStatus(false);
+                auth.setLoggedIn(false);
                 throw new Error('No UserContext in response');
             }
             if (this.returnValue.json.UserContext._id === 0) {
-                auth.setLoginStatus(false);
+                auth.setLoggedIn(false);
                 throw new Error('Not logged in');
             }
         }

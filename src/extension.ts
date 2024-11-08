@@ -28,11 +28,11 @@ export async function activate(context: vscode.ExtensionContext) {
 	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
 		const session = await vscode.authentication.getSession(auth.id, [], { createIfNone: true });
 		if (!session) {
-			auth.setLoginStatus(false);
+			auth.setLoggedIn(false);
 			return;
 		}
-		const isLoggedIn = await auth.fetchLoginStatus();
-		auth.setLoginStatus(isLoggedIn);
+		const isLoggedIn = await auth.getLoginStatus();
+		auth.setLoggedIn(isLoggedIn);
 		if (isLoggedIn) {
 			io.info(`Hi ${session.account.label}, you have successfully logged in!`);
 		}
@@ -236,7 +236,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	disposables.push(vscode.window.registerTreeDataProvider('cTree', new cTree()));
 
 
-	auth.setLoginStatus(await auth.fetchLoginStatus());
+	auth.setLoggedIn(await auth.getLoginStatus());
 
 	outputChannel.info('Extension activated');
 }

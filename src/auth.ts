@@ -119,7 +119,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                     if (response.json.error) {
                         storage.username = undefined;
                         storage.password = undefined;
-                        auth.setLoginStatus(false);
+                        auth.setLoggedIn(false);
                         throw new Error(formatString(response.json.error));
                     }
                     if (!response.cookies) {
@@ -149,11 +149,11 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         if (!token || !name) {
             return;
         }
-        auth.setLoginStatus(false);
+        auth.setLoggedIn(false);
         this._onDidChangeSessions.fire({ added: [], removed: [new cyezoiSession(token, name)], changed: [] });;
     }
 
-    static async fetchLoginStatus(): Promise<boolean> {
+    static async getLoginStatus(): Promise<boolean> {
         var isLoggedIn = false;
         const session = await vscode.authentication.getSession(this.id, []);
         if (session !== undefined) {
@@ -172,7 +172,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         }
         return isLoggedIn;
     }
-    static setLoginStatus(isLoggedIn: boolean): void {
+    static setLoggedIn(isLoggedIn: boolean): void {
         vscode.commands.executeCommand('setContext', 'cyezoi-helper.loggedIn', isLoggedIn);
         if (isLoggedIn) {
             vscode.commands.executeCommand('cyezoi.refreshPTree');
