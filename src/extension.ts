@@ -199,7 +199,9 @@ export async function activate(context: vscode.ExtensionContext) {
 			pid = undefined;
 		}
 		if (pid === undefined) {
-			pid = await io.input('Please input the problem ID');
+			pid = await io.input('Please input the problem ID', {
+				value: vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0],
+			});
 			if (pid === undefined) {
 				return;
 			}

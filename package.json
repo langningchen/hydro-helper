@@ -19,6 +19,18 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "keybindings": [
+      {
+        "command": "cyezoi.openP",
+        "key": "ctrl+shift+alt+o",
+        "when": "editorTextFocus && cyezoi-helper.loggedIn"
+      },
+      {
+        "command": "cyezoi.submitProblem",
+        "key": "ctrl+shift+alt+s",
+        "when": "editorTextFocus && cyezoi-helper.loggedIn"
+      }
+    ],
     "viewsWelcome": [
       {
         "view": "login",
