@@ -1,6 +1,7 @@
 import { outputChannel } from './io';
 import settings from './settings';
 import { getCookiesValue } from './utils';
+import auth from './auth';
 
 interface HydroError extends Error {
     params: any[]
@@ -79,9 +80,11 @@ export default class {
         outputChannel.trace('[fetch   ]', '"checkLogin"');
         if (!this.options.ignoreLogin) {
             if (!this.returnValue.json.UserContext) {
+                auth.setLoginStatus(false);
                 throw new Error('No UserContext in response');
             }
             if (this.returnValue.json.UserContext._id === 0) {
+                auth.setLoginStatus(false);
                 throw new Error('Not logged in');
             }
         }

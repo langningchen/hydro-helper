@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import fetch from './fetch';
 import { io, outputChannel } from './io';
 import storage from './storage';
+import { formatString } from './utils';
 
 class cyezoiSession implements vscode.AuthenticationSession {
     account = { id: auth.id, label: 'CYEZOI' };
@@ -114,11 +115,12 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                     token.onCancellationRequested(() => {
                         abortController.abort();
                     });
-                    const response = await new fetch({ path: '/login', body: { uname, password }, addCookie: false, abortController, returnError: true }).start();
-                    if (response.error) {
+                    const response = await new fetch({ path: '/login', body: { uname, password }, addCookie: false, abortController, returnError: true, ignoreLogin: true }).start();
+                    if (response.json.error) {
                         storage.username = undefined;
                         storage.password = undefined;
-                        throw response.error;
+                        auth.setLoginStatus(false);
+                        throw new Error(formatString(response.json.error));
                     }
                     if (!response.cookies) {
                         throw new Error('Failed to create session');
@@ -134,6 +136,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 resolve(new cyezoiSession(sid, uname));
             }
             catch (e) {
+                io.error((e as Error).message);
                 reject(e);
             }
         });
@@ -146,8 +149,38 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         if (!token || !name) {
             return;
         }
-        storage.token = undefined;
-        storage.name = undefined;
+        auth.setLoginStatus(false);
         this._onDidChangeSessions.fire({ added: [], removed: [new cyezoiSession(token, name)], changed: [] });;
+    }
+
+    static async fetchLoginStatus(): Promise<boolean> {
+        var isLoggedIn = false;
+        const session = await vscode.authentication.getSession(this.id, []);
+        if (session !== undefined) {
+            const response = await vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+                title: 'Checking your login status...',
+                cancellable: true,
+            }, async (progress, token) => {
+                const abortController = new AbortController();
+                token.onCancellationRequested(() => {
+                    abortController.abort();
+                });
+                return new fetch({ path: '/', addCookie: true, abortController, ignoreLogin: true }).start();
+            });
+            isLoggedIn = response.json.UserContext._id !== 0;
+        }
+        return isLoggedIn;
+    }
+    static setLoginStatus(isLoggedIn: boolean): void {
+        vscode.commands.executeCommand('setContext', 'cyezoi-helper.loggedIn', isLoggedIn);
+        if (isLoggedIn) {
+            vscode.commands.executeCommand('cyezoi.refreshPTree');
+            vscode.commands.executeCommand('cyezoi.refreshRTree');
+            vscode.commands.executeCommand('cyezoi.refreshCTree');
+        } else {
+            storage.token = undefined;
+            storage.name = undefined;
+        }
     }
 }

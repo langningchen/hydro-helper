@@ -14,7 +14,7 @@ import rTree from './rTree';
 import cTree from './cTree';
 import { getCookiesValue } from './utils';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	storage.secretStorage = context.secrets;
 
 	const disposables: vscode.Disposable[] = [];
@@ -27,30 +27,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
 		const session = await vscode.authentication.getSession(auth.id, [], { createIfNone: true });
-		if (!session) { return; }
-		const response = await vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: 'Checking your login status...',
-			cancellable: true,
-		}, async (progress, token) => {
-			const abortController = new AbortController();
-			token.onCancellationRequested(() => {
-				abortController.abort();
-			});
-			return new fetch({ path: '/', addCookie: true, abortController, ignoreLogin: true }).start();
-		});
-		const userContext = response.json.UserContext;
-		if (userContext._id === 0) {
-			storage.token = undefined;
-			storage.name = undefined;
-			vscode.commands.executeCommand('cyezoi.login');
-			io.warn('Login expired, please login again.');
+		if (!session) {
+			auth.setLoginStatus(false);
 			return;
 		}
-		io.info(`Hi ${session.account.label}, you have successfully logged in!`);
-		vscode.commands.executeCommand('cyezoi.refreshPTree');
-		vscode.commands.executeCommand('cyezoi.refreshRTree');
-		vscode.commands.executeCommand('cyezoi.refreshCTree');
+		const isLoggedIn = await auth.fetchLoginStatus();
+		auth.setLoginStatus(isLoggedIn);
+		if (isLoggedIn) {
+			io.info(`Hi ${session.account.label}, you have successfully logged in!`);
+		}
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.logout', async () => {
 		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
@@ -249,6 +234,9 @@ export function activate(context: vscode.ExtensionContext) {
 	disposables.push(vscode.window.registerTreeDataProvider('pTree', new pTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('rTree', new rTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('cTree', new cTree()));
+
+
+	auth.setLoginStatus(await auth.fetchLoginStatus());
 
 	outputChannel.info('Extension activated');
 }

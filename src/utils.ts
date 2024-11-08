@@ -33,10 +33,18 @@ export const toRelativeTime = (time: number): string => {
 };
 export const getCookiesValue = async (): Promise<string> => {
     outputChannel.trace('[utils   ]', '"getCookiesValue"');
-    return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi'], { createIfNone: false }).then((session: vscode.AuthenticationSession | undefined) => {
+    return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi']).then((session: vscode.AuthenticationSession | undefined) => {
         if (!session) {
             return '';
         }
         return session.accessToken;
     }));
+};
+export const formatString = (str: string | { message: string, params: string[] }) => {
+    if (typeof str === 'string') {
+        return str;
+    }
+    return str.message.replace(/{(\d+)}/g, (match, number) => {
+        return str.params[number];
+    });
 };

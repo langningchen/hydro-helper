@@ -21,15 +21,7 @@
   "contributes": {
     "viewsWelcome": [
       {
-        "view": "pTree",
-        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
-      },
-      {
-        "view": "rTree",
-        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
-      },
-      {
-        "view": "cTree",
+        "view": "login",
         "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
       }
     ],
@@ -60,16 +52,24 @@
     "views": {
       "cyezoi": [
         {
+          "id": "login",
+          "name": "Login",
+          "when": "!cyezoi-helper.loggedIn"
+        },
+        {
           "id": "pTree",
-          "name": "Problem"
+          "name": "Problem",
+          "when": "cyezoi-helper.loggedIn"
         },
         {
           "id": "rTree",
-          "name": "Record"
+          "name": "Record",
+          "when": "cyezoi-helper.loggedIn"
         },
         {
           "id": "cTree",
-          "name": "Contest"
+          "name": "Contest",
+          "when": "cyezoi-helper.loggedIn"
         }
       ]
     },
