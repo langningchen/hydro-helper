@@ -61,7 +61,7 @@ export default class {
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'fold', 'indent-fold.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'section', 'active-line.min.js'] },
             { 'path': ['res', 'libs', 'codemirror', 'addon', 'display', 'autorefresh.min.js'] },
-            { 'path': ['src', 'utils.js'] },
+            { 'path': ['res', 'html', 'static.js'] },
             { 'path': ['res', 'html', 'problem.css'] },
             { 'path': ['res', 'html', 'problem.js'] },
         ];

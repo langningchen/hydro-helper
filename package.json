@@ -181,8 +181,12 @@
         }
       },
       {
-        "command": "attendC",
-        "title": "CYEZOI: Attend Contest"
+        "command": "cyezoi.attendC",
+        "title": "CYEZOI: Attend Contest",
+        "icon": {
+          "light": "res/icons/plus-light.svg",
+          "dark": "res/icons/plus-dark.svg"
+        }
       },
       {
         "command": "cyezoi.refreshRTree",
@@ -222,6 +226,11 @@
         {
           "command": "cyezoi.submitProblem",
           "when": "viewItem == problem",
+          "group": "inline"
+        },
+        {
+          "command": "cyezoi.attendC",
+          "when": "viewItem == contest",
           "group": "inline"
         }
       ],

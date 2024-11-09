@@ -176,19 +176,30 @@ export async function activate(context: vscode.ExtensionContext) {
 			vscode.commands.executeCommand('cyezoi.openT', rid);
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid: string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid: vscode.TreeItem | string | undefined) => {
+		if (tid instanceof vscode.TreeItem) {
+			const args = tid.command?.arguments;
+			if (args && args[Symbol.iterator]) {
+				[tid] = args;
+			}
+		}
 		if (tid === undefined) {
 			tid = await io.input('Please input the contest ID');
 			if (tid === undefined) {
 				return;
 			}
 		};
-		await new fetch({
-			path: `/d/${settings.domain}/contest/${tid}`, addCookie: true,
-			body: {
-				"operation": "attend",
-			},
-		}).start();
+		try {
+			await new fetch({
+				path: `/d/${settings.domain}/contest/${tid}`, addCookie: true,
+				body: {
+					"operation": "attend",
+				},
+			}).start();
+		} catch (e) {
+			io.error((e as Error).message);
+			return;
+		}
 		io.info('Contest attended');
 		vscode.commands.executeCommand('cyezoi.refreshCTree');
 	}));

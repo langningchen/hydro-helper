@@ -76,8 +76,8 @@ export default class implements vscode.TreeDataProvider<Contest> {
 }
 
 export class Contest extends vscode.TreeItem {
-    constructor(tdoc: utils.ContestDoc, showProblem: boolean) {
-        super(tdoc.title, showProblem ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None);
+    constructor(tdoc: utils.ContestDoc, attended: boolean) {
+        super(tdoc.title, vscode.TreeItemCollapsibleState.Collapsed);
         this.id = tdoc._id;
         this.contextValue = 'contest';
         this.description = utils.toTime(new Date(tdoc.endAt).getTime() - new Date(tdoc.beginAt).getTime());
@@ -89,13 +89,12 @@ export class Contest extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Rated**: ${tdoc.rated ? 'Yes' : 'No'}\n`);
         tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
         this.tooltip = tooltipDoc;
-        if (showProblem) {
-            this.command = {
-                command: 'cyezoi.openC',
-                title: 'Open Contest',
-                arguments: [tdoc._id],
-            };
-        } else {
+        this.command = {
+            command: 'cyezoi.openC',
+            title: 'Open Contest',
+            arguments: [tdoc._id],
+        };
+        if (attended) {
             this.command = {
                 command: 'cyezoi.attendC',
                 title: 'Attend Contest',
