@@ -321,8 +321,10 @@
     "typescript": "^5.6.3"
   },
   "dependencies": {
+    "@types/dom-parser": "^0.1.4",
     "@vscode/codicons": "^0.0.36",
     "@vscode/l10n-dev": "^0.0.35",
+    "dom-parser": "^1.1.5",
     "marked": "^14.1.4",
     "ws": "^8.18.0"
   }

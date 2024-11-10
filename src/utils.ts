@@ -294,3 +294,14 @@ export const formatString = (str: string | { message: string, params: string[] }
         return str.params[number];
     });
 };
+export const findIndex = <K extends string | number>(
+    statusMap: { [key in K]: string },
+    target: string
+): K | undefined => {
+    for (const [key, value] of Object.entries(statusMap)) {
+        if (value === target) {
+            return key as K;
+        }
+    }
+    return undefined;
+};
