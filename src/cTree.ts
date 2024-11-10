@@ -45,7 +45,7 @@ export default class implements vscode.TreeDataProvider<Contest> {
                 this.pageCounter = response.json.tpcount;
                 const contests: Contest[] = [];
                 for (const tdoc of response.json.tdocs) {
-                    contests.push(new Contest(tdoc, response.json.tsdict[tdoc._id]?.attend));
+                    contests.push(new Contest(tdoc));
                 }
                 return contests;
             }
@@ -76,7 +76,7 @@ export default class implements vscode.TreeDataProvider<Contest> {
 }
 
 export class Contest extends vscode.TreeItem {
-    constructor(tdoc: utils.ContestDoc, attended: boolean) {
+    constructor(tdoc: utils.ContestDoc) {
         super(tdoc.title, vscode.TreeItemCollapsibleState.Collapsed);
         this.id = tdoc._id;
         this.contextValue = 'contest';
@@ -94,13 +94,6 @@ export class Contest extends vscode.TreeItem {
             title: 'Open Contest',
             arguments: [tdoc._id],
         };
-        if (attended) {
-            this.command = {
-                command: 'cyezoi.attendC',
-                title: 'Attend Contest',
-                arguments: [tdoc._id],
-            };
-        }
     }
 }
 
