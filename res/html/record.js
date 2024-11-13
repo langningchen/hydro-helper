@@ -43,7 +43,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <span class="${statusIcon[data.rdoc.status]}">${data.rdoc.score} ${statusName[data.rdoc.status]}</span>`;
 
                 gotoProblem.addEventListener('click', () => {
-                    vscode.postMessage({ command: 'openP', problemId: data.rdoc.pid });
+                    vscode.postMessage({ command: 'openP', problemId: data.rdoc.pid, contestId: data.rdoc.contest });
                 });
                 gotoProblem.disabled = false;
                 refresh.addEventListener('click', () => {

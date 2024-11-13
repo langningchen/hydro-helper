@@ -41,8 +41,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined) => {
-		var tid: string | undefined;
+	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			const args = pid.command?.arguments;
 			if (args && args[Symbol.iterator]) {

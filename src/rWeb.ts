@@ -26,7 +26,7 @@ export default class {
         this._panel.webview.onDidReceiveMessage(async (message) => {
             switch (message.command) {
                 case 'openP':
-                    vscode.commands.executeCommand('cyezoi.openP', message.problemId);
+                    vscode.commands.executeCommand('cyezoi.openP', message.problemId, message.contestId);
                     break;
                 case 'refresh':
                     this.fetchData(rid);
