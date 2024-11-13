@@ -27,11 +27,13 @@ export default class {
         this._panel.webview.onDidReceiveMessage(async (message) => {
             switch (message.command) {
                 case 'submitProblem':
-                    vscode.commands.executeCommand('cyezoi.submitProblem', message.problemId, tid);
+                    vscode.commands.executeCommand('cyezoi.submitProblem', pid, tid);
                     break;
                 case 'refresh':
                     this.fetchData(pid, tid);
                     break;
+                case 'openInProblemSet':
+                    vscode.commands.executeCommand('cyezoi.openP', pid);
             }
         });
 
@@ -108,6 +110,7 @@ export default class {
                     command: 'problem',
                     data: {
                         problemId: pid,
+                        isContest: tid !== undefined,
                         title: problemDetail.json.pdoc.title,
                         markdownContent,
                     },

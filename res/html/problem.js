@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
     const refresh = document.getElementById('refresh');
+    const openInProblemSet = document.getElementById('openInProblemSet');
     const problem = document.getElementById('problem');
     const solution = document.getElementById('solution');
     window.addEventListener('message', event => {
@@ -15,16 +16,20 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 title.innerText = '#' + message.data.problemId + '. ' + message.data.title;
 
-                submitProblem.addEventListener('click', () => {
-                    vscode.postMessage({ command: 'submitProblem', problemId: message.data.problemId });
-                });
+                submitProblem.onclick = () => {
+                    vscode.postMessage({ command: 'submitProblem' });
+                };
                 submitProblem.disabled = false;
-                refresh.addEventListener('click', () => {
+                refresh.onclick = () => {
                     vscode.postMessage({ command: 'refresh' });
                     loading.style.display = 'flex';
                     content.style.display = 'none';
-                });
+                };
                 refresh.disabled = false;
+                openInProblemSet.onclick = () => {
+                    vscode.postMessage({ command: 'openInProblemSet' });
+                };
+                openInProblemSet.disabled = !message.data.isContest;
 
                 problem.innerHTML = message.data.markdownContent.zh;
                 window.MathJax.typeset();
