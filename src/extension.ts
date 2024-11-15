@@ -12,6 +12,7 @@ import settings from './settings';
 import pTree from './pTree';
 import rTree from './rTree';
 import cTree from './cTree';
+import rJWeb from './rJWeb';
 
 export async function activate(context: vscode.ExtensionContext) {
 	storage.secretStorage = context.secrets;
@@ -105,75 +106,22 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		const code = await vscode.workspace.fs.readFile(file[0]);
 
-		const rid = await vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: 'Judging',
-			cancellable: false,
-		}, async (progress) => {
-			progress.report({ message: 'Submitting' });
-			const response = await new fetch({
-				path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
-				body: {
-					lang,
-					code: code.toString(),
-				},
-				addCookie: true,
-			}).start();
-			const rid = response.json.rid;
-			if (rid === undefined) {
-				io.error('Submit failed');
-				return;
-			}
-			progress.report({ message: 'Waiting for judge response' });
 
-			return new Promise<number>(async (resolve) => {
-				const ws = new WebSocket(`wss://${settings.server}/record-detail-conn?domainId=${settings.domain}&rid=${rid}`, {
-					headers: {
-						'cookie': await auth.getCookiesValue(),
-					},
-				});
-
-				var interval: NodeJS.Timeout;
-				ws.on('open', function open() {
-					interval = setInterval(() => {
-						ws.send('ping');
-					}, 3e4);
-				});
-
-				ws.on('message', (data) => {
-					const stringData = data.toString();
-					if (stringData === 'ping') {
-						ws.send('pong');
-						return;
-					}
-					if (stringData === 'pong') {
-						return;
-					}
-					const responseJSON = JSON.parse(stringData);
-					if (responseJSON.error === 'PermissionError' || responseJSON.error === 'PrivilegeError') {
-						ws.close();
-					}
-					progress.report({ message: utils.statusName[responseJSON.status] });
-					if (utils.statusEnded[responseJSON.status]) {
-						ws.emit('close', 0, 'CYEZOI: Judged');
-					}
-				});
-
-				ws.on('error', function error(err) {
-					io.error(err.toString());
-				});
-
-				ws.on('close', (code, reason) => {
-					clearInterval(interval);
-					resolve(rid);
-				});
-			});
-
-		});
-
-		if (rid !== undefined) {
-			vscode.commands.executeCommand('cyezoi.openT', rid);
+		const response = await new fetch({
+			path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
+			body: {
+				lang,
+				code: code.toString(),
+			},
+			addCookie: true,
+		}).start();
+		const rid = response.json.rid;
+		if (rid === undefined) {
+			io.error('Submit failed');
+			return;
 		}
+
+		new rJWeb(context.extensionPath, rid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid: vscode.TreeItem | string | undefined) => {
 		if (tid instanceof vscode.TreeItem) {

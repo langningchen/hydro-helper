@@ -2,10 +2,8 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
-## v0.0.20
+## v0.0.21
 
-- **Add support for homework**
-- Go to contest problem when viewing contest record
-- Add open in problem set
+- **Enhance judging to see results earlier**
 
 Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)
