@@ -187,6 +187,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
             vscode.commands.executeCommand('cyezoi.refreshPTree');
             vscode.commands.executeCommand('cyezoi.refreshRTree');
             vscode.commands.executeCommand('cyezoi.refreshCTree');
+            vscode.commands.executeCommand('cyezoi.refreshHTree');
         } else {
             storage.token = undefined;
             storage.name = undefined;

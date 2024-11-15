@@ -1,4 +1,3 @@
-import * as utils from './utils';
 import { outputChannel } from './io';
 import settings from './settings';
 import auth from './auth';

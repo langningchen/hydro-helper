@@ -4,6 +4,7 @@ All notable changes to the "cyezoi" extension will be documented in this file.
 
 ## v0.0.20
 
+- **Add support for homework**
 - Go to contest problem when viewing contest record
 - Add open in problem set
 

@@ -202,6 +202,33 @@ export async function activate(context: vscode.ExtensionContext) {
 		io.info('Contest attended');
 		vscode.commands.executeCommand('cyezoi.refreshCTree');
 	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.attendH', async (tid: vscode.TreeItem | string | undefined) => {
+		if (tid instanceof vscode.TreeItem) {
+			const args = tid.command?.arguments;
+			if (args && args[Symbol.iterator]) {
+				[tid] = args;
+			}
+		}
+		if (tid === undefined) {
+			tid = await io.input('Please input the homework ID');
+			if (tid === undefined) {
+				return;
+			}
+		};
+		try {
+			await new fetch({
+				path: `/d/${settings.domain}/homework/${tid}`, addCookie: true,
+				body: {
+					"operation": "attend",
+				},
+			}).start();
+		} catch (e) {
+			io.error((e as Error).message);
+			return;
+		}
+		io.info('Homework attended');
+		vscode.commands.executeCommand('cyezoi.refreshHTree');
+	}));
 
 	disposables.push(vscode.commands.registerCommand('cyezoi.openP', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
@@ -245,6 +272,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	disposables.push(vscode.window.registerTreeDataProvider('pTree', new pTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('rTree', new rTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('cTree', new cTree()));
+	disposables.push(vscode.window.registerTreeDataProvider('hTree', new cTree(true)));
 
 
 	auth.setLoggedIn(await auth.getLoginStatus());

@@ -133,19 +133,19 @@ const getUnit = (data, unit) => {
     else { return data + ' ' + unit + 's'; }
 };
 const toTime = (time) => {
-    if (time < 1000) { return time.toFixed(0) + 'ms'; } time /= 1000;
-    if (time < 60) { return time.toFixed(2) + 's'; } time /= 60;
-    if (time < 60) { return time.toFixed(2) + getUnit(time, 'minute'); } time /= 60;
-    if (time < 24) { return time.toFixed(2) + getUnit(time, 'hour'); } time /= 24;
-    if (time < 30) { return time.toFixed(2) + getUnit(time, 'day'); } time /= 30;
-    if (time < 12) { return 'about ' + Math.floor(time) + getUnit(time, 'month'); } time /= 12;
+    if (time < 1000) { return time + 'ms'; } time = Math.floor(time / 1000);
+    if (time < 60) { return time + 's'; } time = Math.floor(time / 60);
+    if (time < 60) { return time + getUnit(time, 'minute'); } time = Math.floor(time / 60);
+    if (time < 24) { return time + getUnit(time, 'hour'); } time = Math.floor(time / 24);
+    if (time < 30) { return time + getUnit(time, 'day'); } time = Math.floor(time / 30);
+    if (time < 12) { return 'about ' + Math.floor(time) + getUnit(time, 'month'); } time = Math.floor(time / 12);
     return 'about ' + Math.floor(time) + getUnit(time, 'year');
 };
 const toMemory = (time) => {
-    if (time < 1024) { return time.toFixed(0) + 'B'; } time /= 1024;
-    if (time < 1024) { return time.toFixed(2) + 'KiB'; } time /= 1024;
-    if (time < 1024) { return time.toFixed(2) + 'MiB'; } time /= 1024;
-    return time.toFixed(2) + 'GiB';
+    if (time < 1024) { return time + 'B'; } time = Math.floor(time / 1024);
+    if (time < 1024) { return time + 'KiB'; } time = Math.floor(time / 1024);
+    if (time < 1024) { return time + 'MiB'; } time = Math.floor(time / 1024);
+    return time + 'GiB';
 };
 const toRelativeTime = (time) => {
     const now = new Date().getTime();

@@ -196,7 +196,9 @@ export interface ContestDoc {
     owner: number
     domainId: string
     docType: number
-    docId: number
+    docId: string
+    penaltySince?: string,
+    penaltyRules?: { [key: string]: number },
     duration?: number
     title: string
     rule: string
@@ -205,9 +207,9 @@ export interface ContestDoc {
     pids: number[]
     attend: number
     rated: boolean
-    allowViewCode: boolean
+    allowViewCode?: boolean
     assign: number[]
-    autoHide: boolean
+    autoHide?: boolean
     lockAt?: string
     maintainer: number[]
 }

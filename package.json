@@ -82,6 +82,11 @@
           "id": "cTree",
           "name": "Contest",
           "when": "cyezoi-helper.loggedIn"
+        },
+        {
+          "id": "hTree",
+          "name": "Homework",
+          "when": "cyezoi-helper.loggedIn"
         }
       ]
     },
@@ -189,6 +194,46 @@
         }
       },
       {
+        "command": "cyezoi.refreshHTree",
+        "title": "CYEZOI: Refresh Homework Tree",
+        "icon": {
+          "light": "res/icons/arrow-clockwise-light.svg",
+          "dark": "res/icons/arrow-clockwise-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.hTreeNxt",
+        "title": "CYEZOI: Homework Tree Next Page",
+        "icon": {
+          "light": "res/icons/caret-right-light.svg",
+          "dark": "res/icons/caret-right-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.hTreePre",
+        "title": "CYEZOI: Homework Tree Previous Page",
+        "icon": {
+          "light": "res/icons/caret-left-light.svg",
+          "dark": "res/icons/caret-left-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.openH",
+        "title": "CYEZOI: Open Homework",
+        "icon": {
+          "light": "res/icons/arrow-right-circle-light.svg",
+          "dark": "res/icons/arrow-right-circle-dark.svg"
+        }
+      },
+      {
+        "command": "cyezoi.attendH",
+        "title": "CYEZOI: Attend Homework",
+        "icon": {
+          "light": "res/icons/plus-light.svg",
+          "dark": "res/icons/plus-dark.svg"
+        }
+      },
+      {
         "command": "cyezoi.refreshRTree",
         "title": "CYEZOI: Refresh Record Tree",
         "icon": {
@@ -231,6 +276,11 @@
         {
           "command": "cyezoi.attendC",
           "when": "viewItem == contest",
+          "group": "inline"
+        },
+        {
+          "command": "cyezoi.attendH",
+          "when": "viewItem == homework",
           "group": "inline"
         }
       ],
@@ -293,6 +343,26 @@
         {
           "command": "cyezoi.openC",
           "when": "view == cTree",
+          "group": "navigation@4"
+        },
+        {
+          "command": "cyezoi.refreshHTree",
+          "when": "view == hTree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "cyezoi.hTreePre",
+          "when": "view == hTree",
+          "group": "navigation@2"
+        },
+        {
+          "command": "cyezoi.hTreeNxt",
+          "when": "view == hTree",
+          "group": "navigation@3"
+        },
+        {
+          "command": "cyezoi.openH",
+          "when": "view == hTree",
           "group": "navigation@4"
         }
       ]

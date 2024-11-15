@@ -10,22 +10,28 @@ export default class implements vscode.TreeDataProvider<Contest> {
     readonly onDidChangeTreeData: vscode.Event<Contest | undefined> = this._onDidChangeTreeData.event;
     private page: number = 1;
     private pageCounter: number = -1;
+    private type: string = 'contest';
+    private shortType: string = 'c';
 
-    constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshCTree', () => {
-            outputChannel.trace('[cTree   ]', '"refreshCTree"');
+    constructor(homework: boolean = false) {
+        if (homework) {
+            this.type = 'homework';
+            this.shortType = 'h';
+        }
+        vscode.commands.registerCommand(`cyezoi.refresh${this.shortType.toUpperCase()}Tree`, () => {
+            outputChannel.trace(`[${this.shortType}Tree   ]`, `"cyezoi.refresh${this.shortType.toUpperCase()}Tree"`);
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.cTreeNxt', () => {
-            outputChannel.trace('[cTree   ]', '"cTreeNxt"');
-            if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
+        vscode.commands.registerCommand(`cyezoi.${this.shortType}TreeNxt`, () => {
+            outputChannel.trace(`[${this.shortType}Tree   ]`, `"${this.shortType}TreeNxt"`);
+            if (this.pageCounter === -1) { io.warn(`Please expand the ${this.type} tree first.`); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand('cyezoi.cTreePre', () => {
-            outputChannel.trace('[cTree   ]', '"cTreePre"');
-            if (this.pageCounter === -1) { io.warn('Please expand the contest tree first.'); return; }
+        vscode.commands.registerCommand(`cyezoi.${this.shortType}TreePre`, () => {
+            outputChannel.trace(`[${this.shortType}Tree   ]`, `"${this.shortType}TreePre"`);
+            if (this.pageCounter === -1) { io.warn(`Please expand the ${this.type} tree first.`); return; }
             if (this.page > 1) { this.page--; }
             else { io.warn('You are already on the first page.'); }
             return this._onDidChangeTreeData.fire(undefined);
@@ -33,25 +39,25 @@ export default class implements vscode.TreeDataProvider<Contest> {
     }
 
     getTreeItem(element: Contest): vscode.TreeItem {
-        outputChannel.trace('[cTree   ]', '"getTreeItem"', arguments);
+        outputChannel.trace(`[${this.shortType}Tree   ]`, `"getTreeItem"`, arguments);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<Contest[] | ContestProblem[] | ContestRecord[]> {
-        outputChannel.trace('[cTree   ]', '"getChildren"', arguments);
+        outputChannel.trace(`[${this.shortType}Tree   ]`, `"getChildren"`, arguments);
         try {
             if (element === undefined) {
-                const response = await new fetch({ path: `/d/${settings.domain}/contest?page=${this.page}`, addCookie: true }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/${this.type}?page=${this.page}`, addCookie: true }).start();
                 this.pageCounter = response.json.tpcount;
                 const contests: Contest[] = [];
                 for (const tdoc of response.json.tdocs) {
-                    contests.push(new Contest(tdoc));
+                    contests.push(new Contest(this.type, tdoc));
                 }
                 return contests;
             }
-            else if (element.contextValue === 'contest') {
+            else if (element.contextValue === this.type) {
                 const tid = (element as Contest).id!;
-                const response = await new fetch({ path: `/d/${settings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/${this.type}/${tid}${this.type === 'contest' ? '/problems' : ''}`, addCookie: true, }).start();
                 const records: ContestProblem[] = [];
                 for (const rdoc of Object.keys(response.json.pdict)) {
                     records.push(new ContestProblem(tid, response.json.pdict[rdoc], response.json.psdict[rdoc]));
@@ -59,11 +65,11 @@ export default class implements vscode.TreeDataProvider<Contest> {
                 return records;
             } else {
                 const [tid, pid] = (element as ContestProblem).id!.split('-');
-                const response = await new fetch({ path: `/d/${settings.domain}/contest/${tid}/problems`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/${this.type}/${tid}${this.type === 'contest' ? '/problems' : ''}`, addCookie: true, }).start();
                 const records: ContestRecord[] = [];
-                for (const rdoc of Object.keys(response.json.rdocs)) {
-                    if (response.json.rdocs[rdoc].pid === parseInt(pid)) {
-                        records.push(new ContestRecord(response.json.rdocs[rdoc]));
+                for (const rdoc of Object.keys(response.json.rdict)) {
+                    if (response.json.rdict[rdoc].pid === parseInt(pid)) {
+                        records.push(new ContestRecord(response.json.rdict[rdoc]));
                     }
                 }
                 return records;
@@ -76,10 +82,10 @@ export default class implements vscode.TreeDataProvider<Contest> {
 }
 
 export class Contest extends vscode.TreeItem {
-    constructor(tdoc: utils.ContestDoc) {
+    constructor(type: string, tdoc: utils.ContestDoc) {
         super(tdoc.title, vscode.TreeItemCollapsibleState.Collapsed);
         this.id = tdoc._id;
-        this.contextValue = 'contest';
+        this.contextValue = type;
         this.description = utils.toTime(new Date(tdoc.endAt).getTime() - new Date(tdoc.beginAt).getTime());
         const tooltipDoc = new vscode.MarkdownString();
         tooltipDoc.appendMarkdown(`- **Rule**: ${utils.contestRuleName[tdoc.rule]}\n`);
@@ -87,7 +93,9 @@ export class Contest extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Begin At**: ${utils.toRelativeTime(new Date(tdoc.beginAt).getTime())}\n`);
         tooltipDoc.appendMarkdown(`- **End At**: ${utils.toRelativeTime(new Date(tdoc.endAt).getTime())}\n`);
         tooltipDoc.appendMarkdown(`- **Rated**: ${tdoc.rated ? 'Yes' : 'No'}\n`);
-        tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
+        if (tdoc.allowViewCode !== undefined) {
+            tooltipDoc.appendMarkdown(`- **Allow View Code**: ${tdoc.allowViewCode ? 'Yes' : 'No'}\n`);
+        }
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openC',

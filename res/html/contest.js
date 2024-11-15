@@ -71,60 +71,31 @@ window.addEventListener('DOMContentLoaded', () => {
                     <vscode-table-header slot="header">`;
                 var isFirst = true;
                 for (const row of data.rows) {
-                    if (isFirst) {
-                        isFirst = false;
-                        for (const cell of row) {
-                            switch (cell.type) {
-                                case 'rank':
-                                    scoreboardHTML += `<vscode-table-header-cell>${cell.value}</vscode-table-header-cell>`;
-                                    break;
-                                case 'user':
-                                    scoreboardHTML += `<vscode-table-header-cell>${cell.value}</vscode-table-header-cell>`;
-                                    break;
-                                case 'total_score':
-                                    scoreboardHTML += `<vscode-table-header-cell>${cell.value}</vscode-table-header-cell>`;
-                                    break;
-                                case 'problem':
-                                    scoreboardHTML += `<vscode-table-header-cell>
+                    if (!isFirst) {
+                        scoreboardHTML += `<vscode-table-row>`;
+                    }
+                    for (const cell of row) {
+                        const elementName = `vscode-table-${isFirst ? 'header-' : ''}cell`;
+                        switch (cell.type) {
+                            case 'problem':
+                                scoreboardHTML += `<${elementName}>
                                         <span onclick="vscode.postMessage({command:'openP',pid:'${cell.raw}'})" style="cursor: pointer;">
                                             ${cell.value} ${data.pdict[cell.raw].title} ${data.pdict[cell.raw].nAccept}/${data.pdict[cell.raw].nSubmit}
                                         </span>
-                                    </vscode-table-header-cell>`;
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                        scoreboardHTML += `</vscode-table-header><vscode-table-body slot="body">`;
-                        continue;
-                    }
-                    scoreboardHTML += `<vscode-table-row>`;
-                    for (const cell of row) {
-                        switch (cell.type) {
-                            case 'rank':
-                                scoreboardHTML += `<vscode-table-cell>${cell.value}</vscode-table-cell>`;
-                                break;
-                            case 'user':
-                                scoreboardHTML += `<vscode-table-cell>${cell.value}</vscode-table-cell>`;
-                                break;
-                            case 'total_score':
-                                scoreboardHTML += `<vscode-table-cell>${cell.value}</vscode-table-cell>`;
-                                break;
-                            case 'problem':
-                                scoreboardHTML += `<vscode-table-cell>${cell.value}</vscode-table-cell>`;
+                                    </${elementName}>`;
                                 break;
                             case 'record':
                                 if (cell.raw === null) {
-                                    scoreboardHTML += `<vscode-table-cell>-</vscode-table-cell>`;
+                                    scoreboardHTML += `<${elementName}>-</${elementName}>`;
                                 }
                                 else {
-                                    scoreboardHTML += `<vscode-table-cell style="${cell.style ? 'background-color: rgb(217, 240, 199)' : ''}">
-                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',rid:'${cell.raw}'})">${cell.value}</span>
-                                    </vscode-table-cell>`;
+                                    scoreboardHTML += `<${elementName} style="${cell.style ? 'background-color: rgb(217, 240, 199)' : ''}">
+                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',rid:'${cell.raw}'})">${cell.value}</span>
+                                    </${elementName}>`;
                                 }
                                 break;
                             case 'records':
-                                scoreboardHTML += `<vscode-table-cell>`;
+                                scoreboardHTML += `<${elementName}>`;
                                 for (const record of cell.raw) {
                                     if (record.value === "-") {
                                         scoreboardHTML += `<span>-</span>`;
@@ -135,13 +106,20 @@ window.addEventListener('DOMContentLoaded', () => {
                                     scoreboardHTML += " / ";
                                 }
                                 scoreboardHTML = scoreboardHTML.slice(0, -3);
-                                scoreboardHTML += `</vscode-table-cell>`;
+                                scoreboardHTML += `</${elementName}>`;
                                 break;
                             default:
+                                scoreboardHTML += `<${elementName}>${cell.value ?? 'Unknown'}</${elementName}>`;
                                 break;
                         }
                     }
-                    scoreboardHTML += `</vscode-table-row>`;
+                    if (isFirst) {
+                        isFirst = false;
+                        scoreboardHTML += `</vscode-table-header><vscode-table-body slot="body">`;
+                        continue;
+                    } else {
+                        scoreboardHTML += `</vscode-table-row>`;
+                    }
                 }
                 scoreboardHTML += `</vscode-table-body></vscode-table>`;
                 scoreboard.innerHTML = scoreboardHTML;
