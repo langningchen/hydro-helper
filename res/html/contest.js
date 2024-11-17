@@ -1,11 +1,11 @@
-window.addEventListener('DOMContentLoaded', () => {
+window.onload = () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
     const refresh = document.getElementById('refresh');
     const info = document.getElementById('info');
     const scoreboard = document.getElementById('scoreboard');
-    window.addEventListener('message', event => {
+    window.onmessage = (event) => {
         const message = event.data;
         switch (message.command) {
             case 'contest':
@@ -16,11 +16,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 title.innerHTML = `${data.tdoc.title}`;
 
-                refresh.addEventListener('click', () => {
+                refresh.onclick = () => {
                     vscode.postMessage({ command: 'refresh' });
                     loading.style.display = 'flex';
                     content.style.display = 'none';
-                });
+                };
                 refresh.disabled = false;
 
                 // TODO: display the owner name
@@ -127,5 +127,5 @@ window.addEventListener('DOMContentLoaded', () => {
             default:
                 break;
         }
-    });
-});
+    };
+};

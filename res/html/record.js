@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
+window.onload = () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const compilerTexts = document.getElementById('compilerTexts');
     const record = document.getElementById('record');
     const lastCode = document.getElementById('lastCode');
-    window.addEventListener('message', event => {
+    window.onmessage = event => {
         const message = event.data;
         switch (message.command) {
             case 'record':
@@ -42,15 +42,15 @@ window.addEventListener('DOMContentLoaded', () => {
                 title.innerHTML = `<span class="${statusIcon[data.rdoc.status]} icon"></span>
                 <span class="${statusIcon[data.rdoc.status]}">${data.rdoc.score} ${statusName[data.rdoc.status]}</span>`;
 
-                gotoProblem.addEventListener('click', () => {
+                gotoProblem.onclick = () => {
                     vscode.postMessage({ command: 'openP', problemId: data.rdoc.pid, contestId: data.rdoc.contest });
-                });
+                };
                 gotoProblem.disabled = false;
-                refresh.addEventListener('click', () => {
+                refresh.onclick = () => {
                     vscode.postMessage({ command: 'refresh' });
                     loading.style.display = 'flex';
                     content.style.display = 'none';
-                });
+                };
                 refresh.disabled = false;
 
                 info.innerHTML = `<vscode-table zebra bordered-columns responsive breakpoint="400">
@@ -174,5 +174,5 @@ window.addEventListener('DOMContentLoaded', () => {
             default:
                 break;
         }
-    });
-});
+    };
+};

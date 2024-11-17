@@ -1,4 +1,4 @@
-window.addEventListener('DOMContentLoaded', () => {
+window.onload = () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const openInProblemSet = document.getElementById('openInProblemSet');
     const problem = document.getElementById('problem');
     const solution = document.getElementById('solution');
-    window.addEventListener('message', event => {
+    window.onmessage = event => {
         const message = event.data;
         switch (message.command) {
             case 'problem':
@@ -119,5 +119,5 @@ window.addEventListener('DOMContentLoaded', () => {
             default:
                 break;
         }
-    });
-});
+    };
+};
