@@ -11,7 +11,8 @@ This extension provides the following features:
   - Fetch statement
 - Record
   - View record
-- Contest
+  - Real-time refresh
+- Contest / Homework
   - View scoreboard
   - Submit problem
   - Fetch statement
