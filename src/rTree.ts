@@ -106,9 +106,15 @@ export default class implements vscode.TreeDataProvider<Record> {
         if (this.pendingRecords.length) {
             while (this.pendingRecords.length) {
                 const pendingRecord = this.pendingRecords.shift()!;
-                if (this.records.length && this.records[0].id === pendingRecord.id) {
-                    this.records[0] = pendingRecord;
-                } else {
+                var replace: boolean = false;
+                for (let i = 0; i < this.records.length; i++) {
+                    if (this.records[i].id === pendingRecord.id) {
+                        this.records[i] = pendingRecord;
+                        replace = true;
+                        break;
+                    }
+                }
+                if (!replace) {
                     this.records.unshift(pendingRecord);
                 }
             }
