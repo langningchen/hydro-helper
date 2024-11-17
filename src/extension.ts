@@ -190,7 +190,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 		};
-		new pWeb(context.extensionPath, pid, tid);
+		new pWeb(context.extensionPath, parseInt(pid), tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid: vscode.TreeItem | string | undefined) => {
 		if (rid instanceof vscode.TreeItem) {

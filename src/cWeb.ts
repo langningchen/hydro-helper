@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
+import * as utils from './utils';
 import path from 'path';
 import { io, outputChannel } from './io';
 import fetch from './fetch';
 import settings from './settings';
-import { marked } from 'marked';
 
 export default class {
     private _panel: vscode.WebviewPanel;
@@ -87,7 +87,7 @@ export default class {
         }).start().then(async (contestDetail) => {
             if (contestDetail?.json !== undefined) {
                 const data = contestDetail.json;
-                data.tdoc.content = await marked(data.tdoc.content);
+                data.tdoc.content = await utils.parseMarkdown(data.tdoc.content);
                 const message = {
                     command: 'contest',
                     data,

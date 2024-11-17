@@ -1,15 +1,15 @@
 import * as vscode from 'vscode';
+import * as utils from './utils';
 import path from 'path';
 import { io, outputChannel } from './io';
 import fetch from './fetch';
-import { marked } from 'marked';
 import settings from './settings';
 
 export default class {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
 
-    constructor(extensionPath: string, pid: string, tid?: string) {
+    constructor(extensionPath: string, pid: number, tid?: string) {
         outputChannel.trace('[pWeb    ]', '"constructor"', arguments);
         outputChannel.info(`Open problem ${pid} webview`);
         this._panel = vscode.window.createWebviewPanel(
@@ -93,7 +93,7 @@ export default class {
         return htmlContent;
     };
 
-    private fetchData = (pid: string, tid?: string) => {
+    private fetchData = (pid: number, tid?: string) => {
         new fetch({
             path: `/d/${settings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '')
             , addCookie: true
@@ -102,9 +102,7 @@ export default class {
                 const problemContent = JSON.parse(problemDetail.json.pdoc.content);
                 const markdownContent: { [key: string]: string } = {};
                 for (const [key, value] of Object.entries(problemContent)) {
-                    let stringValue: string = value as string;
-                    stringValue = stringValue.replace(/file:\/\/([^)]+)/g, `https://${settings.server}/d/${settings.domain}/p/${pid}/file/$1`);
-                    markdownContent[key] = await marked(stringValue);
+                    markdownContent[key] = await utils.parseMarkdown(value as string, pid);
                 }
                 const message = {
                     command: 'problem',
@@ -125,9 +123,9 @@ export default class {
             new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (solutionDetail) => {
                 if (solutionDetail?.json !== undefined) {
                     for (const solution of solutionDetail.json.psdocs) {
-                        solution.content = await marked(solution.content);
+                        solution.content = await utils.parseMarkdown(solution.content as string, pid);
                         for (const reply of solution.reply) {
-                            reply.content = await marked(reply.content);
+                            reply.content = await utils.parseMarkdown(reply.content as string, pid);
                         }
                     }
                     const message = {

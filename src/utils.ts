@@ -1,3 +1,6 @@
+import { marked } from "marked";
+import settings from "./settings";
+
 export const statusName: { [key: number]: string } = {
     0: 'Waiting',
     1: 'Accepted',
@@ -306,4 +309,10 @@ export const findIndex = <K extends string | number>(
         }
     }
     return undefined;
+};
+export const parseMarkdown = async (content: string, pid?: number): Promise<string> => {
+    if (pid !== undefined) {
+        content = content.replace(/file:\/\/([^)]+)/g, `https://${settings.server}/d/${settings.domain}/p/${pid}/file/$1`);
+    }
+    return await marked(content);
 };
