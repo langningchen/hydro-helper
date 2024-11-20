@@ -65,6 +65,9 @@ export default class {
             else if (file.path[file.path.length - 1].endsWith('.js')) {
                 return `<script src="${this.getRealPath(file.path)}"${attributes}></script>`;
             }
+            else if (file.path[file.path.length - 1].endsWith('.mjs')) {
+                return `<script type="module" src="${this.getRealPath(file.path)}"${attributes}></script>`;
+            }
             else {
                 throw new Error('Unknown file type');
             }

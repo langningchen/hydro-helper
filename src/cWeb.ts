@@ -8,6 +8,7 @@ import settings from './settings';
 export default class {
     private _panel: vscode.WebviewPanel;
     private _extensionPath: string;
+    private _tempFiles: string[] = [];
 
     constructor(extensionPath: string, tid: string) {
         outputChannel.trace('[cWeb    ]', '"constructor"', arguments);
@@ -37,6 +38,7 @@ export default class {
                     break;
             }
         });
+        this._panel.onDidDispose(this.cleanup);
 
         this.fetchData(tid);
     }
@@ -51,6 +53,7 @@ export default class {
         const staticFiles = [
             { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
             { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
+            { 'path': ['res', 'libs', 'pdfjs', 'pdf.min.mjs'] },
             { 'path': ['res', 'html', 'static.js'] },
             { 'path': ['res', 'html', 'contest.js'] },
         ];
@@ -72,6 +75,9 @@ export default class {
             else if (file.path[file.path.length - 1].endsWith('.js')) {
                 return `<script src="${this.getRealPath(file.path)}"${attributes}></script>`;
             }
+            else if (file.path[file.path.length - 1].endsWith('.mjs')) {
+                return `<script type="module" src="${this.getRealPath(file.path)}"${attributes}></script>`;
+            }
             else {
                 throw new Error('Unknown file type');
             }
@@ -87,15 +93,34 @@ export default class {
         }).start().then(async (contestDetail) => {
             if (contestDetail?.json !== undefined) {
                 const data = contestDetail.json;
-                data.tdoc.content = await utils.parseMarkdown(data.tdoc.content);
+                data.tdoc.content = await utils.parseMarkdown(this._extensionPath, this._panel.webview, data.tdoc.content);
+                for (const [id, url] of Object.entries(data.tdoc.fetchData)) {
+                    this._tempFiles.push(id);
+                }
                 const message = {
                     command: 'contest',
                     data,
                 };
-                this._panel.webview.postMessage(message);
+                this.tryPostMessage(message);
             }
         }).catch(async (e: Error) => {
             io.error(e.message);
         });
+    };
+
+    private tryPostMessage = (message: any) => {
+        try {
+            this._panel.webview.postMessage(message);
+        } catch (e) {
+            this.cleanup();
+        }
+    };
+
+    private cleanup = () => {
+        for (const id of this._tempFiles) {
+            const filePath = vscode.Uri.file(path.join(this._extensionPath, 'temp', id));
+            vscode.workspace.fs.delete(filePath);
+            outputChannel.info("Delete temp file", `"${filePath.toString()}"`);
+        }
     };
 }

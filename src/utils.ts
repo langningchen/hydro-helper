@@ -1,5 +1,8 @@
+import * as vscode from 'vscode';
 import { marked } from "marked";
 import settings from "./settings";
+import auth from "./auth";
+import { outputChannel } from './io';
 
 export const statusName: { [key: number]: string } = {
     0: 'Waiting',
@@ -310,9 +313,38 @@ export const findIndex = <K extends string | number>(
     }
     return undefined;
 };
-export const parseMarkdown = async (content: string, pid?: number): Promise<string> => {
-    if (pid !== undefined) {
-        content = content.replace(/file:\/\/([^)]+)/g, `https://${settings.server}/d/${settings.domain}/p/${pid}/file/$1`);
+export const parseMarkdown = async (extensionPath: string, webview: vscode.Webview, content: string, prefix?: string): Promise<{ fetchData: { [key: string]: string }, content: string }> => {
+    const fetchData: { [key: string]: string } = {};
+    content = content.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (match, type, url) => {
+        if (url.startsWith('file://')) {
+            url = prefix + '/' + url.substring(7);
+        }
+        url = url.replace(/\?.*$/, '');
+        const id = Math.random().toString(36).slice(2);
+        fetchData[id] = url;
+        if (type === 'video') {
+            return `<video src="{{${id}}}" controls></video>`;
+        }
+        else if (type === 'pdf') {
+            return `<div data-src="{{${id}}}" class="pdf"></div>`;
+        }
+        return '<a href="' + id + '">' + url + '</a>';
+    });
+    for (const [key, value] of Object.entries(fetchData)) {
+        const responseData = await fetch(`https://${settings.server}${value}`, {
+            headers: {
+                'cookie': await auth.getCookiesValue(),
+            },
+            redirect: 'follow',
+        });
+        const filePath = vscode.Uri.file(`${extensionPath}/temp/${key}`);
+        await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
+        const webviewUri = webview.asWebviewUri(filePath);
+        outputChannel.info('Saved', `"https://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
+        fetchData[key] = webviewUri.toString();
     }
-    return await marked(content);
+    return {
+        fetchData,
+        content: await marked(content),
+    };
 };

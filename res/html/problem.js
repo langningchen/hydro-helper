@@ -1,4 +1,4 @@
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
@@ -31,8 +31,9 @@ window.onload = () => {
                 };
                 openInProblemSet.disabled = !message.data.isContest;
 
-                problem.innerHTML = message.data.markdownContent.zh;
+                problem.innerHTML = parseMarkdown(message.data.markdownContent.zh);
                 window.MathJax.typeset();
+                renderPdf();
                 const problemPre = problem.getElementsByTagName('pre');
                 const problemEditors = [];
                 for (let i = 0; i < problemPre.length; i++) {
@@ -73,22 +74,22 @@ window.onload = () => {
                 for (let i = 0; i < message.data.psdocs.length; i++) {
                     solution.innerHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${message.data.udict[message.data.psdocs[i].owner].uname}</vscode-badge>
                     <vscode-badge variant="counter">${message.data.psdocs[i].vote}</vscode-badge>`;
-                    solution.innerHTML += `<p>${message.data.psdocs[i].content}</p>`;
+                    solution.innerHTML += `<p>${parseMarkdown(message.data.psdocs[i].content)}</p>`;
                     if (message.data.psdocs[i].reply.length > 0) {
                         const collapsible = document.createElement('vscode-collapsible');
                         solution.appendChild(collapsible);
                         collapsible.setAttribute('title', 'Reply');
                         for (let j = 0; j < message.data.psdocs[i].reply.length; j++) {
-                            debugger;
                             collapsible.innerHTML += `<div style="padding: 10px">
                             <vscode-badge>${message.data.udict[message.data.psdocs[i].reply[j].owner].uname}</vscode-badge>
-                                ${message.data.psdocs[i].reply[j].content}
+                                ${parseMarkdown(message.data.psdocs[i].reply[j].content)}
                             </div>`;
                         }
                     }
                     solution.innerHTML += `<vscode-divider></vscode-divider>`;
                 }
                 window.MathJax.typeset();
+                renderPdf();
                 const solutionPre = solution.getElementsByTagName('pre');
                 const solutionEditors = [];
                 for (let i = 0; i < solutionPre.length; i++) {
@@ -120,4 +121,4 @@ window.onload = () => {
                 break;
         }
     };
-};
+});

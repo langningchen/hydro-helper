@@ -4,6 +4,7 @@ All notable changes to the "cyezoi" extension will be documented in this file.
 
 ## v0.0.22
 
+- **Render PDF and videos within webview**
 - Fix duplicated add event listener
 - Fix record list duplicated id
 

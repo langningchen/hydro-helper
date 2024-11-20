@@ -1,4 +1,4 @@
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
@@ -175,4 +175,4 @@ window.onload = () => {
                 break;
         }
     };
-};
+});

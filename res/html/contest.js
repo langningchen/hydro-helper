@@ -1,4 +1,4 @@
-window.onload = () => {
+window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
     const title = document.getElementById('title');
@@ -65,7 +65,8 @@ window.onload = () => {
                     </vscode-table-body>
                 </vscode-table>
                 <vscode-divider></vscode-divider>
-                ${data.tdoc.content}`;
+                ${parseMarkdown(data.tdoc.content)}`;
+                renderPdf();
 
                 var scoreboardHTML = `<vscode-table zebra bordered-rows resizable>
                     <vscode-table-header slot="header">`;
@@ -128,4 +129,4 @@ window.onload = () => {
                 break;
         }
     };
-};
+});

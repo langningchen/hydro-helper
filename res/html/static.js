@@ -168,6 +168,45 @@ const formatString = (str) => {
     }
     return message;
 };
+const parseMarkdown = ({ content, fetchData }) => {
+    return content.replace(/\{\{([a-z0-9]+)\}\}/g, (match, id) => {
+        return fetchData[id];
+    });
+};
+const renderPdf = async () => {
+    const pdfData = document.getElementsByClassName('pdf');
+    for (let i = 0; i < pdfData.length; i++) {
+        const sourceUrl = pdfData[i].getAttribute('data-src');
+        if (!sourceUrl) {
+            continue;
+        }
+        pdfData[i].style.width = '100%';
+        const pdf = await pdfjsLib.getDocument(sourceUrl).promise;
+
+        for (let page = 1; page <= pdf.numPages; page++) {
+            const canvas = document.createElement('canvas');
+            pdfData[i].appendChild(canvas);
+
+            const pageData = await pdf.getPage(page);
+            const viewport = pageData.getViewport({
+                scale: document.body.clientWidth / pageData.getViewport({ scale: 1.0 }).width,
+            });
+
+
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
+            canvas.style.width = Math.floor(viewport.width) + "px";
+            canvas.style.height = Math.floor(viewport.height) + "px";
+
+            pageData.render({
+                canvasContext: canvas.getContext('2d'),
+                viewport,
+            });
+        }
+
+        pdfData[i].removeAttribute('data-src');
+    }
+};
 
 const vscode = acquireVsCodeApi();
 window.MathJax = {
@@ -176,3 +215,7 @@ window.MathJax = {
         displayMath: [['$$', '$$']],
     },
 };
+
+window.addEventListener('DOMContentLoaded', () => {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
+});
