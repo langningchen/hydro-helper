@@ -6,6 +6,10 @@ export default class {
         outputChannel.trace('[settings]', '"server"');
         return vscode.workspace.getConfiguration('cyezoi').get('server') as string;
     }
+    static get protocol(): string {
+        outputChannel.trace('[settings]', '"protocol"');
+        return vscode.workspace.getConfiguration('cyezoi').get('protocol') as string;
+    }
     static get domain(): string {
         outputChannel.trace('[settings]', '"domain"');
         return vscode.workspace.getConfiguration('cyezoi').get('domain') as string;

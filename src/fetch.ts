@@ -35,7 +35,7 @@ export default class {
 
     doFetch = async (options: fetchOptions): Promise<void> => {
         outputChannel.trace('[fetch   ]', '"doFetch"');
-        this.response = await fetch(`https://${settings.server}${options.path}`, {
+        this.response = await fetch(`${settings.protocol}://${settings.server}${options.path}`, {
             method: options.body ? 'POST' : 'GET',
             headers: {
                 'accept': 'application/json',
