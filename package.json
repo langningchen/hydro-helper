@@ -54,14 +54,10 @@
           "default": "newoj.cyezoi.com",
           "description": "The server address of CYEZOI, without protocol"
         },
-        "cyezoi.protocol": {
-          "type": "string",
-          "default": "https",
-          "description": "The server protocol",
-          "enum": [
-            "http",
-            "https"
-          ]
+        "cyezoi.safeProtocol": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use safe protocol (HTTPS/WSS)"
         },
         "cyezoi.domain": {
           "type": "string",

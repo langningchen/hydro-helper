@@ -33,7 +33,7 @@ export default class implements vscode.TreeDataProvider<Record> {
         });
 
         new Promise(async () => {
-            const ws = new WebSocket(`${settings.protocol === "https" ? "wss" : "ws"}://${settings.server}/record-conn?domainId=${settings.domain}`, {
+            const ws = new WebSocket(`ws${settings.safeProtocol ? "s" : ""}://${settings.server}/record-conn?domainId=${settings.domain}`, {
                 headers: {
                     'cookie': await auth.getCookiesValue(),
                 },

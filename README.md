@@ -30,7 +30,7 @@ Currently there are no extension settings.
 This extension contributes the following settings:
 
 * `cyezoi.server`: The server address of CYEZOI. Default is `newoj.cyezoi.com`.
-* `cyezoi.protocol`: The server protocol. Default is `https`.
+* `cyezoi.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
 * `cyezoi.domain`: The Hydro domain of CYEZOI. Default is `problemset`.
 
 ## Known Issues

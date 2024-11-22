@@ -15,7 +15,7 @@ export default class rJWeb extends webview {
             getTitle: () => `R${rid} - Judging`,
             fetchData: (postMessage, addTempFile, parseMarkdown, dispose) => {
                 new Promise<string>(async (resolve) => {
-                    const ws = new WebSocket(`${settings.protocol === "https" ? "wss" : "ws"}://${settings.server}/record-detail-conn?domainId=${settings.domain}&rid=${rid}`, {
+                    const ws = new WebSocket(`ws${settings.safeProtocol ? "s" : ""}://${settings.server}/record-detail-conn?domainId=${settings.domain}&rid=${rid}`, {
                         headers: {
                             'cookie': await auth.getCookiesValue(),
                         },

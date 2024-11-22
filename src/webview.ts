@@ -125,7 +125,7 @@ export default class {
                 return '<a href="' + id + '">' + url + '</a>';
             });
             for (const [key, value] of Object.entries(fetchData)) {
-                const responseData = await fetch(`${settings.protocol}://${settings.server}${value}`, {
+                const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}`, {
                     headers: {
                         'cookie': await auth.getCookiesValue(),
                     },
@@ -134,7 +134,7 @@ export default class {
                 const filePath = vscode.Uri.file(`${this.webviewData.extensionPath}/temp/${key}`);
                 await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
                 const webviewUri = this.panel.webview.asWebviewUri(filePath);
-                outputChannel.info('Saved', `"${settings.protocol}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
+                outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
                 fetchData[key] = webviewUri.toString();
             }
             return {
