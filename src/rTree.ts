@@ -139,7 +139,12 @@ export class Record extends vscode.TreeItem {
         super(rdoc.score + ' ' + utils.statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.id = rdoc._id;
         this.contextValue = 'record';
+        if (rdoc.pid) {
         this.description = 'P' + rdoc.pid + ' ' + (typeof pdoc === 'string' ? pdoc : pdoc.title);
+        }
+        else {
+            this.description = '*';
+        }
         this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
         const TooltipDoc = new vscode.MarkdownString();
         TooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[rdoc.status]}\n`);

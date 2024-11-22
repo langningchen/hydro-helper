@@ -6,6 +6,7 @@ All notable changes to the "cyezoi" extension will be documented in this file.
 
 - **Render PDF and videos within webview**
 - **Customize the protocol**
+- Fix pid is NaN
 - Fix status icon empty when in OI mode contest
 - Fix duplicated add event listener
 - Fix record list duplicated id
