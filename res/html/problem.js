@@ -1,12 +1,31 @@
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
+
+    content.innerHTML = `<h1 id="title"></h1>
+<vscode-button disabled icon="check" id="submitProblem">Submit</vscode-button>
+<vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
+<vscode-button disabled icon="send" id="openInProblemSet">Open in Problem Set</vscode-button>
+<vscode-tabs selected-index="0">
+    <vscode-tab-header slot="header">Problem</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="problem"></div>
+    </vscode-tab-panel>
+    <vscode-tab-header slot="header">Solution</vscode-tab-header>
+    <vscode-tab-panel>
+        <p id="solution">
+            There is no solution available for this problem.
+        </p>
+    </vscode-tab-panel>
+</vscode-tabs>`;
+
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
     const refresh = document.getElementById('refresh');
     const openInProblemSet = document.getElementById('openInProblemSet');
     const problem = document.getElementById('problem');
     const solution = document.getElementById('solution');
+
     window.onmessage = event => {
         const message = event.data;
         switch (message.command) {
@@ -14,10 +33,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 loading.style.display = 'none';
                 content.style.display = '';
 
-                title.innerText = '#' + message.data.problemId + '. ' + message.data.title;
+                title.innerText = '#' + message.data.pid + '. ' + message.data.title;
 
                 submitProblem.onclick = () => {
-                    vscode.postMessage({ command: 'submitProblem' });
+                    vscode.postMessage({ command: 'submitProblem', data: [message.data.pid, message.data.tid] });
                 };
                 submitProblem.disabled = false;
                 refresh.onclick = () => {
@@ -27,9 +46,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 };
                 refresh.disabled = false;
                 openInProblemSet.onclick = () => {
-                    vscode.postMessage({ command: 'openInProblemSet' });
+                    vscode.postMessage({ command: 'openP', data: [message.data.pid] });
                 };
-                openInProblemSet.disabled = !message.data.isContest;
+                openInProblemSet.disabled = message.data.tid === undefined;
 
                 problem.innerHTML = parseMarkdown(message.data.markdownContent.zh);
                 window.MathJax.typeset();

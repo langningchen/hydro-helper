@@ -1,6 +1,62 @@
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
+
+    content.innerHTML = `<style>
+.subtask {
+    font-weight: bold;
+}
+
+.icon {
+    font-family: 'hydro-icons';
+    font-weight: 400;
+    line-height: 1;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.pass { color: #25ad40 !important; }
+.fail { color: #fb5555 !important; }
+.progress { color: #f39800 !important; }
+.ignored, .pending { color: #9fa0a0 !important; }
+
+.icon.pass:before { content: "\ea0a"; }
+.icon.fail:before { content: "\ea0e"; }
+.icon.progress:before { content: "\ea2d"; }
+.icon.ignored:before { content: "\ea0e"; }
+.icon.pending:before { content: "\ea4a"; }
+
+.border-pass { border-left: .1875rem solid #2ac649; }
+.border-fail { border-left: .1875rem solid #fb6666; }
+.border-progress { border-left: .1875rem solid #ffa50f; }
+.border-ignored, .border-pending { border-left: .1875rem solid #a9aaaa; }
+
+#title {
+    font-size: 1.5rem;
+}
+</style>
+<h1 id="title"></h1>
+<vscode-button disabled icon="check" id="gotoProblem">Go to Problem</vscode-button>
+<vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
+<vscode-tabs selected-index="2">
+    <vscode-tab-header slot="header">Info</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="info"></div>
+    </vscode-tab-panel>
+    <vscode-tab-header slot="header">Compiler Texts</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="compilerTexts"></div>
+    </vscode-tab-panel>
+    <vscode-tab-header slot="header">Judge result</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="record"></div>
+    </vscode-tab-panel>
+    <vscode-tab-header slot="header">Last Code</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="lastCode"></div>
+    </vscode-tab-panel>
+</vscode-tabs>`;
+
     const title = document.getElementById('title');
     const gotoProblem = document.getElementById('gotoProblem');
     const refresh = document.getElementById('refresh');
@@ -43,7 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <span class="${statusIcon[data.rdoc.status]}">${data.rdoc.score} ${statusName[data.rdoc.status]}</span>`;
 
                 gotoProblem.onclick = () => {
-                    vscode.postMessage({ command: 'openP', problemId: data.rdoc.pid, contestId: data.rdoc.contest });
+                    vscode.postMessage({ command: 'openP', data: data.rdoc.contest ? [data.rdoc.pid, data.rdoc.contest] : [data.rdoc.pid] });
                 };
                 gotoProblem.disabled = false;
                 refresh.onclick = () => {

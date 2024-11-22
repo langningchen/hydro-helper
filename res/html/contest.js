@@ -1,10 +1,25 @@
 window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
+
+    content.innerHTML = `<h1 id="title"></h1>
+<vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
+<vscode-tabs selected-index="1">
+    <vscode-tab-header slot="header">Info</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="info"></div>
+    </vscode-tab-panel>
+    <vscode-tab-header slot="header">Scoreboard</vscode-tab-header>
+    <vscode-tab-panel>
+        <div id="scoreboard"></div>
+    </vscode-tab-panel>
+</vscode-tabs>`;
+
     const title = document.getElementById('title');
     const refresh = document.getElementById('refresh');
     const info = document.getElementById('info');
     const scoreboard = document.getElementById('scoreboard');
+
     window.onmessage = (event) => {
         const message = event.data;
         switch (message.command) {
@@ -80,7 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         switch (cell.type) {
                             case 'problem':
                                 scoreboardHTML += `<${elementName}>
-                                        <span onclick="vscode.postMessage({command:'openP',pid:'${cell.raw}'})" style="cursor: pointer;">
+                                        <span onclick="vscode.postMessage({command:'openP',data:['${cell.raw}','${data.tdoc._id}']})" style="cursor: pointer;">
                                             ${cell.value} ${data.pdict[cell.raw].title} ${data.pdict[cell.raw].nAccept}/${data.pdict[cell.raw].nSubmit}
                                         </span>
                                     </${elementName}>`;
@@ -91,7 +106,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 }
                                 else {
                                     scoreboardHTML += `<${elementName} style="${cell.style ? 'background-color: rgb(217, 240, 199)' : ''}">
-                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',rid:'${cell.raw}'})">${cell.value}</span>
+                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${cell.raw}']})">${cell.value}</span>
                                     </${elementName}>`;
                                 }
                                 break;
@@ -102,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                         scoreboardHTML += `<span>-</span>`;
                                     }
                                     else {
-                                        scoreboardHTML += `<span style="cursor: pointer; color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',rid:'${record.raw}'})">${record.value}</span>`;
+                                        scoreboardHTML += `<span style="cursor: pointer; color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${record.raw}']})">${record.value}</span>`;
                                     }
                                     scoreboardHTML += " / ";
                                 }

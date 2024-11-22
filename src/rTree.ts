@@ -33,7 +33,7 @@ export default class implements vscode.TreeDataProvider<Record> {
         });
 
         new Promise(async () => {
-            const ws = new WebSocket(`wss://${settings.server}/record-conn?domainId=${settings.domain}`, {
+            const ws = new WebSocket(`${settings.protocol === "https" ? "wss" : "ws"}://${settings.server}/record-conn?domainId=${settings.domain}`, {
                 headers: {
                     'cookie': await auth.getCookiesValue(),
                 },
@@ -140,7 +140,7 @@ export class Record extends vscode.TreeItem {
         this.id = rdoc._id;
         this.contextValue = 'record';
         if (rdoc.pid) {
-        this.description = 'P' + rdoc.pid + ' ' + (typeof pdoc === 'string' ? pdoc : pdoc.title);
+            this.description = 'P' + rdoc.pid + ' ' + (typeof pdoc === 'string' ? pdoc : pdoc.title);
         }
         else {
             this.description = '*';
