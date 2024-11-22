@@ -112,7 +112,7 @@ export class ContestProblem extends vscode.TreeItem {
         this.contextValue = 'problem';
         this.description = pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
-        if (psdoc) {
+        if (psdoc && psdoc.status) {
             this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);

@@ -75,7 +75,7 @@ export class Problem extends vscode.TreeItem {
         if (pdoc.tag.length > 0) {
             tooltipDoc.appendMarkdown(`- **Tags**: ${pdoc.tag.join(', ')}\n`);
         }
-        if (psdoc) {
+        if (psdoc && psdoc.status) {
             this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
