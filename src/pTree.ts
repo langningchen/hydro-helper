@@ -68,7 +68,7 @@ export default class implements vscode.TreeDataProvider<Problem> {
 
 export class Problem extends vscode.TreeItem {
     constructor(pdoc: utils.ProblemDoc, psdoc: utils.ProblemStatusDoc) {
-        super('P' + pdoc.docId, (psdoc ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        super('P' + pdoc.docId, (psdoc && psdoc.status ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
         this.contextValue = 'problem';
         this.description = pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();

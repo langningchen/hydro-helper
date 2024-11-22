@@ -107,7 +107,7 @@ export class Contest extends vscode.TreeItem {
 
 export class ContestProblem extends vscode.TreeItem {
     constructor(tid: string, pdoc: utils.ContestProblemDoc, psdoc?: utils.ContestProblemStatusDoc) {
-        super(pdoc.docId.toString(), (psdoc ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        super(pdoc.docId.toString(), (psdoc && psdoc.status ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
         this.id = tid + '-' + pdoc.docId;
         this.contextValue = 'problem';
         this.description = pdoc.title;
