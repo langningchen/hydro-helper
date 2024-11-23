@@ -20,11 +20,11 @@ window.addEventListener('DOMContentLoaded', () => {
 .progress { color: #f39800 !important; }
 .ignored, .pending { color: #9fa0a0 !important; }
 
-.icon.pass:before { content: "\ea0a"; }
-.icon.fail:before { content: "\ea0e"; }
-.icon.progress:before { content: "\ea2d"; }
-.icon.ignored:before { content: "\ea0e"; }
-.icon.pending:before { content: "\ea4a"; }
+.icon.pass:before { content: "\\ea0a"; }
+.icon.fail:before { content: "\\ea0e"; }
+.icon.progress:before { content: "\\ea2d"; }
+.icon.ignored:before { content: "\\ea0e"; }
+.icon.pending:before { content: "\\ea4a"; }
 
 .border-pass { border-left: .1875rem solid #2ac649; }
 .border-fail { border-left: .1875rem solid #fb6666; }

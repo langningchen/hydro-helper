@@ -68,36 +68,13 @@ export default class {
 
     private getHtml = () => {
         outputChannel.trace(`[${this.shortName}    ]`, '"getHtml"');
-        const staticFiles = [
-            { 'path': ['res', 'libs', 'vscode-elements', 'bundled.js'], attributes: { 'type': 'module' } },
-            { 'path': ['res', 'libs', 'codicon', 'codicon.css'], attributes: { 'id': 'vscode-codicon-stylesheet' } },
-            { 'path': ['res', 'html', 'static.js'] },
-            { 'path': ['res', 'html', `${this.webviewData.name}.js`] },
-        ];
         let htmlContent = require('fs').readFileSync(path.join(this.webviewData.extensionPath, 'res', 'html', 'base.html'), 'utf8');
-        htmlContent = htmlContent.replace(/{{staticFiles}}/g, staticFiles.map(file => {
-            let attributes = '';
-            if (file.attributes !== undefined) {
-                attributes = ' ' + Object.entries(file.attributes).map(([key, value]) => {
-                    if (value === undefined) {
-                        return key;
-                    }
-                    return `${key}="${value}"`;
-                }).join(' ');
-            }
-            if (file.path[file.path.length - 1].endsWith('.css')) {
-                return `<link rel="stylesheet" type="text/css" href="${this.getRealPath(file.path)}"${attributes}>`;
-            }
-            else if (file.path[file.path.length - 1].endsWith('.js')) {
-                return `<script src="${this.getRealPath(file.path)}"${attributes}></script>`;
-            }
-            else if (file.path[file.path.length - 1].endsWith('.mjs')) {
-                return `<script type="module" src="${this.getRealPath(file.path)}"${attributes}></script>`;
-            }
-            else {
-                throw new Error('Unknown file type');
-            }
-        }).join('\n'));
+        htmlContent = htmlContent.replace("{{hydroIcons}}", this.getRealPath(['res', 'fonts', 'hydro-icons.woff2']).toString());
+        htmlContent = htmlContent.replace("{{vscodeElements}}", this.getRealPath(['res', 'libs', 'vscode-elements', 'bundled.js']).toString());
+        htmlContent = htmlContent.replace("{{codicon}}", this.getRealPath(['res', 'libs', 'codicon', 'codicon.css']).toString());
+        htmlContent = htmlContent.replace("{{static}}", this.getRealPath(['res', 'html', 'static.js']).toString());
+        htmlContent = htmlContent.replace("{{dynamic}}", this.getRealPath(['res', 'html', `${this.webviewData.name}.js`]).toString());
+        outputChannel.debug('HTML content', htmlContent);
         return htmlContent;
     };
 
