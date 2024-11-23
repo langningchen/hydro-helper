@@ -210,21 +210,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 if (data.rdoc.code === '') {
                     lastCode.innerHTML = `<p>Code is not available to display</p>`;
                 } else {
-                    const lastCodeEditor = window.CodeMirror(lastCode, {
-                        autoRefresh: true,
-                        value: data.rdoc.code,
-                        readOnly: true,
-                        theme: 'material',
-                        lineNumbers: true,
-                        mode: 'text/x-c++src',
-                        gutters: [
-                            'CodeMirror-linenumbers',
-                            'CodeMirror-foldgutter',
-                        ],
-                        foldGutter: true,
-                        styleActiveLine: true,
-                    });
-                    lastCodeEditor.setSize('100%', 'auto');
+                    lastCode.innerHTML = `<pre>${data.rdoc.code}</pre>`;
+                    renderCode();
                 }
                 break;
             default:

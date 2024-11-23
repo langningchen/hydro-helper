@@ -71,38 +71,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         window.MathJax.typeset();
         renderPdf();
-        const pres = tabs.getElementsByTagName('pre');
-        const editors = [];
-        for (let i = 0; i < pres.length; i++) {
-            if (pres[i].classList.contains('CodeMirror-line')) {
-                continue;
-            }
-            const code = pres[i].innerText.trim();
-            const codeElement = document.createElement('div');
-            const copyButton = document.createElement('vscode-button');
-            copyButton.innerText = 'Copy';
-            copyButton.onclick = () => {
-                navigator.clipboard.writeText(code);
-                copyButton.innerText = 'Copied';
-                copyButton.disabled = true;
-                setTimeout(() => {
-                    copyButton.innerText = 'Copy';
-                    copyButton.disabled = false;
-                }, 1000);
-            };
-            codeElement.appendChild(copyButton);
-            const editorElement = document.createElement('div');
-            codeElement.appendChild(editorElement);
-            editors.push(window.CodeMirror(editorElement, {
-                autoRefresh: true,
-                value: code,
-                readOnly: true,
-                theme: 'material',
-            }));
-            pres[i].parentNode.replaceChild(codeElement, pres[i]);
-        }
-        for (let i = 0; i < editors.length; i++) {
-            editors[i].setSize('100%', 'auto');
-        }
+        renderCode();
     };
 });

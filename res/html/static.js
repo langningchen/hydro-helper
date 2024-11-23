@@ -207,6 +207,58 @@ const renderPdf = async () => {
         pdfData[i].removeAttribute('data-src');
     }
 };
+const renderCode = () => {
+    const pres = document.getElementsByTagName('pre');
+    const editors = [];
+    for (let i = 0; i < pres.length; i++) {
+        if (pres[i].className.indexOf('CodeMirror') !== -1) {
+            continue;
+        }
+        const code = pres[i].innerText.trim();
+        const codeElement = document.createElement('div');
+        const copyButtonContainer = document.createElement('div');
+        copyButtonContainer.style.position = 'absolute';
+        copyButtonContainer.style.width = 'calc(100% - 40px)';
+        copyButtonContainer.style.display = 'flex';
+        copyButtonContainer.style.flexDirection = 'row-reverse';
+        copyButtonContainer.style.zIndex = '3';
+        copyButtonContainer.style.pointerEvents = 'none';
+        const copyButton = document.createElement('vscode-button');
+        copyButton.innerText = 'Copy';
+        copyButton.style.pointerEvents = 'auto';
+        copyButton.onclick = () => {
+            navigator.clipboard.writeText(code);
+            copyButton.innerText = 'Copied';
+            copyButton.disabled = true;
+            setTimeout(() => {
+                copyButton.innerText = 'Copy';
+                copyButton.disabled = false;
+            }, 1000);
+        };
+        copyButtonContainer.appendChild(copyButton);
+        codeElement.appendChild(copyButtonContainer);
+        const editorElement = document.createElement('div');
+        codeElement.appendChild(editorElement);
+        editors.push(window.CodeMirror(editorElement, {
+            autoRefresh: true,
+            value: code,
+            readOnly: true,
+            theme: 'material',
+            lineNumbers: true,
+            mode: 'text/x-c++src',
+            gutters: [
+                'CodeMirror-linenumbers',
+                'CodeMirror-foldgutter',
+            ],
+            foldGutter: true,
+            styleActiveLine: true,
+        }));
+        pres[i].parentNode.replaceChild(codeElement, pres[i]);
+    }
+    for (let i = 0; i < editors.length; i++) {
+        editors[i].setSize('100%', 'auto');
+    }
+};
 
 const vscode = acquireVsCodeApi();
 
