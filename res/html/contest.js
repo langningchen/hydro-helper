@@ -5,29 +5,25 @@ window.addEventListener('DOMContentLoaded', () => {
     content.innerHTML = `<h1 id="title"></h1>
 <vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
 <vscode-tabs selected-index="1">
-    <vscode-tab-header slot="header">Info</vscode-tab-header>
-    <vscode-tab-panel>
-        <div id="info"></div>
-    </vscode-tab-panel>
-    <vscode-tab-header slot="header">Scoreboard</vscode-tab-header>
-    <vscode-tab-panel>
-        <div id="scoreboard"></div>
-    </vscode-tab-panel>
+    <vscode-tab-header slot="header" id="infoTab">Info</vscode-tab-header><vscode-tab-panel><p id="info"></p></vscode-tab-panel>
+    <vscode-tab-header slot="header" id="scoreboardTab">Scoreboard</vscode-tab-header><vscode-tab-panel><p id="scoreboard"></p></vscode-tab-panel>
 </vscode-tabs>`;
 
     const title = document.getElementById('title');
     const refresh = document.getElementById('refresh');
+    const infoTab = document.getElementById('infoTab');
     const info = document.getElementById('info');
+    const scoreboardTab = document.getElementById('scoreboardTab');
     const scoreboard = document.getElementById('scoreboard');
 
     window.onmessage = (event) => {
+        loading.style.display = 'none';
+        content.style.display = '';
         const message = event.data;
+        const data = message.data;
         switch (message.command) {
-            case 'contest':
-                loading.style.display = 'none';
-                content.style.display = '';
-
-                const data = message.data;
+            case 'info':
+                infoTab.style.display = 'unset';
 
                 title.innerHTML = `${data.tdoc.title}`;
 
@@ -82,6 +78,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 <vscode-divider></vscode-divider>
                 ${parseMarkdown(data.tdoc.content)}`;
                 renderPdf();
+                break;
+            case 'scoreboard':
+                scoreboardTab.style.display = 'unset';
 
                 var scoreboardHTML = `<vscode-table zebra bordered-rows resizable>
                     <vscode-table-header slot="header">`;

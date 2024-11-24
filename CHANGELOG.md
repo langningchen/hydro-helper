@@ -7,5 +7,6 @@ All notable changes to the "cyezoi" extension will be documented in this file.
 - Enhance code render and Copy button
 - Fix Hydro Icons
 - Minify publish files
+- Hide tab when there is nothing
 
 Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)

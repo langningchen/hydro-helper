@@ -6,26 +6,32 @@ window.addEventListener('DOMContentLoaded', () => {
 <vscode-button disabled icon="check" id="submitProblem">Submit</vscode-button>
 <vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
 <vscode-button disabled icon="send" id="openInProblemSet">Open in Problem Set</vscode-button>
-<vscode-tabs selected-index="0" id="tabs"></vscode-tabs>`;
+<vscode-tabs selected-index="0">
+    <vscode-tab-header slot="header" id="problemTab">Problem</vscode-tab-header><vscode-tab-panel><p id="problem"></p></vscode-tab-panel>
+    <vscode-tab-header slot="header" id="solutionTab">Solution</vscode-tab-header><vscode-tab-panel><p id="solution"></p></vscode-tab-panel>
+</vscode-tabs>`;
 
     const title = document.getElementById('title');
     const submitProblem = document.getElementById('submitProblem');
     const refresh = document.getElementById('refresh');
     const openInProblemSet = document.getElementById('openInProblemSet');
-    const tabs = document.getElementById('tabs');
+    const problemTab = document.getElementById('problemTab');
+    const problem = document.getElementById('problem');
+    const solutionTab = document.getElementById('solutionTab');
+    const solution = document.getElementById('solution');
 
     window.onmessage = event => {
         loading.style.display = 'none';
         content.style.display = '';
         const message = event.data;
+        const data = message.data;
         switch (message.command) {
             case 'problem':
-                title.innerText = '#' + message.data.pid + '. ' + message.data.title;
-                tabs.innerHTML += `<vscode-tab-header slot="header">Problem</vscode-tab-header><vscode-tab-panel><p id="problem"></p></vscode-tab-panel>`;
-                const problem = document.getElementById('problem');
+                problemTab.style.display = 'unset';
+                title.innerText = '#' + data.pid + '. ' + data.title;
 
                 submitProblem.onclick = () => {
-                    vscode.postMessage({ command: 'submitProblem', data: [message.data.pid, message.data.tid] });
+                    vscode.postMessage({ command: 'submitProblem', data: [data.pid, data.tid] });
                 };
                 submitProblem.disabled = false;
                 refresh.onclick = () => {
@@ -35,31 +41,30 @@ window.addEventListener('DOMContentLoaded', () => {
                 };
                 refresh.disabled = false;
                 openInProblemSet.onclick = () => {
-                    vscode.postMessage({ command: 'openP', data: [message.data.pid] });
+                    vscode.postMessage({ command: 'openP', data: [data.pid] });
                 };
-                openInProblemSet.disabled = message.data.tid === undefined;
+                openInProblemSet.disabled = data.tid === undefined;
 
-                problem.innerHTML = parseMarkdown(message.data.markdownContent.zh);
+                problem.innerHTML = parseMarkdown(data.markdownContent.zh);
                 break;
             case 'solution':
-                if (message.data.psdocs.length === 0) {
+                if (data.psdocs.length === 0) {
                     break;
                 }
-                tabs.innerHTML += `<vscode-tab-header slot="header">Solution</vscode-tab-header><vscode-tab-panel><p id="solution"></p></vscode-tab-panel>`;
-                const solution = document.getElementById('solution');
+                solutionTab.style.display = 'unset';
                 solution.innerHTML = '';
-                for (let i = 0; i < message.data.psdocs.length; i++) {
-                    solution.innerHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${message.data.udict[message.data.psdocs[i].owner].uname}</vscode-badge>
-                    <vscode-badge variant="counter">${message.data.psdocs[i].vote}</vscode-badge>`;
-                    solution.innerHTML += `<p>${parseMarkdown(message.data.psdocs[i].content)}</p>`;
-                    if (message.data.psdocs[i].reply.length > 0) {
+                for (let i = 0; i < data.psdocs.length; i++) {
+                    solution.innerHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${data.udict[data.psdocs[i].owner].uname}</vscode-badge>
+                    <vscode-badge variant="counter">${data.psdocs[i].vote}</vscode-badge>`;
+                    solution.innerHTML += `<p>${parseMarkdown(data.psdocs[i].content)}</p>`;
+                    if (data.psdocs[i].reply.length > 0) {
                         const collapsible = document.createElement('vscode-collapsible');
                         solution.appendChild(collapsible);
                         collapsible.setAttribute('title', 'Reply');
-                        for (let j = 0; j < message.data.psdocs[i].reply.length; j++) {
+                        for (let j = 0; j < data.psdocs[i].reply.length; j++) {
                             collapsible.innerHTML += `<div style="padding: 10px">
-                            <vscode-badge>${message.data.udict[message.data.psdocs[i].reply[j].owner].uname}</vscode-badge>
-                                ${parseMarkdown(message.data.psdocs[i].reply[j].content)}
+                            <vscode-badge>${data.udict[data.psdocs[i].reply[j].owner].uname}</vscode-badge>
+                                ${parseMarkdown(data.psdocs[i].reply[j].content)}
                             </div>`;
                         }
                     }

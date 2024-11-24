@@ -38,40 +38,31 @@ window.addEventListener('DOMContentLoaded', () => {
 <h1 id="title"></h1>
 <vscode-button disabled icon="check" id="gotoProblem">Go to Problem</vscode-button>
 <vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
-<vscode-tabs selected-index="2">
-    <vscode-tab-header slot="header">Info</vscode-tab-header>
-    <vscode-tab-panel>
-        <div id="info"></div>
-    </vscode-tab-panel>
-    <vscode-tab-header slot="header">Compiler Texts</vscode-tab-header>
-    <vscode-tab-panel>
-        <div id="compilerTexts"></div>
-    </vscode-tab-panel>
-    <vscode-tab-header slot="header">Judge result</vscode-tab-header>
-    <vscode-tab-panel>
-        <div id="record"></div>
-    </vscode-tab-panel>
-    <vscode-tab-header slot="header">Last Code</vscode-tab-header>
-    <vscode-tab-panel>
-        <div id="lastCode"></div>
-    </vscode-tab-panel>
+<vscode-tabs selected-index="1">
+    <vscode-tab-header slot="header" id="infoTab">Info</vscode-tab-header><vscode-tab-panel><p id="info"></p></vscode-tab-panel>
+    <vscode-tab-header slot="header" id="recordTab">Judge result</vscode-tab-header><vscode-tab-panel><p id="record"></p></vscode-tab-panel>
+    <vscode-tab-header slot="header" id="compilerTextsTab">Compiler Texts</vscode-tab-header><vscode-tab-panel><p id="compilerTexts"></p></vscode-tab-panel>
+    <vscode-tab-header slot="header" id="lastCodeTab">Last Code</vscode-tab-header><vscode-tab-panel><p id="lastCode"></p></vscode-tab-panel>
 </vscode-tabs>`;
 
     const title = document.getElementById('title');
     const gotoProblem = document.getElementById('gotoProblem');
     const refresh = document.getElementById('refresh');
+    const infoTab = document.getElementById('infoTab');
     const info = document.getElementById('info');
+    const compilerTextsTab = document.getElementById('compilerTextsTab');
     const compilerTexts = document.getElementById('compilerTexts');
+    const recordTab = document.getElementById('recordTab');
     const record = document.getElementById('record');
+    const lastCodeTab = document.getElementById('lastCodeTab');
     const lastCode = document.getElementById('lastCode');
     window.onmessage = event => {
+        loading.style.display = 'none';
+        content.style.display = '';
         const message = event.data;
+        const data = message.data;
         switch (message.command) {
             case 'record':
-                loading.style.display = 'none';
-                content.style.display = '';
-
-                const data = message.data;
                 data.rdoc.testCases.sort((a, b) => a.id - b.id);
 
                 var parsedSubtasks = {};
@@ -109,6 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 };
                 refresh.disabled = false;
 
+                infoTab.style.display = 'unset';
                 info.innerHTML = `<vscode-table zebra bordered-columns responsive breakpoint="400">
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
@@ -154,10 +146,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-body>
                 </vscode-table>`;
 
+
                 const compilerTextsData = data.rdoc.compilerTexts.join();
-                if (compilerTextsData === '') {
-                    compilerTexts.innerHTML = `<p>No compiler texts</p>`;
-                } else {
+                if (compilerTextsData !== '') {
+                    compilerTextsTab.style.display = 'unset';
                     const compilerTextsEditor = window.CodeMirror(compilerTexts, {
                         autoRefresh: true,
                         value: compilerTextsData,
@@ -167,6 +159,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     compilerTextsEditor.setSize('100%', 'auto');
                 }
 
+                recordTab.style.display = 'unset';
                 var recordHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>#</vscode-table-header-cell>
@@ -207,9 +200,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 </vscode-table>`;
                 record.innerHTML = recordHTML;
 
-                if (data.rdoc.code === '') {
-                    lastCode.innerHTML = `<p>Code is not available to display</p>`;
-                } else {
+                if (data.rdoc.code !== '') {
+                    lastCodeTab.style.display = 'unset';
                     lastCode.innerHTML = `<pre>${data.rdoc.code}</pre>`;
                     renderCode();
                 }

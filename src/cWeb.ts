@@ -12,7 +12,7 @@ export default class cWeb extends webview {
             getTitle: () => `T${tid}`,
             fetchData: (postMessage, addTempFile, parseMarkdown, dispose) => {
                 new fetch({
-                    path: `/d/${settings.domain}/contest/${tid}/scoreboard`
+                    path: `/d/${settings.domain}/contest/${tid}`
                     , addCookie: true
                 }).start().then(async (contestDetail) => {
                     if (contestDetail?.json !== undefined) {
@@ -22,8 +22,22 @@ export default class cWeb extends webview {
                             addTempFile(id);
                         }
                         const message = {
-                            command: 'contest',
+                            command: 'info',
                             data,
+                        };
+                        postMessage(message);
+                    }
+                }).catch(async (e: Error) => {
+                    io.error(e.message);
+                });
+                new fetch({
+                    path: `/d/${settings.domain}/contest/${tid}/scoreboard`
+                    , addCookie: true
+                }).start().then(async (contestDetail) => {
+                    if (contestDetail?.json !== undefined) {
+                        const message = {
+                            command: 'scoreboard',
+                            data: contestDetail.json,
                         };
                         postMessage(message);
                     }
