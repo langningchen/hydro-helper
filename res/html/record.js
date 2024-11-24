@@ -2,40 +2,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const content = document.getElementById('content');
 
-    content.innerHTML = `<style>
-.subtask {
-    font-weight: bold;
-}
-
-.icon {
-    font-family: 'hydro-icons';
-    font-weight: 400;
-    line-height: 1;
-    display: inline-block;
-    margin-right: 0.5rem;
-}
-
-.pass { color: #25ad40 !important; }
-.fail { color: #fb5555 !important; }
-.progress { color: #f39800 !important; }
-.ignored, .pending { color: #9fa0a0 !important; }
-
-.icon.pass:before { content: "\\ea0a"; }
-.icon.fail:before { content: "\\ea0e"; }
-.icon.progress:before { content: "\\ea2d"; }
-.icon.ignored:before { content: "\\ea0e"; }
-.icon.pending:before { content: "\\ea4a"; }
-
-.border-pass { border-left: .1875rem solid #2ac649; }
-.border-fail { border-left: .1875rem solid #fb6666; }
-.border-progress { border-left: .1875rem solid #ffa50f; }
-.border-ignored, .border-pending { border-left: .1875rem solid #a9aaaa; }
-
-#title {
-    font-size: 1.5rem;
-}
-</style>
-<h1 id="title"></h1>
+    content.innerHTML = `<h1 id="title"></h1>
 <vscode-button disabled icon="check" id="gotoProblem">Go to Problem</vscode-button>
 <vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
 <vscode-tabs selected-index="1">
@@ -62,33 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const message = event.data;
         const data = message.data;
         switch (message.command) {
-            case 'record':
-                data.rdoc.testCases.sort((a, b) => a.id - b.id);
-
-                var parsedSubtasks = {};
-                if (data.rdoc.subtasks !== undefined) {
-                    for (const [key, value] of Object.entries(data.rdoc.subtasks)) {
-                        parsedSubtasks[parseInt(key)] = {
-                            score: value.score,
-                            status: value.status,
-                            testCase: [],
-                        };
-                    }
-                }
-                for (const testCase of data.rdoc.testCases) {
-                    if (parsedSubtasks[testCase.subtaskId] === undefined) {
-                        parsedSubtasks[testCase.subtaskId] = {
-                            score: 0,
-                            status: 30,
-                            testCase: [],
-                        };
-                    }
-                    parsedSubtasks[testCase.subtaskId].testCase.push(testCase);
-                }
-
-                title.innerHTML = `<span class="${statusIcon[data.rdoc.status]} icon"></span>
-                <span class="${statusIcon[data.rdoc.status]}">${data.rdoc.score} ${statusName[data.rdoc.status]}</span>`;
-
+            case 'info':
                 gotoProblem.onclick = () => {
                     vscode.postMessage({ command: 'openP', data: data.rdoc.contest ? [data.rdoc.pid, data.rdoc.contest] : [data.rdoc.pid] });
                 };
@@ -146,7 +87,6 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-body>
                 </vscode-table>`;
 
-
                 const compilerTextsData = data.rdoc.compilerTexts.join();
                 if (compilerTextsData !== '') {
                     compilerTextsTab.style.display = 'unset';
@@ -158,6 +98,98 @@ window.addEventListener('DOMContentLoaded', () => {
                     });
                     compilerTextsEditor.setSize('100%', 'auto');
                 }
+
+                if (data.rdoc.code !== '') {
+                    lastCodeTab.style.display = 'unset';
+                    lastCode.innerHTML = `<pre>${data.rdoc.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
+                    renderCode();
+                }
+                break;
+            case 'record':
+                const parsedSubtasks = {};
+                var status = "";
+                var score = "";
+                if (data.status_html) {
+                    const html = data.status_html;
+                    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+                    const title = doc.querySelector('.section__title');
+                    score = parseInt(title.querySelector('.record-status--text').previousElementSibling.innerText.trim());
+                    status = parseInt(findIndex(statusName, title.querySelector('.record-status--text').innerText.trim()));
+
+                    const subtasks = doc.querySelectorAll('.subtask');
+                    for (const subtask of subtasks) {
+                        const subtaskId = subtask.querySelector('.col--case').innerText.trim().replace('#', '');
+                        var status = 0;
+                        var score = 0;
+                        if (subtask.querySelector('.record-status--text') !== null) {
+                            status = parseInt(findIndex(statusName, subtask.querySelector('.record-status--text').innerText.trim()));
+                            score = parseInt(subtask.querySelector('.record-status--text').nextElementSibling.innerText.trim());
+                        }
+                        parsedSubtasks[subtaskId] = {
+                            status: status,
+                            score: score,
+                            testCase: []
+                        };
+                    }
+                    const testCases = doc.querySelectorAll((subtasks.length === 0) ? '.subtask-case' : '.case');
+                    if (Object.keys(parsedSubtasks).length === 0) {
+                        parsedSubtasks[1] = {
+                            status: status,
+                            score: score,
+                            testCase: []
+                        };
+                    }
+                    for (const testCase of testCases) {
+                        var [subtaskId, testCaseId] = testCase.querySelector('.col--case').innerText.trim().replace('#', '').split('-');
+                        if (testCaseId === undefined) {
+                            testCaseId = subtaskId;
+                            subtaskId = 1;
+                        }
+                        const status = parseInt(findIndex(statusName, testCase.querySelector('.record-status--text').innerText.trim()));
+                        const score = parseInt(testCase.querySelector('.record-status--text').nextElementSibling.innerText.trim());
+                        const time = parseTime(testCase.querySelector('.col--time').innerText.trim()) || 0;
+                        const memory = parseMemory(testCase.querySelector('.col--memory').innerText.trim()) || 0;
+                        const message = testCase.querySelector('.message').innerText.trim();
+                        parsedSubtasks[subtaskId].testCase.push({
+                            id: parseInt(testCaseId),
+                            status: status,
+                            score: score || parsedSubtasks[subtaskId].score,
+                            time: time,
+                            memory: memory,
+                            message: message
+                        });
+                    }
+                }
+                else {
+                    status = data.rdoc.status;
+                    score = data.rdoc.score;
+
+                    data.rdoc.testCases.sort((a, b) => a.id - b.id);
+                    if (data.rdoc.subtasks !== undefined) {
+                        for (const [key, value] of Object.entries(data.rdoc.subtasks)) {
+                            parsedSubtasks[parseInt(key)] = {
+                                score: value.score,
+                                status: value.status,
+                                testCase: [],
+                            };
+                        }
+                    }
+                    for (const testCase of data.rdoc.testCases) {
+                        if (parsedSubtasks[testCase.subtaskId] === undefined) {
+                            parsedSubtasks[testCase.subtaskId] = {
+                                score: 0,
+                                status: 30,
+                                testCase: [],
+                            };
+                        }
+                        parsedSubtasks[testCase.subtaskId].testCase.push(testCase);
+                    }
+                }
+
+
+                title.innerHTML = `<span class="icon record-status--icon ${statusIcon[status]}"></span>
+                <span class="record-status--text ${statusIcon[status]}">${score} ${statusName[status]}</span>`;
 
                 recordTab.style.display = 'unset';
                 var recordHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
@@ -173,8 +205,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     recordHTML += `<vscode-table-row class="subtask">
                         <vscode-table-cell>${'#' + subtaskId}</vscode-table-cell>
                         <vscode-table-cell>
-                            <span class="${statusIcon[subtask.status]} icon"></span>
-                            <span class="${statusIcon[subtask.status]}">${statusName[subtask.status]}</span>
+                            <span class="icon record-status--icon ${statusIcon[subtask.status]}"></span>
+                            <span class="record-status--text ${statusIcon[subtask.status]}">${statusName[subtask.status]}</span>
                         </vscode-table-cell>
                         <vscode-table-cell>${subtask.score}</vscode-table-cell>
                         <vscode-table-cell></vscode-table-cell>
@@ -183,10 +215,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
                     for (const testCase of subtask.testCase) {
                         recordHTML += `<vscode-table-row class="testCase">
-                            <vscode-table-cell class="border-${statusIcon[testCase.status]}">${'#' + subtaskId + '-' + testCase.id}</vscode-table-cell>
+                            <vscode-table-cell class="record-status--border ${statusIcon[testCase.status]}">${'#' + subtaskId + '-' + testCase.id}</vscode-table-cell>
                             <vscode-table-cell>
-                                <span class="${statusIcon[testCase.status]} icon"></span>
-                                <span class="${statusIcon[testCase.status]}">${statusName[testCase.status]}</span>
+                                <span class="icon record-status--icon ${statusIcon[testCase.status]}"></span>
+                                <span class="record-status--text ${statusIcon[testCase.status]}">${statusName[testCase.status]}</span>
                                 <span style="margin-left: 10px;">${formatString(testCase.message)}</span>
                             </vscode-table-cell>
                             <vscode-table-cell>${testCase.score}</vscode-table-cell>
@@ -199,12 +231,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 recordHTML += `</vscode-table-body>
                 </vscode-table>`;
                 record.innerHTML = recordHTML;
-
-                if (data.rdoc.code !== '') {
-                    lastCodeTab.style.display = 'unset';
-                    lastCode.innerHTML = `<pre>${data.rdoc.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
-                    renderCode();
-                }
                 break;
             default:
                 break;

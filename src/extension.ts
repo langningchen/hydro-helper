@@ -12,7 +12,6 @@ import settings from './settings';
 import pTree from './pTree';
 import rTree from './rTree';
 import cTree from './cTree';
-import rJWeb from './rJWeb';
 
 export async function activate(context: vscode.ExtensionContext) {
 	storage.secretStorage = context.secrets;
@@ -121,7 +120,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-		new rJWeb(context.extensionPath, rid);
+		new rWeb(context.extensionPath, rid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid: vscode.TreeItem | string | undefined) => {
 		if (tid instanceof vscode.TreeItem) {

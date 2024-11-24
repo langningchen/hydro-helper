@@ -9,6 +9,91 @@
             font-weight: normal;
             font-style: normal;
         }
+
+        vscode-tab-header {
+            display: none;
+        }
+
+        .icon {
+            font-family: hydro-icons !important;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+        }
+
+        .subtask {
+            font-weight: bold;
+        }
+
+        .record-status--text.pass {
+            color: #25ad40;
+        }
+
+        .record-status--text.fail {
+            color: #fb5555;
+        }
+
+        .record-status--text.progress {
+            color: #f39800;
+        }
+
+        .record-status--text.ignored,
+        .record-status--text.pending {
+            color: #9fa0a0;
+        }
+
+        .record-status--icon {
+            display: inline-block;
+            width: 1.15em;
+        }
+
+        .record-status--icon.pass:before {
+            content: "\ea0a";
+            color: #25ad40;
+        }
+
+        .record-status--icon.fail:before {
+            content: "\ea0e";
+            color: #fb5555;
+        }
+
+        .record-status--icon.progress:before {
+            content: "\ea2d";
+            color: #f39800;
+        }
+
+        .record-status--icon.ignored:before {
+            content: "\ea0e";
+            color: #9fa0a0;
+        }
+
+        .record-status--icon.pending:before {
+            content: "\ea4a";
+            color: #9fa0a0;
+        }
+
+        .record-status--border {
+            border-left: .1875rem solid transparent;
+        }
+
+        .record-status--border.pass {
+            border-left-color: #2ac649;
+        }
+
+        .record-status--border.fail {
+            border-left-color: #fb6666;
+        }
+
+        .record-status--border.progress {
+            border-left-color: #ffa50f;
+        }
+
+        .record-status--border.ignored,
+        .record-status--border.pending {
+            border-left-color: #a9aaaa;
+        }
     </style>
 
     <script>
@@ -42,12 +127,6 @@
     <link rel="stylesheet" href="{{codicon}}" id="vscode-codicon-stylesheet">
     <script src="{{static}}"></script>
     <script src="{{dynamic}}"></script>
-
-    <style>
-        vscode-tab-header {
-            display: none;
-        }
-    </style>
 </head>
 
 <body>

@@ -128,6 +128,14 @@ const scoreColor = [
     '#25ad40',
 ];
 
+const findIndex = (statusMap, target) => {
+    for (const [key, value] of Object.entries(statusMap)) {
+        if (value === target) {
+            return key;
+        }
+    }
+    return undefined;
+};
 const getUnit = (data, unit) => {
     if (data >= 1 && data < 2) { return data + ' ' + unit; }
     else { return data + ' ' + unit + 's'; }
@@ -141,11 +149,25 @@ const toTime = (time) => {
     if (time < 12) { return 'about ' + Math.floor(time) + getUnit(time, 'month'); } time = Math.floor(time / 12);
     return 'about ' + Math.floor(time) + getUnit(time, 'year');
 };
+const parseTime = (time) => {
+    if (time.endsWith('ms')) { return parseInt(time.slice(0, -2)); }
+    else if (time.startsWith('≥')) { return parseInt(time.slice(1)); }
+    else {
+        return -1;
+    }
+};
 const toMemory = (time) => {
     if (time < 1024) { return time + 'B'; } time = Math.floor(time / 1024);
     if (time < 1024) { return time + 'KiB'; } time = Math.floor(time / 1024);
     if (time < 1024) { return time + 'MiB'; } time = Math.floor(time / 1024);
     return time + 'GiB';
+};
+const parseMemory = (memory) => {
+    if (memory.endsWith('KiB')) { return parseInt(memory.slice(0, -3)); }
+    else if (memory.endsWith('MiB')) { return parseInt(memory.slice(0, -3)) * 1024; }
+    else {
+        return -1;
+    }
 };
 const toRelativeTime = (time) => {
     const now = new Date().getTime();
