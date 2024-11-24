@@ -80,8 +80,10 @@ export class Problem extends vscode.TreeItem {
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
         }
-        tooltipDoc.appendMarkdown(`- **Difficulty**: ${pdoc.difficulty}\n`);
-        tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.stats.AC}\n`);
+        if (pdoc.difficulty) {
+            tooltipDoc.appendMarkdown(`- **Difficulty**: ${pdoc.difficulty}\n`);
+        }
+        tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.nSubmit}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openP',
