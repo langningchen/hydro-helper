@@ -9,7 +9,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const data = message.data;
         switch (message.command) {
             case 'info':
-                registerButton('check', 'Go to Problem', () => {
+                registerButton('arrow-right', 'Go to Problem', () => {
                     vscode.postMessage({ command: 'openP', data: data.rdoc.contest ? [data.rdoc.pid, data.rdoc.contest] : [data.rdoc.pid] });
                 });
 

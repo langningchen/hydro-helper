@@ -16,22 +16,18 @@ export default class pWeb extends webview {
                     , addCookie: true
                 }).start().then(async (problemDetail) => {
                     if (problemDetail?.json !== undefined) {
-                        const problemContent = JSON.parse(problemDetail.json.pdoc.content);
-                        const markdownContent: { [key: string]: { fetchData: { [key: string]: string }, content: string } } = {};
+                        var problemContent = problemDetail.json.pdoc.content;
+                        problemContent = JSON.parse(problemContent);
                         for (const [key, value] of Object.entries(problemContent)) {
-                            markdownContent[key] = await parseMarkdown(value as string, `/d/${settings.domain}/p/${pid}/file`);
-                            for (const [id, url] of Object.entries(markdownContent[key].fetchData)) {
+                            problemContent[key] = await parseMarkdown(value as string, `/d/${settings.domain}/p/${pid}/file`);
+                            for (const [id, url] of Object.entries(problemContent[key].fetchData)) {
                                 addTempFile(id);
                             }
                         }
+                        problemDetail.json.pdoc.content = problemContent;
                         const message = {
                             command: 'problem',
-                            data: {
-                                pid,
-                                tid,
-                                title: problemDetail.json.pdoc.title,
-                                markdownContent,
-                            },
+                            data: problemDetail.json,
                         };
                         postMessage(message);
                     }

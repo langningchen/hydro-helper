@@ -333,5 +333,8 @@ window.addEventListener('DOMContentLoaded', () => {
         vscode.postMessage({ command: 'refresh' });
         loading.style.display = 'flex';
         content.style.display = 'none';
+        while (buttonGroup.children.length > 1) {
+            buttonGroup.removeChild(buttonGroup.children[1]);
+        }
     });
 });

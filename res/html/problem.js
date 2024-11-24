@@ -1,32 +1,49 @@
 window.addEventListener('DOMContentLoaded', () => {
     registerTab('Problem');
     registerTab('Solution');
+    registerTab('Related');
 
     window.onmessage = event => {
         const message = event.data;
         const data = message.data;
         switch (message.command) {
             case 'problem':
-                setTitle('#' + data.pid + '. ' + data.title);
+                setTitle('#' + data.pdoc.docId + '. ' + data.pdoc.title);
 
                 registerButton('check', 'Submit', () => {
-                    vscode.postMessage({ command: 'submitProblem', data: [data.pid, data.tid] });
+                    vscode.postMessage({ command: 'submitProblem', data: [data.pdoc.docId, data.tdoc?._id] });
                 });
-                if (data.tid !== undefined) {
-                    registerButton('send', 'Open in Problem Set', () => {
-                        vscode.postMessage({ command: 'openP', data: [data.pid] });
+                if (data.tdoc?._id !== undefined) {
+                    registerButton('list-flat', 'Open in Problem Set', () => {
+                        vscode.postMessage({ command: 'openP', data: [data.pdoc.docId] });
                         vscode.postMessage({ command: 'dispose' });
+                    });
+                    registerButton('checklist', 'Open Contest', () => {
+                        vscode.postMessage({ command: 'openC', data: [data.tdoc?._id] });
                     });
                 }
 
-                enableTab('Problem', parseMarkdown(data.markdownContent.zh));
+                enableTab('Problem', parseMarkdown(data.pdoc.content.zh));
                 focusTab('Problem');
+
+                const contestList = data.ctdocs.concat(data.htdocs);
+                contestList.sort((a, b) => new Date(b.beginAt) - new Date(a.beginAt));
+                var relatedHTML = `<p>`;
+                for (let i = 0; i < contestList.length; i++) {
+                    const type = contestList[i].rule === 'homework' ? 'Homework' : 'Contest';
+                    relatedHTML += `<vscode-label>${contestList[i].title}</vscode-label>`;
+                    relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'openC', data: ['${contestList[i]._id}']})">Open ${type}</vscode-button>`;
+                    relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'openP', data: ['${contestList[i].pids}', '${contestList[i]._id}']}); vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
+                    relatedHTML += `<vscode-divider></vscode-divider>`;
+                }
+                relatedHTML += `</p>`;
+                enableTab('Related', relatedHTML);
                 break;
             case 'solution':
                 if (data.psdocs.length === 0) {
                     break;
                 }
-                var solutionHTML = '';
+                var solutionHTML = '<p>';
                 for (let i = 0; i < data.psdocs.length; i++) {
                     solutionHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${data.udict[data.psdocs[i].owner].uname}</vscode-badge>
                     <vscode-badge variant="counter">${data.psdocs[i].vote}</vscode-badge>`;
@@ -44,6 +61,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                     solutionHTML += `<vscode-divider></vscode-divider>`;
                 }
+                solutionHTML += '</p>';
                 enableTab('Solution', solutionHTML);
                 break;
             default:

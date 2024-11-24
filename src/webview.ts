@@ -26,6 +26,7 @@ export default class {
     private tempFiles: string[] = [];
     private webviewData: WebviewData;
     private shortName: string;
+    private disposed: boolean = false;
 
     constructor(data: WebviewData) {
         this.webviewData = data;
@@ -84,7 +85,9 @@ export default class {
     private fetchData = () => {
         outputChannel.trace(`[${this.shortName}    ]`, '"fetchData"');
         this.webviewData.fetchData((message) => {
-            this.panel.webview.postMessage(message);
+            if (!this.disposed) {
+                this.panel.webview.postMessage(message);
+            }
         }, (file) => {
             this.tempFiles.push(file);
         }, async (markdown, prefix?) => {
@@ -127,6 +130,7 @@ export default class {
     };
 
     private cleanup = () => {
+        this.disposed = true;
         outputChannel.trace(`[${this.shortName}    ]`, '"cleanup"');
         for (const id of this.tempFiles) {
             const filePath = vscode.Uri.file(path.join(this.webviewData.extensionPath, 'temp', id));
