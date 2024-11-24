@@ -47,6 +47,9 @@ export default class {
         this.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
             if (message.command === 'refresh') {
                 this.fetchData();
+            }
+            else if (message.command === 'dispose') {
+                this.panel.dispose();
             } else {
                 vscode.commands.executeCommand(`cyezoi.${message.command}`, ...message.data);
             }

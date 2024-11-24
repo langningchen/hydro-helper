@@ -42,6 +42,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 refresh.disabled = false;
                 openInProblemSet.onclick = () => {
                     vscode.postMessage({ command: 'openP', data: [data.pid] });
+                    vscode.postMessage({ command: 'dispose' });
                 };
                 openInProblemSet.disabled = false;
                 openInProblemSet.style.display = (data.tid === undefined ? 'none' : '');
