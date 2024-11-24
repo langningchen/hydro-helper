@@ -202,7 +202,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 if (data.rdoc.code !== '') {
                     lastCodeTab.style.display = 'unset';
-                    lastCode.innerHTML = `<pre>${data.rdoc.code}</pre>`;
+                    lastCode.innerHTML = `<pre>${data.rdoc.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
                     renderCode();
                 }
                 break;

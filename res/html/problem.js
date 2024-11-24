@@ -43,7 +43,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 openInProblemSet.onclick = () => {
                     vscode.postMessage({ command: 'openP', data: [data.pid] });
                 };
-                openInProblemSet.disabled = data.tid === undefined;
+                openInProblemSet.disabled = false;
+                openInProblemSet.style.display = (data.tid === undefined ? 'none' : '');
 
                 problem.innerHTML = parseMarkdown(data.markdownContent.zh);
                 break;
