@@ -286,4 +286,52 @@ const vscode = acquireVsCodeApi();
 
 window.addEventListener('DOMContentLoaded', () => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
+
+    const loading = document.getElementById('loading');
+    const content = document.getElementById('content');
+    const title = document.getElementById('title');
+    const buttonGroup = document.getElementById('buttonGroup');
+    const tabs = document.getElementById('tabs');
+    const tabElements = {};
+
+    window.setTitle = (html) => {
+        title.innerHTML = html;
+    };
+    window.registerButton = (icon, name, callback) => {
+        const button = document.createElement('vscode-button');
+        button.setAttribute('icon', icon);
+        button.innerText = name;
+        button.style.marginRight = '10px';
+        button.onclick = callback;
+        buttonGroup.appendChild(button);
+    };
+    window.registerTab = (name) => {
+        const tabHeader = document.createElement('vscode-tab-header');
+        tabHeader.slot = 'header';
+        tabHeader.innerText = name;
+        tabHeader.style.display = 'none';
+        tabs.appendChild(tabHeader);
+        const tabPanel = document.createElement('vscode-tab-panel');
+        tabs.appendChild(tabPanel);
+        tabElements[name] = [tabHeader, tabPanel];
+    };
+    window.focusTab = (name) => {
+        tabs.setAttribute('selected-index', Object.keys(tabElements).indexOf(name));
+    };
+    window.enableTab = (name, htmlContent) => {
+        loading.style.display = 'none';
+        content.style.display = '';
+        const [tab, panel] = tabElements[name];
+        tab.style.display = 'unset';
+        panel.innerHTML = htmlContent;
+        MathJax.typeset();
+        renderPdf();
+        renderCode();
+    };
+
+    registerButton('refresh', 'Refresh', () => {
+        vscode.postMessage({ command: 'refresh' });
+        loading.style.display = 'flex';
+        content.style.display = 'none';
+    });
 });

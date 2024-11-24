@@ -1,48 +1,19 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const loading = document.getElementById('loading');
-    const content = document.getElementById('content');
+    registerTab('Info');
+    registerTab('Judge result');
+    registerTab('Compiler Texts');
+    registerTab('Last Code');
 
-    content.innerHTML = `<h1 id="title"></h1>
-<vscode-button disabled icon="check" id="gotoProblem">Go to Problem</vscode-button>
-<vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
-<vscode-tabs selected-index="1">
-    <vscode-tab-header slot="header" id="infoTab">Info</vscode-tab-header><vscode-tab-panel><p id="info"></p></vscode-tab-panel>
-    <vscode-tab-header slot="header" id="recordTab">Judge result</vscode-tab-header><vscode-tab-panel><p id="record"></p></vscode-tab-panel>
-    <vscode-tab-header slot="header" id="compilerTextsTab">Compiler Texts</vscode-tab-header><vscode-tab-panel><p id="compilerTexts"></p></vscode-tab-panel>
-    <vscode-tab-header slot="header" id="lastCodeTab">Last Code</vscode-tab-header><vscode-tab-panel><p id="lastCode"></p></vscode-tab-panel>
-</vscode-tabs>`;
-
-    const title = document.getElementById('title');
-    const gotoProblem = document.getElementById('gotoProblem');
-    const refresh = document.getElementById('refresh');
-    const infoTab = document.getElementById('infoTab');
-    const info = document.getElementById('info');
-    const compilerTextsTab = document.getElementById('compilerTextsTab');
-    const compilerTexts = document.getElementById('compilerTexts');
-    const recordTab = document.getElementById('recordTab');
-    const record = document.getElementById('record');
-    const lastCodeTab = document.getElementById('lastCodeTab');
-    const lastCode = document.getElementById('lastCode');
     window.onmessage = event => {
-        loading.style.display = 'none';
-        content.style.display = '';
         const message = event.data;
         const data = message.data;
         switch (message.command) {
             case 'info':
-                gotoProblem.onclick = () => {
+                registerButton('check', 'Go to Problem', () => {
                     vscode.postMessage({ command: 'openP', data: data.rdoc.contest ? [data.rdoc.pid, data.rdoc.contest] : [data.rdoc.pid] });
-                };
-                gotoProblem.disabled = false;
-                refresh.onclick = () => {
-                    vscode.postMessage({ command: 'refresh' });
-                    loading.style.display = 'flex';
-                    content.style.display = 'none';
-                };
-                refresh.disabled = false;
+                });
 
-                infoTab.style.display = 'unset';
-                info.innerHTML = `<vscode-table zebra bordered-columns responsive breakpoint="400">
+                enableTab('Info', `<vscode-table zebra bordered-columns responsive breakpoint="400">
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -85,24 +56,13 @@ window.addEventListener('DOMContentLoaded', () => {
                             <vscode-table-cell>${toMemory(data.rdoc.memory)}</vscode-table-cell>
                         </vscode-table-row>
                     </vscode-table-body>
-                </vscode-table>`;
+                </vscode-table>`);
 
-                const compilerTextsData = data.rdoc.compilerTexts.join();
-                if (compilerTextsData !== '') {
-                    compilerTextsTab.style.display = 'unset';
-                    const compilerTextsEditor = window.CodeMirror(compilerTexts, {
-                        autoRefresh: true,
-                        value: compilerTextsData,
-                        readOnly: true,
-                        theme: 'material',
-                    });
-                    compilerTextsEditor.setSize('100%', 'auto');
+                if (data.rdoc.compilerTexts.length > 0) {
+                    enableTab('Compiler Texts', `<pre>${data.rdoc.compilerTexts.join('\n').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`);
                 }
-
                 if (data.rdoc.code !== '') {
-                    lastCodeTab.style.display = 'unset';
-                    lastCode.innerHTML = `<pre>${data.rdoc.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`;
-                    renderCode();
+                    enableTab('Last Code', `<pre>${data.rdoc.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`);
                 }
                 break;
             case 'record':
@@ -133,7 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         };
                     }
                     const testCases = doc.querySelectorAll((subtasks.length === 0) ? '.subtask-case' : '.case');
-                    if (Object.keys(parsedSubtasks).length === 0) {
+                    if (Object.keys(parsedSubtasks).length === 0 && testCases.length > 0) {
                         parsedSubtasks[1] = {
                             status: status,
                             score: score,
@@ -187,50 +147,49 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
+                setTitle(`<span class="icon record-status--icon ${statusIcon[status]}"></span><span class="record-status--text ${statusIcon[status]}">${score} ${statusName[status]}</span>`);
 
-                title.innerHTML = `<span class="icon record-status--icon ${statusIcon[status]}"></span>
-                <span class="record-status--text ${statusIcon[status]}">${score} ${statusName[status]}</span>`;
-
-                recordTab.style.display = 'unset';
-                var recordHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
-                    <vscode-table-header slot="header">
-                        <vscode-table-header-cell>#</vscode-table-header-cell>
-                        <vscode-table-header-cell>Status</vscode-table-header-cell>
-                        <vscode-table-header-cell>Score</vscode-table-header-cell>
-                        <vscode-table-header-cell>Time Cost</vscode-table-header-cell>
-                        <vscode-table-header-cell>Memory Cost</vscode-table-header-cell>
-                    </vscode-table-header>
-                    <vscode-table-body slot="body">`;
-                for (const [subtaskId, subtask] of Object.entries(parsedSubtasks)) {
-                    recordHTML += `<vscode-table-row class="subtask">
-                        <vscode-table-cell>${'#' + subtaskId}</vscode-table-cell>
-                        <vscode-table-cell>
-                            <span class="icon record-status--icon ${statusIcon[subtask.status]}"></span>
-                            <span class="record-status--text ${statusIcon[subtask.status]}">${statusName[subtask.status]}</span>
-                        </vscode-table-cell>
-                        <vscode-table-cell>${subtask.score}</vscode-table-cell>
-                        <vscode-table-cell></vscode-table-cell>
-                        <vscode-table-cell></vscode-table-cell>
-                    </vscode-table-row>`;
-
-                    for (const testCase of subtask.testCase) {
-                        recordHTML += `<vscode-table-row class="testCase">
-                            <vscode-table-cell class="record-status--border ${statusIcon[testCase.status]}">${'#' + subtaskId + '-' + testCase.id}</vscode-table-cell>
+                if (Object.keys(parsedSubtasks).length > 0) {
+                    var recordHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
+                        <vscode-table-header slot="header">
+                            <vscode-table-header-cell>#</vscode-table-header-cell>
+                            <vscode-table-header-cell>Status</vscode-table-header-cell>
+                            <vscode-table-header-cell>Score</vscode-table-header-cell>
+                            <vscode-table-header-cell>Time Cost</vscode-table-header-cell>
+                            <vscode-table-header-cell>Memory Cost</vscode-table-header-cell>
+                        </vscode-table-header>
+                        <vscode-table-body slot="body">`;
+                    for (const [subtaskId, subtask] of Object.entries(parsedSubtasks)) {
+                        recordHTML += `<vscode-table-row class="subtask">
+                            <vscode-table-cell>${'#' + subtaskId}</vscode-table-cell>
                             <vscode-table-cell>
-                                <span class="icon record-status--icon ${statusIcon[testCase.status]}"></span>
-                                <span class="record-status--text ${statusIcon[testCase.status]}">${statusName[testCase.status]}</span>
-                                <span style="margin-left: 10px;">${formatString(testCase.message)}</span>
+                                <span class="icon record-status--icon ${statusIcon[subtask.status]}"></span>
+                                <span class="record-status--text ${statusIcon[subtask.status]}">${statusName[subtask.status]}</span>
                             </vscode-table-cell>
-                            <vscode-table-cell>${testCase.score}</vscode-table-cell>
-                            <vscode-table-cell>${toTime(testCase.time)}</vscode-table-cell>
-                            <vscode-table-cell>${toMemory(testCase.memory)}</vscode-table-cell>
+                            <vscode-table-cell>${subtask.score}</vscode-table-cell>
+                            <vscode-table-cell></vscode-table-cell>
+                            <vscode-table-cell></vscode-table-cell>
                         </vscode-table-row>`;
-                    }
-                }
 
-                recordHTML += `</vscode-table-body>
-                </vscode-table>`;
-                record.innerHTML = recordHTML;
+                        for (const testCase of subtask.testCase) {
+                            recordHTML += `<vscode-table-row class="testCase">
+                                <vscode-table-cell class="record-status--border ${statusIcon[testCase.status]}">${'#' + subtaskId + '-' + testCase.id}</vscode-table-cell>
+                                <vscode-table-cell>
+                                    <span class="icon record-status--icon ${statusIcon[testCase.status]}"></span>
+                                    <span class="record-status--text ${statusIcon[testCase.status]}">${statusName[testCase.status]}</span>
+                                    <span style="margin-left: 10px;">${formatString(testCase.message)}</span>
+                                </vscode-table-cell>
+                                <vscode-table-cell>${testCase.score}</vscode-table-cell>
+                                <vscode-table-cell>${toTime(testCase.time)}</vscode-table-cell>
+                                <vscode-table-cell>${toMemory(testCase.memory)}</vscode-table-cell>
+                            </vscode-table-row>`;
+                        }
+                    }
+                    recordHTML += `</vscode-table-body>
+                    </vscode-table>`;
+                    enableTab('Judge result', recordHTML);
+                    focusTab('Judge result');
+                }
                 break;
             default:
                 break;

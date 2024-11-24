@@ -1,41 +1,15 @@
 window.addEventListener('DOMContentLoaded', () => {
-    const loading = document.getElementById('loading');
-    const content = document.getElementById('content');
-
-    content.innerHTML = `<h1 id="title"></h1>
-<vscode-button disabled icon="refresh" id="refresh">Refresh</vscode-button>
-<vscode-tabs selected-index="1">
-    <vscode-tab-header slot="header" id="infoTab">Info</vscode-tab-header><vscode-tab-panel><p id="info"></p></vscode-tab-panel>
-    <vscode-tab-header slot="header" id="scoreboardTab">Scoreboard</vscode-tab-header><vscode-tab-panel><p id="scoreboard"></p></vscode-tab-panel>
-</vscode-tabs>`;
-
-    const title = document.getElementById('title');
-    const refresh = document.getElementById('refresh');
-    const infoTab = document.getElementById('infoTab');
-    const info = document.getElementById('info');
-    const scoreboardTab = document.getElementById('scoreboardTab');
-    const scoreboard = document.getElementById('scoreboard');
+    registerTab('Info');
+    registerTab('Scoreboard');
 
     window.onmessage = (event) => {
-        loading.style.display = 'none';
-        content.style.display = '';
         const message = event.data;
         const data = message.data;
         switch (message.command) {
             case 'info':
-                infoTab.style.display = 'unset';
-
-                title.innerHTML = `${data.tdoc.title}`;
-
-                refresh.onclick = () => {
-                    vscode.postMessage({ command: 'refresh' });
-                    loading.style.display = 'flex';
-                    content.style.display = 'none';
-                };
-                refresh.disabled = false;
-
+                setTitle(data.tdoc.title);
                 // TODO: display the owner name
-                info.innerHTML = `<vscode-table zebra bordered-columns responsive breakpoint="400">
+                enableTab('Info', `<vscode-table zebra bordered-columns responsive breakpoint="400">
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -76,12 +50,9 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-body>
                 </vscode-table>
                 <vscode-divider></vscode-divider>
-                ${parseMarkdown(data.tdoc.content)}`;
-                renderPdf();
+                ${parseMarkdown(data.tdoc.content)}`);
                 break;
             case 'scoreboard':
-                scoreboardTab.style.display = 'unset';
-
                 var scoreboardHTML = `<vscode-table zebra bordered-rows resizable>
                     <vscode-table-header slot="header">`;
                 var isFirst = true;
@@ -137,7 +108,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 scoreboardHTML += `</vscode-table-body></vscode-table>`;
-                scoreboard.innerHTML = scoreboardHTML;
+                enableTab('Scoreboard', scoreboardHTML);
+                focusTab('Scoreboard');
                 break;
             default:
                 break;
