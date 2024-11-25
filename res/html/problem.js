@@ -18,8 +18,9 @@ window.addEventListener('DOMContentLoaded', () => {
                         vscode.postMessage({ command: 'openP', data: [data.pdoc.docId] });
                         vscode.postMessage({ command: 'dispose' });
                     });
-                    registerButton('checklist', 'Open Contest', () => {
-                        vscode.postMessage({ command: 'openC', data: [data.tdoc?._id] });
+                    const type = data.tdoc.rule === 'homework' ? 'Homework' : 'Contest';
+                    registerButton('checklist', `Open ${type}`, () => {
+                        vscode.postMessage({ command: `open${type.charAt(0)}`, data: [data.tdoc._id] });
                     });
                 }
 
@@ -32,7 +33,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 for (let i = 0; i < contestList.length; i++) {
                     const type = contestList[i].rule === 'homework' ? 'Homework' : 'Contest';
                     relatedHTML += `<vscode-label>${contestList[i].title}</vscode-label>`;
-                    relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'openC', data: ['${contestList[i]._id}']})">Open ${type}</vscode-button>`;
+                    relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contestList[i]._id}']})">Open ${type}</vscode-button>`;
                     relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'openP', data: ['${contestList[i].pids}', '${contestList[i]._id}']}); vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
                     relatedHTML += `<vscode-divider></vscode-divider>`;
                 }

@@ -98,8 +98,8 @@ export class Contest extends vscode.TreeItem {
         }
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openC',
-            title: 'Open Contest',
+            command: 'cyezoi.open' + type.toUpperCase().charAt(0),
+            title: 'Open ' + type.toUpperCase(),
             arguments: [tdoc._id],
         };
     }

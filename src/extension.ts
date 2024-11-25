@@ -215,6 +215,18 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		new cWeb(context.extensionPath, tid);
 	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.openH', async (tid: vscode.TreeItem | string | undefined) => {
+		if (tid instanceof vscode.TreeItem) {
+			tid = undefined;
+		}
+		if (tid === undefined) {
+			tid = await io.input('Please input the homework ID');
+			if (tid === undefined) {
+				return;
+			}
+		}
+		new cWeb(context.extensionPath, tid, true);
+	}));
 
 	disposables.push(vscode.window.registerTreeDataProvider('pTree', new pTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('rTree', new rTree()));
