@@ -63,7 +63,7 @@ export class Record extends vscode.TreeItem {
         else {
             this.description = '*';
         }
-        this.iconPath = path.join(__dirname, '..', '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
+        this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
         const TooltipDoc = new vscode.MarkdownString();
         TooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[rdoc.status]}\n`);
         TooltipDoc.appendMarkdown(`- **User**: ${udoc}\n`);

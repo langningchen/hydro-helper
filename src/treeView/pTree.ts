@@ -41,7 +41,7 @@ export class Problem extends vscode.TreeItem {
             tooltipDoc.appendMarkdown(`- **Tags**: ${pdoc.tag.join(', ')}\n`);
         }
         if (psdoc && psdoc.status) {
-            this.iconPath = path.join(__dirname, '..', '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
+            this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
             this.description += '  ' + psdoc.score + ' ' + utils.statusName[psdoc.status];
@@ -64,7 +64,7 @@ export class ProblemRecord extends vscode.TreeItem {
         super(rdoc.score + ' ' + utils.statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.contextValue = 'record';
         const tooltipDoc = new vscode.MarkdownString();
-        this.iconPath = path.join(__dirname, '..', '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
+        this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
         tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[rdoc.status]}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);
         if (rdoc.time) { tooltipDoc.appendMarkdown(`- **Time**: ${utils.toTime(rdoc.time)}\n`); }
