@@ -214,7 +214,6 @@ const renderPdf = async () => {
                 scale: document.body.clientWidth / pageData.getViewport({ scale: 1.0 }).width,
             });
 
-
             canvas.width = Math.floor(viewport.width);
             canvas.height = Math.floor(viewport.height);
             canvas.style.width = Math.floor(viewport.width) + "px";

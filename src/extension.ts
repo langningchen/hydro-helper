@@ -103,7 +103,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}
 		const code = await vscode.workspace.fs.readFile(file[0]);
 
-
 		const response = await new fetch({
 			path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 			body: {
@@ -230,7 +229,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	disposables.push(vscode.window.registerTreeDataProvider('rTree', new rTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('cTree', new cTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('hTree', new cTree(true)));
-
 
 	auth.setLoggedIn(await auth.getLoginStatus());
 
