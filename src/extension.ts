@@ -11,7 +11,7 @@ import pTree from './treeView/pTree';
 import rTree from './treeView/rTree';
 import cTree from './treeView/cTree';
 
-export async function activate(context: vscode.ExtensionContext) {
+export const activate = async (context: vscode.ExtensionContext) => {
 	storage.secretStorage = context.secrets;
 
 	const disposables: vscode.Disposable[] = [];
@@ -59,7 +59,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			location: vscode.ProgressLocation.Notification,
 			title: 'Getting language list...',
 			cancellable: true,
-		}, async (progress, token) => {
+		}, async (_progress, token) => {
 			const abortController = new AbortController();
 			token.onCancellationRequested(() => {
 				abortController.abort();
@@ -235,8 +235,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	auth.setLoggedIn(await auth.getLoginStatus());
 
 	outputChannel.info('Extension activated');
-}
+};
 
-export function deactivate() {
+export const deactivate = () => {
 	outputChannel.info('Extension deactivated');
-}
+};

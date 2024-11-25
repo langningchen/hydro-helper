@@ -1,6 +1,12 @@
 import * as vscode from 'vscode';
 import { io, outputChannel } from '../io';
 
+interface getChildrenParams {
+    page: number
+    setPageCounter: (pageCounter: number) => void
+    element?: vscode.TreeItem
+};
+
 export default class <T extends vscode.TreeItem> implements vscode.TreeDataProvider<T> {
     protected _onDidChangeTreeData: vscode.EventEmitter<T | undefined> = new vscode.EventEmitter<any | undefined>();
     readonly onDidChangeTreeData: vscode.Event<T | undefined> = this._onDidChangeTreeData.event;
@@ -8,9 +14,9 @@ export default class <T extends vscode.TreeItem> implements vscode.TreeDataProvi
     private pageCounter: number = -1;
     private type: string;
     private shortType: string;
-    private _getChildren: (page: number, setPageCounter: (pageCounter: number) => void, element?: vscode.TreeItem) => Promise<T[]>;
+    private _getChildren: (params: getChildrenParams) => Promise<T[]>;
 
-    constructor(type: string, _getChildren: (page: number, setPageCounter: (pageCounter: number) => void, element?: vscode.TreeItem) => Promise<T[]>) {
+    constructor(type: string, _getChildren: (params: getChildrenParams) => Promise<T[]>) {
         this.type = type;
         this.shortType = this.type.charAt(0);
         this._getChildren = _getChildren;
@@ -43,10 +49,11 @@ export default class <T extends vscode.TreeItem> implements vscode.TreeDataProvi
     async getChildren(element?: vscode.TreeItem): Promise<T[]> {
         outputChannel.trace(`[${this.shortType}Tree   ]`, `"getChildren"`, arguments);
         try {
-            return this._getChildren(this.page, (pageCounter: number) => {
-                debugger;
-                this.pageCounter = pageCounter;
-            }, element);
+            return this._getChildren({
+                page: this.page,
+                setPageCounter: (pageCounter: number) => { this.pageCounter = pageCounter; },
+                element
+            });
         } catch (e) {
             io.error((e as Error).message);
             return [];

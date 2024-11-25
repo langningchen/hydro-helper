@@ -85,7 +85,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         return this.currentName;
     }
 
-    async getSessions(scopes?: readonly string[], options?: vscode.AuthenticationProviderSessionOptions): Promise<vscode.AuthenticationSession[]> {
+    async getSessions(_scopes?: readonly string[], _options?: vscode.AuthenticationProviderSessionOptions): Promise<vscode.AuthenticationSession[]> {
         outputChannel.trace('[auth    ]', '"getSessions"', arguments);
         this.ensureInitialized();
         const token = await this.cacheTokenFromStorage();
@@ -119,7 +119,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                     location: vscode.ProgressLocation.Notification,
                     title: 'Logging in...',
                     cancellable: true,
-                }, async (progress, token) => {
+                }, async (_progress, token) => {
                     const abortController = new AbortController();
                     token.onCancellationRequested(() => {
                         abortController.abort();
@@ -170,7 +170,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 location: vscode.ProgressLocation.Notification,
                 title: 'Checking your login status...',
                 cancellable: true,
-            }, async (progress, token) => {
+            }, async (_progress, token) => {
                 const abortController = new AbortController();
                 token.onCancellationRequested(() => {
                     abortController.abort();

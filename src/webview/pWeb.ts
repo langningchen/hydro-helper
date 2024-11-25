@@ -10,7 +10,7 @@ export default class pWeb extends webview {
             extensionPath,
             data: { pid, tid },
             getTitle: () => 'P' + pid + (tid !== undefined ? ` - T${tid}` : ''),
-            fetchData: (postMessage, addTempFile, parseMarkdown) => {
+            fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {
                 new fetch({
                     path: `/d/${settings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '')
                     , addCookie: true

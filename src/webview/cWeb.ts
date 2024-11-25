@@ -11,7 +11,7 @@ export default class cWeb extends webview {
             extensionPath,
             data: { tid },
             getTitle: () => `T${tid}`,
-            fetchData: (postMessage, addTempFile, parseMarkdown, dispose) => {
+            fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {
                 new fetch({
                     path: `/d/${settings.domain}/${type}/${tid}`, addCookie: true
                 }).start().then(async (contestDetail) => {

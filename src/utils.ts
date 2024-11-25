@@ -292,7 +292,7 @@ export const formatString = (str: string | { message: string, params: string[] }
     if (typeof str === 'string') {
         return str;
     }
-    return str.message.replace(/{(\d+)}/g, (match, number) => {
+    return str.message.replace(/{(\d+)}/g, (_match, number) => {
         return str.params[number];
     });
 };

@@ -8,7 +8,7 @@ import treeView from './treeView';
 export default class extends treeView<Contest | ContestProblem | ContestRecord> {
     constructor(homework: boolean = false) {
         const type = homework ? 'homework' : 'contest';
-        super(type, async (page, setPageCounter, element) => {
+        super(type, async ({ page, setPageCounter, element }) => {
             if (element === undefined) {
                 const response = await new fetch({ path: `/d/${settings.domain}/${type}?page=${page}`, addCookie: true }).start();
                 setPageCounter(response.json.tpcount);
@@ -73,7 +73,7 @@ export class ContestProblem extends vscode.TreeItem {
         this.description = pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
         if (psdoc && psdoc.status) {
-            this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
+            this.iconPath = path.join(__dirname, '..', '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
         }
@@ -92,7 +92,7 @@ export class ContestRecord extends vscode.TreeItem {
     constructor(rdoc: utils.RecordDoc) {
         super(rdoc.score + ' ' + utils.statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.contextValue = 'record';
-        this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
+        this.iconPath = path.join(__dirname, '..', '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
         const tooltipDoc = new vscode.MarkdownString();
         tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[rdoc.status]}\n`);
         tooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`);

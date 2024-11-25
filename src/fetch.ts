@@ -64,7 +64,7 @@ export default class {
         outputChannel.trace('[fetch   ]', '"checkError"');
         if (this.returnValue.json.error) {
             const errorData = <HydroError>this.returnValue.json.error;
-            const message = errorData.message.replace(/{(\d+)}/g, (match, number) => {
+            const message = errorData.message.replace(/{(\d+)}/g, (_match, number) => {
                 return errorData.params[number];
             });
             if (this.options.returnError) {

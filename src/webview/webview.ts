@@ -5,15 +5,19 @@ import { marked } from 'marked';
 import auth from '../auth';
 import settings from '../settings';
 
+interface fetchDataParams {
+    postMessage: (message: any) => void
+    addTempFile: (file: string) => void
+    parseMarkdown: (markdown: string, prefix?: string) => Promise<{ fetchData: { [key: string]: string }, content: string }>
+    dispose: () => void
+};
+
 export interface WebviewData {
     name: string;
     extensionPath: string;
     data: { [key: string]: any };
     getTitle: () => string;
-    fetchData: (postMessage: (message: any) => void,
-        addTempFile: (file: string) => void,
-        parseMarkdown: (markdown: string, prefix?: string) => Promise<{ fetchData: { [key: string]: string }, content: string }>,
-        dispose: () => void) => void;
+    fetchData: (params: fetchDataParams) => void;
 }
 
 interface WebviewMessage {
@@ -84,48 +88,53 @@ export default class {
 
     private fetchData = () => {
         outputChannel.trace(`[${this.shortName}    ]`, '"fetchData"');
-        this.webviewData.fetchData((message) => {
-            if (!this.disposed) {
-                this.panel.webview.postMessage(message);
-            }
-        }, (file) => {
-            this.tempFiles.push(file);
-        }, async (markdown, prefix?) => {
-            const fetchData: { [key: string]: string } = {};
-            markdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (match, type, url) => {
-                if (url.startsWith('file://')) {
-                    url = prefix + '/' + url.substring(7);
+        this.webviewData.fetchData({
+            postMessage: (message) => {
+                if (!this.disposed) {
+                    this.panel.webview.postMessage(message);
                 }
-                url = url.replace(/\?.*$/, '');
-                const id = Math.random().toString(36).slice(2);
-                fetchData[id] = url;
-                if (type === 'video') {
-                    return `<video src="{{${id}}}" controls></video>`;
-                }
-                else if (type === 'pdf') {
-                    return `<div data-src="{{${id}}}" class="pdf"></div>`;
-                }
-                return '<a href="' + id + '">' + url + '</a>';
-            });
-            for (const [key, value] of Object.entries(fetchData)) {
-                const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}`, {
-                    headers: {
-                        'cookie': await auth.getCookiesValue(),
-                    },
-                    redirect: 'follow',
+            },
+            addTempFile: (file) => {
+                this.tempFiles.push(file);
+            },
+            parseMarkdown: async (markdown, prefix?) => {
+                const fetchData: { [key: string]: string } = {};
+                markdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
+                    if (url.startsWith('file://')) {
+                        url = prefix + '/' + url.substring(7);
+                    }
+                    url = url.replace(/\?.*$/, '');
+                    const id = Math.random().toString(36).slice(2);
+                    fetchData[id] = url;
+                    if (type === 'video') {
+                        return `<video src="{{${id}}}" controls></video>`;
+                    }
+                    else if (type === 'pdf') {
+                        return `<div data-src="{{${id}}}" class="pdf"></div>`;
+                    }
+                    return '<a href="' + id + '">' + url + '</a>';
                 });
-                const filePath = vscode.Uri.file(`${this.webviewData.extensionPath}/temp/${key}`);
-                await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
-                const webviewUri = this.panel.webview.asWebviewUri(filePath);
-                outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
-                fetchData[key] = webviewUri.toString();
+                for (const [key, value] of Object.entries(fetchData)) {
+                    const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}`, {
+                        headers: {
+                            'cookie': await auth.getCookiesValue(),
+                        },
+                        redirect: 'follow',
+                    });
+                    const filePath = vscode.Uri.file(`${this.webviewData.extensionPath}/temp/${key}`);
+                    await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
+                    const webviewUri = this.panel.webview.asWebviewUri(filePath);
+                    outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
+                    fetchData[key] = webviewUri.toString();
+                }
+                return {
+                    fetchData,
+                    content: await marked(markdown),
+                };
+            },
+            dispose: () => {
+                this.panel.dispose();
             }
-            return {
-                fetchData,
-                content: await marked(markdown),
-            };
-        }, () => {
-            this.panel.dispose();
         });
     };
 
