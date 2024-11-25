@@ -1,17 +1,15 @@
 import * as vscode from 'vscode';
-import * as utils from './utils';
 import auth from './auth';
 import fetch from './fetch';
 import { outputChannel, io } from './io';
-import { WebSocket } from 'ws';
 import storage from './storage';
-import rWeb from './rWeb';
-import pWeb from './pWeb';
-import cWeb from './cWeb';
 import settings from './settings';
-import pTree from './pTree';
-import rTree from './rTree';
-import cTree from './cTree';
+import rWeb from './webview/rWeb';
+import pWeb from './webview/pWeb';
+import cWeb from './webview/cWeb';
+import pTree from './treeView/pTree';
+import rTree from './treeView/rTree';
+import cTree from './treeView/cTree';
 
 export async function activate(context: vscode.ExtensionContext) {
 	storage.secretStorage = context.secrets;

@@ -1,6 +1,6 @@
-import { io } from './io';
-import fetch from './fetch';
-import settings from './settings';
+import { io } from '../io';
+import fetch from '../fetch';
+import settings from '../settings';
 import webview from './webview';
 
 export default class pWeb extends webview {

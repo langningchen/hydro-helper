@@ -1,35 +1,44 @@
 import * as vscode from 'vscode';
-import * as utils from './utils';
-import fetch from './fetch';
+import * as utils from '../utils';
+import fetch from '../fetch';
 import path from 'path';
-import { io, outputChannel } from './io';
-import settings from './settings';
+import { io } from '../io';
+import settings from '../settings';
 import { WebSocket } from 'ws';
-import auth from './auth';
+import auth from '../auth';
 import { parseFromString } from 'dom-parser';
+import treeView from './treeView';
 
-export default class implements vscode.TreeDataProvider<Record> {
-    private _onDidChangeTreeData: vscode.EventEmitter<Record | undefined> = new vscode.EventEmitter<any | undefined>();
-    readonly onDidChangeTreeData: vscode.Event<Record | undefined> = this._onDidChangeTreeData.event;
-    private page: number = 1;
+export default class extends treeView<Record> {
     private records: Record[] = [];
     private pendingRecords: Record[] = [];
 
     constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshRTree', () => {
-            outputChannel.trace('[rTree   ]', '"refreshRTree"');
-            return this._onDidChangeTreeData.fire(undefined);
-        });
-        vscode.commands.registerCommand('cyezoi.rTreeNxt', () => {
-            outputChannel.trace('[rTree   ]', '"rTreeNxt"');
-            this.page++;
-            return this._onDidChangeTreeData.fire(undefined);
-        });
-        vscode.commands.registerCommand('cyezoi.rTreePre', () => {
-            outputChannel.trace('[rTree   ]', '"rTreePre"');
-            if (this.page > 1) { this.page--; }
-            else { io.warn('You are already on the first page.'); }
-            return this._onDidChangeTreeData.fire(undefined);
+        super('record', async (page, setPageCount, element) => {
+            setPageCount(1145141919810);
+            if (this.pendingRecords.length) {
+                while (this.pendingRecords.length) {
+                    const pendingRecord = this.pendingRecords.shift()!;
+                    var replace: boolean = false;
+                    for (let i = 0; i < this.records.length; i++) {
+                        if (this.records[i].id === pendingRecord.id) {
+                            this.records[i] = pendingRecord;
+                            replace = true;
+                            break;
+                        }
+                    }
+                    if (!replace) {
+                        this.records.unshift(pendingRecord);
+                    }
+                }
+                return this.records;
+            }
+            const response = await new fetch({ path: `/d/${settings.domain}/record?page=${page}`, addCookie: true }).start();
+            this.records = [];
+            for (const rdoc of response.json.rdocs) {
+                this.records.push(new Record(rdoc, response.json.pdict[rdoc.pid], response.json.udict[rdoc.uid]));
+            }
+            return this.records;
         });
 
         new Promise(async () => {
@@ -94,43 +103,6 @@ export default class implements vscode.TreeDataProvider<Record> {
                 clearInterval(interval);
             });
         });
-    }
-
-    getTreeItem(element: Record): vscode.TreeItem {
-        outputChannel.trace('[rTree   ]', '"getTreeItem"', arguments);
-        return element;
-    }
-
-    async getChildren(): Promise<Record[]> {
-        outputChannel.trace('[rTree   ]', '"getChildren"');
-        if (this.pendingRecords.length) {
-            while (this.pendingRecords.length) {
-                const pendingRecord = this.pendingRecords.shift()!;
-                var replace: boolean = false;
-                for (let i = 0; i < this.records.length; i++) {
-                    if (this.records[i].id === pendingRecord.id) {
-                        this.records[i] = pendingRecord;
-                        replace = true;
-                        break;
-                    }
-                }
-                if (!replace) {
-                    this.records.unshift(pendingRecord);
-                }
-            }
-            return this.records;
-        }
-        try {
-            const response = await new fetch({ path: `/d/${settings.domain}/record?page=${this.page}`, addCookie: true }).start();
-            this.records = [];
-            for (const rdoc of response.json.rdocs) {
-                this.records.push(new Record(rdoc, response.json.pdict[rdoc.pid], response.json.udict[rdoc.uid]));
-            }
-            return this.records;
-        } catch (e) {
-            io.error((e as Error).message);
-            return [];
-        }
     }
 }
 

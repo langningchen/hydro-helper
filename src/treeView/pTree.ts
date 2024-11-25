@@ -1,50 +1,18 @@
 import * as vscode from 'vscode';
-import * as utils from './utils';
-import fetch from './fetch';
+import * as utils from '../utils';
+import fetch from '../fetch';
 import path from 'path';
-import { io, outputChannel } from './io';
-import settings from './settings';
+import settings from '../settings';
 import { Record } from './rTree';
-import storage from './storage';
+import storage from '../storage';
+import treeView from './treeView';
 
-export default class implements vscode.TreeDataProvider<Problem> {
-    private _onDidChangeTreeData: vscode.EventEmitter<Problem | undefined> = new vscode.EventEmitter<any | undefined>();
-    readonly onDidChangeTreeData: vscode.Event<Problem | undefined> = this._onDidChangeTreeData.event;
-    private page: number = 1;
-    private pageCounter: number = -1;
-
+export default class extends treeView<Problem | ProblemRecord> {
     constructor() {
-        vscode.commands.registerCommand('cyezoi.refreshPTree', () => {
-            outputChannel.trace('[pTree   ]', '"refreshPTree"');
-            return this._onDidChangeTreeData.fire(undefined);
-        });
-        vscode.commands.registerCommand('cyezoi.pTreeNxt', () => {
-            outputChannel.trace('[pTree   ]', '"pTreeNxt"');
-            if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
-            if (this.page < this.pageCounter) { this.page++; }
-            else { io.warn('You are already on the last page.'); }
-            return this._onDidChangeTreeData.fire(undefined);
-        });
-        vscode.commands.registerCommand('cyezoi.pTreePre', () => {
-            outputChannel.trace('[pTree   ]', '"pTreePre"');
-            if (this.pageCounter === -1) { io.warn('Please expand the problem tree first.'); return; }
-            if (this.page > 1) { this.page--; }
-            else { io.warn('You are already on the first page.'); }
-            return this._onDidChangeTreeData.fire(undefined);
-        });
-    }
-
-    getTreeItem(element: Problem): vscode.TreeItem {
-        outputChannel.trace('[pTree   ]', '"getTreeItem"', arguments);
-        return element;
-    }
-
-    async getChildren(element?: vscode.TreeItem): Promise<Problem[] | ProblemRecord[]> {
-        outputChannel.trace('[pTree   ]', '"getChildren"', arguments);
-        try {
+        super('problem', async (page, setPageCounter, element?) => {
             if (element === undefined) {
-                const response = await new fetch({ path: `/d/${settings.domain}/p?page=${this.page}`, addCookie: true }).start();
-                this.pageCounter = response.json.ppcount;
+                const response = await new fetch({ path: `/d/${settings.domain}/p?page=${page}`, addCookie: true }).start();
+                setPageCounter(response.json.ppcount);
                 const problems: Problem[] = [];
                 for (const pdoc of response.json.pdocs) {
                     problems.push(new Problem(pdoc, response.json.psdict[pdoc.docId]));
@@ -59,10 +27,7 @@ export default class implements vscode.TreeDataProvider<Problem> {
                 }
                 return records;
             }
-        } catch (e) {
-            io.error((e as Error).message);
-            return [];
-        }
+        });
     }
 }
 

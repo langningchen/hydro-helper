@@ -1,9 +1,9 @@
 import * as vscode from 'vscode';
 import path from 'path';
-import { outputChannel } from './io';
+import { outputChannel } from '../io';
 import { marked } from 'marked';
-import auth from './auth';
-import settings from './settings';
+import auth from '../auth';
+import settings from '../settings';
 
 export interface WebviewData {
     name: string;

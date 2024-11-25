@@ -1,10 +1,10 @@
-import * as utils from './utils';
-import { io, outputChannel } from './io';
-import fetch from './fetch';
-import settings from './settings';
+import * as utils from '../utils';
+import { io, outputChannel } from '../io';
+import fetch from '../fetch';
+import settings from '../settings';
 import webview from './webview';
 import { WebSocket } from 'ws';
-import auth from './auth';
+import auth from '../auth';
 
 export default class rWeb extends webview {
     constructor(extensionPath: string, rid: string) {
