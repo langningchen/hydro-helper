@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import auth from './auth';
-import fetch from './fetch';
+import cyezFetch from './fetch';
 import { outputChannel, io } from './io';
 import storage from './storage';
 import settings from './settings';
@@ -39,6 +39,69 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			modal: true,
 		});
 	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url: string, name: string, fileSize?: number) => {
+		const file = await vscode.window.showSaveDialog({
+			title: 'Select the download location',
+			saveLabel: 'Download',
+			defaultUri: vscode.Uri.file(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath + '/' + name : name),
+		});
+		if (file === undefined) {
+			return;
+		}
+		outputChannel.info(url, file.toString());
+		await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: `Downloading file ${name}`,
+			cancellable: true,
+		}, async (progress, token) => {
+			const abortController = new AbortController();
+			token.onCancellationRequested(() => {
+				abortController.abort();
+			});
+			const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${url}`, {
+				headers: {
+					'cookie': await auth.getCookiesValue(),
+				},
+				redirect: 'follow',
+				signal: abortController.signal,
+			});
+			let receivedBytes = 0;
+			const reader = responseData.body?.getReader();
+			const chunks: Uint8Array[] = [];
+			if (reader) {
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) { break; }
+					if (value) {
+						chunks.push(value);
+						receivedBytes += value.length;
+						if (!fileSize) {
+							progress.report({
+								message: `${receivedBytes} bytes received`
+							});
+						}
+						else {
+							progress.report({
+								message: `${receivedBytes}/${fileSize} bytes received`,
+								increment: value.length / fileSize * 100
+							});
+						}
+					}
+				}
+			}
+			progress.report({
+				message: 'Writing to file...',
+				increment: undefined,
+			});
+			const buffer = new Uint8Array(receivedBytes);
+			let offset = 0;
+			for (const chunk of chunks) {
+				buffer.set(chunk, offset);
+				offset += chunk.length;
+			}
+			await vscode.workspace.fs.writeFile(file, buffer);
+		});
+	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			const args = pid.command?.arguments;
@@ -64,7 +127,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			token.onCancellationRequested(() => {
 				abortController.abort();
 			});
-			return await new fetch({
+			return await new cyezFetch({
 				path: '/d/' + settings.domain + '/p/' + pid + '/submit' + (tid ? '?tid=' + tid : ''),
 				addCookie: true, abortController
 			}).start();
@@ -103,7 +166,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}
 		const code = await vscode.workspace.fs.readFile(file[0]);
 
-		const response = await new fetch({
+		const response = await new cyezFetch({
 			path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 			body: {
 				lang,
@@ -133,7 +196,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			}
 		};
 		try {
-			await new fetch({
+			await new cyezFetch({
 				path: `/d/${settings.domain}/contest/${tid}`, addCookie: true,
 				body: {
 					"operation": "attend",
@@ -160,7 +223,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			}
 		};
 		try {
-			await new fetch({
+			await new cyezFetch({
 				path: `/d/${settings.domain}/homework/${tid}`, addCookie: true,
 				body: {
 					"operation": "attend",

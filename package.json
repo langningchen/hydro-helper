@@ -119,6 +119,10 @@
         "title": "CYEZOI: Logout"
       },
       {
+        "command": "cyezoi.downloadFile",
+        "title": "CYEZOI: Download File"
+      },
+      {
         "command": "cyezoi.refreshPTree",
         "title": "CYEZOI: Refresh Problem Tree",
         "icon": {

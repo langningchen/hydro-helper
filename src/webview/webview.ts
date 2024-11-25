@@ -48,7 +48,7 @@ export default class {
             },
         );
 
-        this.panel.webview.html = this.getHtml();
+        this.panel.webview.html = this.getHTML();
         this.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
             if (message.command === 'refresh') {
                 this.fetchData();
@@ -74,9 +74,9 @@ export default class {
         );
     };
 
-    private getHtml = () => {
-        outputChannel.trace(`[${this.shortName}    ]`, '"getHtml"');
-        let htmlContent = require('fs').readFileSync(path.join(this.webviewData.extensionPath, 'res', 'html', 'base.html'), 'utf8');
+    private getHTML = () => {
+        outputChannel.trace(`[${this.shortName}    ]`, '"getHTML"');
+        var htmlContent = require('fs').readFileSync(path.join(this.webviewData.extensionPath, 'res', 'html', 'base.html'), 'utf8');
         htmlContent = htmlContent.replace("{{hydroIcons}}", this.getRealPath(['res', 'fonts', 'hydro-icons.woff2']).toString());
         htmlContent = htmlContent.replace("{{vscodeElements}}", this.getRealPath(['res', 'libs', 'vscode-elements', 'bundled.js']).toString());
         htmlContent = htmlContent.replace("{{codicon}}", this.getRealPath(['res', 'libs', 'codicon', 'codicon.css']).toString());
@@ -107,10 +107,10 @@ export default class {
                     const id = Math.random().toString(36).slice(2);
                     fetchData[id] = url;
                     if (type === 'video') {
-                        return `<video src="{{${id}}}" controls></video>`;
+                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button><video src="{{${id}}}" controls></video>`;
                     }
                     else if (type === 'pdf') {
-                        return `<div data-src="{{${id}}}" class="pdf"></div>`;
+                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','PDF.pdf']})">Download PDF</vscode-button><div data-src="{{${id}}}" class="pdf"></div>`;
                     }
                     return '<a href="' + id + '">' + url + '</a>';
                 });

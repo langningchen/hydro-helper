@@ -137,17 +137,17 @@ const findIndex = (statusMap, target) => {
     return undefined;
 };
 const getUnit = (data, unit) => {
-    if (data >= 1 && data < 2) { return data + ' ' + unit; }
-    else { return data + ' ' + unit + 's'; }
+    if (data >= 1 && data < 2) { return unit; }
+    else { return unit + 's'; }
 };
 const toTime = (time) => {
     if (time < 1000) { return time + 'ms'; } time = Math.floor(time / 1000);
     if (time < 60) { return time + 's'; } time = Math.floor(time / 60);
-    if (time < 60) { return time + getUnit(time, 'minute'); } time = Math.floor(time / 60);
-    if (time < 24) { return time + getUnit(time, 'hour'); } time = Math.floor(time / 24);
-    if (time < 30) { return time + getUnit(time, 'day'); } time = Math.floor(time / 30);
-    if (time < 12) { return 'about ' + Math.floor(time) + getUnit(time, 'month'); } time = Math.floor(time / 12);
-    return 'about ' + Math.floor(time) + getUnit(time, 'year');
+    if (time < 60) { return time + ' ' + getUnit(time, 'minute'); } time = Math.floor(time / 60);
+    if (time < 24) { return time + ' ' + getUnit(time, 'hour'); } time = Math.floor(time / 24);
+    if (time < 30) { return time + ' ' + getUnit(time, 'day'); } time = Math.floor(time / 30);
+    if (time < 12) { return 'about ' + Math.floor(time) + ' ' + getUnit(time, 'month'); } time = Math.floor(time / 12);
+    return 'about ' + Math.floor(time) + ' ' + getUnit(time, 'year');
 };
 const parseTime = (time) => {
     if (time.endsWith('ms')) { return parseInt(time.slice(0, -2)); }
@@ -174,11 +174,11 @@ const toRelativeTime = (time) => {
     const suffix = (time > now ? 'later' : 'ago');
     var delta = Math.floor(Math.abs(now - time) / 1000);
     if (delta < 60) { return 'just now'; } delta = Math.floor(delta / 60);
-    if (delta < 60) { return delta + getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
-    if (delta < 24) { return delta + getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
-    if (delta < 30) { return delta + getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
-    if (delta < 12) { return 'about ' + delta + getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
-    return 'about ' + delta + getUnit(delta, 'year') + ' ' + suffix;
+    if (delta < 60) { return delta + ' ' + getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
+    if (delta < 24) { return delta + ' ' + getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
+    if (delta < 30) { return delta + ' ' + getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
+    if (delta < 12) { return 'about ' + delta + ' ' + getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
+    return 'about ' + delta + ' ' + getUnit(delta, 'year') + ' ' + suffix;
 };
 const formatString = (str) => {
     if (typeof str === 'string') {
@@ -197,7 +197,7 @@ const parseMarkdown = ({ content, fetchData }) => {
 };
 const renderPdf = async () => {
     const pdfData = document.getElementsByClassName('pdf');
-    for (let i = 0; i < pdfData.length; i++) {
+    for (var i = 0; i < pdfData.length; i++) {
         const sourceUrl = pdfData[i].getAttribute('data-src');
         if (!sourceUrl) {
             continue;
@@ -205,7 +205,7 @@ const renderPdf = async () => {
         pdfData[i].style.width = '100%';
         const pdf = await pdfjsLib.getDocument(sourceUrl).promise;
 
-        for (let page = 1; page <= pdf.numPages; page++) {
+        for (var page = 1; page <= pdf.numPages; page++) {
             const canvas = document.createElement('canvas');
             pdfData[i].appendChild(canvas);
 
@@ -231,7 +231,7 @@ const renderPdf = async () => {
 const renderCode = () => {
     const pres = document.getElementsByTagName('pre');
     const editors = [];
-    for (let i = 0; i < pres.length; i++) {
+    for (var i = 0; i < pres.length; i++) {
         if (pres[i].className.indexOf('CodeMirror') !== -1) {
             continue;
         }
@@ -276,7 +276,7 @@ const renderCode = () => {
         }));
         pres[i].parentNode.replaceChild(codeElement, pres[i]);
     }
-    for (let i = 0; i < editors.length; i++) {
+    for (var i = 0; i < editors.length; i++) {
         editors[i].setSize('100%', 'auto');
     }
 };

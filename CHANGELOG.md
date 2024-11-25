@@ -4,6 +4,8 @@ All notable changes to the "cyezoi" extension will be documented in this file.
 
 ## v0.0.25
 
+- **Enable download PDF and Video files**
+- **Show info and files in problem webview**
 - **Enhance the navigation**
 - Fix judge score mismatch
 - Fix opening homework

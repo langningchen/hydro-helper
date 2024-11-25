@@ -12,12 +12,12 @@ export default class extends treeView<Record> {
 
     constructor() {
         super('record', async ({ page, setPageCounter }) => {
-            setPageCounter(1145141919810);
+            setPageCounter(Infinity);
             if (this.pendingRecords.length) {
                 while (this.pendingRecords.length) {
                     const pendingRecord = this.pendingRecords.shift()!;
                     var replace: boolean = false;
-                    for (let i = 0; i < this.records.length; i++) {
+                    for (var i = 0; i < this.records.length; i++) {
                         if (this.records[i].id === pendingRecord.id) {
                             this.records[i] = pendingRecord;
                             replace = true;
