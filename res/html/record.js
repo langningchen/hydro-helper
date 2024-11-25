@@ -114,7 +114,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         parsedSubtasks[subtaskId].testCase.push({
                             id: parseInt(testCaseId),
                             status: status,
-                            score: score || parsedSubtasks[subtaskId].score,
+                            score: score || 0,
                             time: time,
                             memory: memory,
                             message: message
