@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             <vscode-table-cell>Accept</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.nAccept}</vscode-table-cell>
                         </vscode-table-row>
-                        <vscode-table-row>
+                        ${data.pdoc.stats && `<vscode-table-row>
                             <vscode-table-cell>Status (Accepted)</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.stats.AC}</vscode-table-cell>
                         </vscode-table-row>
@@ -75,7 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <vscode-table-row>
                             <vscode-table-cell>Status (Ignored)</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.stats.IGN}</vscode-table-cell>
-                        </vscode-table-row>
+                        </vscode-table-row>`}$
                     </vscode-table-body>
                 </vscode-table>`);
 
