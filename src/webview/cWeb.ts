@@ -4,11 +4,10 @@ import settings from '../settings';
 import webview from './webview';
 
 export default class cWeb extends webview {
-    constructor(extensionPath: string, tid: string, homework: boolean = false) {
+    constructor(tid: string, homework: boolean = false) {
         const type: string = homework ? 'homework' : 'contest';
         super({
             name: 'contest',
-            extensionPath,
             data: { tid },
             getTitle: () => `T${tid}`,
             fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {
@@ -17,7 +16,7 @@ export default class cWeb extends webview {
                 }).start().then(async (contestDetail) => {
                     if (contestDetail?.json !== undefined) {
                         const data = contestDetail.json;
-                        data.tdoc.content = await parseMarkdown(data.tdoc.content, extensionPath);
+                        data.tdoc.content = await parseMarkdown(data.tdoc.content);
                         for (const [id, url] of Object.entries(data.tdoc.content.fetchData)) {
                             addTempFile(id);
                         }

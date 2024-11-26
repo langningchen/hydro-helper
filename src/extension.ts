@@ -13,6 +13,7 @@ import cTree from './treeView/cTree';
 
 export const activate = async (context: vscode.ExtensionContext) => {
 	storage.secretStorage = context.secrets;
+	storage.extensionPath = context.extensionPath;
 
 	const disposables: vscode.Disposable[] = [];
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
@@ -180,7 +181,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			return;
 		}
 
-		new rWeb(context.extensionPath, rid);
+		new rWeb(rid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid: vscode.TreeItem | string | undefined) => {
 		if (tid instanceof vscode.TreeItem) {
@@ -249,7 +250,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				return;
 			}
 		};
-		new pWeb(context.extensionPath, parseInt(pid), tid);
+		new pWeb(parseInt(pid), tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid: vscode.TreeItem | string | undefined) => {
 		if (rid instanceof vscode.TreeItem) {
@@ -261,7 +262,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				return;
 			}
 		}
-		new rWeb(context.extensionPath, rid);
+		new rWeb(rid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openC', async (tid: vscode.TreeItem | string | undefined) => {
 		if (tid instanceof vscode.TreeItem) {
@@ -273,7 +274,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				return;
 			}
 		}
-		new cWeb(context.extensionPath, tid);
+		new cWeb(tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openH', async (tid: vscode.TreeItem | string | undefined) => {
 		if (tid instanceof vscode.TreeItem) {
@@ -285,7 +286,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				return;
 			}
 		}
-		new cWeb(context.extensionPath, tid, true);
+		new cWeb(tid, true);
 	}));
 
 	disposables.push(vscode.window.registerTreeDataProvider('pTree', new pTree()));

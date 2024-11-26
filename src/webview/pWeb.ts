@@ -4,10 +4,9 @@ import settings from '../settings';
 import webview from './webview';
 
 export default class pWeb extends webview {
-    constructor(extensionPath: string, pid: number, tid?: string) {
+    constructor(pid: number, tid?: string) {
         super({
             name: 'problem',
-            extensionPath,
             data: { pid, tid },
             getTitle: () => 'P' + pid + (tid !== undefined ? ` - T${tid}` : ''),
             fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {

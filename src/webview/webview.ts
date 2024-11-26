@@ -4,6 +4,7 @@ import { outputChannel } from '../io';
 import { marked } from 'marked';
 import auth from '../auth';
 import settings from '../settings';
+import storage from '../storage';
 
 interface fetchDataParams {
     postMessage: (message: any) => void
@@ -14,7 +15,6 @@ interface fetchDataParams {
 
 export interface WebviewData {
     name: string;
-    extensionPath: string;
     data: { [key: string]: any };
     getTitle: () => string;
     fetchData: (params: fetchDataParams) => void;
@@ -48,7 +48,7 @@ export default class {
             },
         );
 
-        this.panel.webview.html = this.getHTML();
+        this.getHTML();
         this.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
             if (message.command === 'refresh') {
                 this.fetchData();
@@ -68,22 +68,22 @@ export default class {
         }
     }
 
-    private getRealPath = (relativePath: string[]): vscode.Uri => {
+    private getRealPath = async (relativePath: string[]): Promise<vscode.Uri> => {
         return this.panel?.webview.asWebviewUri(
-            vscode.Uri.file(path.join(this.webviewData.extensionPath, ...relativePath)),
+            vscode.Uri.file(path.join((await storage.extensionPath)!, ...relativePath)),
         );
     };
 
-    private getHTML = () => {
+    private getHTML = async (): Promise<void> => {
         outputChannel.trace(`[${this.shortName}    ]`, '"getHTML"');
-        var htmlContent = require('fs').readFileSync(path.join(this.webviewData.extensionPath, 'res', 'html', 'base.html'), 'utf8');
-        htmlContent = htmlContent.replace("{{hydroIcons}}", this.getRealPath(['res', 'fonts', 'hydro-icons.woff2']).toString());
-        htmlContent = htmlContent.replace("{{vscodeElements}}", this.getRealPath(['res', 'libs', 'vscode-elements', 'bundled.js']).toString());
-        htmlContent = htmlContent.replace("{{codicon}}", this.getRealPath(['res', 'libs', 'codicon', 'codicon.css']).toString());
-        htmlContent = htmlContent.replace("{{static}}", this.getRealPath(['res', 'html', 'static.js']).toString());
-        htmlContent = htmlContent.replace("{{dynamic}}", this.getRealPath(['res', 'html', `${this.webviewData.name}.js`]).toString());
+        var htmlContent = require('fs').readFileSync(path.join((await storage.extensionPath)!, 'res', 'html', 'base.html'), 'utf8');
+        htmlContent = htmlContent.replace("{{hydroIcons}}", (await this.getRealPath(['res', 'fonts', 'hydro-icons.woff2'])).toString());
+        htmlContent = htmlContent.replace("{{vscodeElements}}", (await this.getRealPath(['res', 'libs', 'vscode-elements', 'bundled.js'])).toString());
+        htmlContent = htmlContent.replace("{{codicon}}", (await this.getRealPath(['res', 'libs', 'codicon', 'codicon.css'])).toString());
+        htmlContent = htmlContent.replace("{{static}}", (await this.getRealPath(['res', 'html', 'static.js'])).toString());
+        htmlContent = htmlContent.replace("{{dynamic}}", (await this.getRealPath(['res', 'html', `${this.webviewData.name}.js`])).toString());
         outputChannel.debug('HTML content', htmlContent);
-        return htmlContent;
+        this.panel.webview.html = htmlContent;
     };
 
     private fetchData = () => {
@@ -121,7 +121,7 @@ export default class {
                         },
                         redirect: 'follow',
                     });
-                    const filePath = vscode.Uri.file(`${this.webviewData.extensionPath}/temp/${key}`);
+                    const filePath = vscode.Uri.file(`${(await storage.extensionPath)!}/temp/${key}`);
                     await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
                     const webviewUri = this.panel.webview.asWebviewUri(filePath);
                     outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
@@ -138,11 +138,11 @@ export default class {
         });
     };
 
-    private cleanup = () => {
+    private cleanup = async () => {
         this.disposed = true;
         outputChannel.trace(`[${this.shortName}    ]`, '"cleanup"');
         for (const id of this.tempFiles) {
-            const filePath = vscode.Uri.file(path.join(this.webviewData.extensionPath, 'temp', id));
+            const filePath = vscode.Uri.file(path.join((await storage.extensionPath)!, 'temp', id));
             vscode.workspace.fs.delete(filePath);
             outputChannel.info("Delete temp file", `"${filePath.toString()}"`);
         }

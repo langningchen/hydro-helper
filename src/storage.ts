@@ -26,6 +26,8 @@ class storage {
     set name(value: string | undefined) { this.store('cyezoiName', value); }
     get lastLanguage(): Thenable<string | undefined> { return this.get('lastLanguage'); }
     set lastLanguage(value: string | undefined) { this.store('lastLanguage', value); }
+    get extensionPath(): Thenable<string | undefined> { return this.get('extensionPath'); }
+    set extensionPath(value: string | undefined) { this.store('extensionPath', value); }
 }
 
 export default new storage();

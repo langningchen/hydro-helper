@@ -6,10 +6,9 @@ import webview from './webview';
 import rdWs from '../websocket/rdWs';
 
 export default class rWeb extends webview {
-    constructor(extensionPath: string, rid: string) {
+    constructor(rid: string) {
         super({
             name: 'record',
-            extensionPath,
             data: { rid },
             getTitle: () => `R${rid}`,
             fetchData: ({ postMessage }) => {
