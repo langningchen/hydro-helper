@@ -31,16 +31,18 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}
 		const isLoggedIn = await auth.getLoginStatus();
 		auth.setLoggedIn(isLoggedIn);
-		if (isLoggedIn) {
-			io.info(`Hi ${session.account.label}, you have successfully logged in!`);
-		}
+		if (isLoggedIn) { io.info(`Hi ${session.account.label}, you have successfully logged in!`); }
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.logout', async () => {
 		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url: string, name: string, fileSize?: number) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url?: string, name?: string, fileSize?: number) => {
+		url = url || await io.input('Please input the file URL');
+		if (url === undefined) { return; }
+		url = url.split('?')[0];
+		name = name || url.split('/').pop()!;
 		const file = await vscode.window.showSaveDialog({
 			title: 'Select the download location',
 			saveLabel: 'Download',
@@ -103,21 +105,15 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			await vscode.workspace.fs.writeFile(file, buffer);
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid?: vscode.TreeItem | string, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			const args = pid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
 				[pid, tid] = args;
 			}
 		}
-		if (pid === undefined) {
-			pid = await io.input('Please input the problem ID', {
-				value: vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0],
-			});
-			if (pid === undefined) {
-				return;
-			}
-		}
+		pid = pid || await io.input('Please input the problem ID', { value: vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0], });
+		if (pid === undefined) { return; }
 
 		const langs = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -149,9 +145,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}), {
 			title: 'Select the language',
 		}))?.description;
-		if (lang === undefined) {
-			return;
-		}
+		if (lang === undefined) { return; }
 		storage.lastLanguage = lang;
 
 		const file = await vscode.window.showOpenDialog({
@@ -162,9 +156,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			openLabel: 'Submit',
 			defaultUri: vscode.window.activeTextEditor ? vscode.Uri.file(vscode.window.activeTextEditor.document.fileName) : undefined,
 		});
-		if (file === undefined) {
-			return;
-		}
+		if (file === undefined) { return; }
 		const code = await vscode.workspace.fs.readFile(file[0]);
 
 		const response = await new cyezFetch({
@@ -180,22 +172,36 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			io.error('Submit failed');
 			return;
 		}
-
 		new rWeb(rid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid: vscode.TreeItem | string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.voteSolution', async (pid?: number, psid?: string, vote?: number) => {
+		if (pid === undefined || psid === undefined || vote === undefined) {
+			io.warn('Please use the context menu to vote for a solution.', { modal: true });
+			return;
+		}
+		try {
+			await new cyezFetch({
+				path: `/d/${settings.domain}/p/${pid}/solution`,
+				body: {
+					operation: vote === 1 ? 'upvote' : 'downvote',
+					psid,
+				},
+				addCookie: true,
+			}).start();
+		} catch (e) {
+			io.error((e as Error).message);
+			return;
+		}
+	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) {
 			const args = tid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
 				[tid] = args;
 			}
 		}
-		if (tid === undefined) {
-			tid = await io.input('Please input the contest ID');
-			if (tid === undefined) {
-				return;
-			}
-		};
+		tid = tid || await io.input('Please input the contest ID');
+		if (tid === undefined) { return; }
 		try {
 			await new cyezFetch({
 				path: `/d/${settings.domain}/contest/${tid}`, addCookie: true,
@@ -210,19 +216,15 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		io.info('Contest attended');
 		vscode.commands.executeCommand('cyezoi.refreshCTree');
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.attendH', async (tid: vscode.TreeItem | string | undefined) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.attendH', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) {
 			const args = tid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
 				[tid] = args;
 			}
 		}
-		if (tid === undefined) {
-			tid = await io.input('Please input the homework ID');
-			if (tid === undefined) {
-				return;
-			}
-		};
+		tid = tid || await io.input('Please input the homework ID');
+		if (tid === undefined) { return; }
 		try {
 			await new cyezFetch({
 				path: `/d/${settings.domain}/homework/${tid}`, addCookie: true,
@@ -238,54 +240,28 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		vscode.commands.executeCommand('cyezoi.refreshHTree');
 	}));
 
-	disposables.push(vscode.commands.registerCommand('cyezoi.openP', async (pid: vscode.TreeItem | string | undefined, tid?: string) => {
-		if (pid instanceof vscode.TreeItem) {
-			pid = undefined;
-		}
-		if (pid === undefined) {
-			pid = await io.input('Please input the problem ID', {
-				value: vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0],
-			});
-			if (pid === undefined) {
-				return;
-			}
-		};
+	disposables.push(vscode.commands.registerCommand('cyezoi.openP', async (pid?: vscode.TreeItem | string, tid?: string) => {
+		if (pid instanceof vscode.TreeItem) { pid = undefined; }
+		pid = pid || await io.input('Please input the problem ID', { value: vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0], });
+		if (pid === undefined) { return; }
 		new pWeb(parseInt(pid), tid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid: vscode.TreeItem | string | undefined) => {
-		if (rid instanceof vscode.TreeItem) {
-			rid = undefined;
-		}
-		if (rid === undefined) {
-			rid = await io.input('Please input the RID');
-			if (rid === undefined) {
-				return;
-			}
-		}
+	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid?: vscode.TreeItem | string) => {
+		if (rid instanceof vscode.TreeItem) { rid = undefined; }
+		rid = rid || await io.input('Please input the RID');
+		if (rid === undefined) { return; }
 		new rWeb(rid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openC', async (tid: vscode.TreeItem | string | undefined) => {
-		if (tid instanceof vscode.TreeItem) {
-			tid = undefined;
-		}
-		if (tid === undefined) {
-			tid = await io.input('Please input the contest ID');
-			if (tid === undefined) {
-				return;
-			}
-		}
+	disposables.push(vscode.commands.registerCommand('cyezoi.openC', async (tid?: vscode.TreeItem | string) => {
+		if (tid instanceof vscode.TreeItem) { tid = undefined; }
+		tid = tid || await io.input('Please input the contest ID');
+		if (tid === undefined) { return; }
 		new cWeb(tid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openH', async (tid: vscode.TreeItem | string | undefined) => {
-		if (tid instanceof vscode.TreeItem) {
-			tid = undefined;
-		}
-		if (tid === undefined) {
-			tid = await io.input('Please input the homework ID');
-			if (tid === undefined) {
-				return;
-			}
-		}
+	disposables.push(vscode.commands.registerCommand('cyezoi.openH', async (tid?: vscode.TreeItem | string) => {
+		if (tid instanceof vscode.TreeItem) { tid = undefined; }
+		tid = tid || await io.input('Please input the homework ID');
+		if (tid === undefined) { return; }
 		new cWeb(tid, true);
 	}));
 

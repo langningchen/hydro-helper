@@ -163,6 +163,10 @@
         }
       },
       {
+        "command": "cyezoi.voteSolution",
+        "title": "CYEZOI: Vote Solution"
+      },
+      {
         "command": "cyezoi.refreshCTree",
         "title": "CYEZOI: Refresh Contest Tree",
         "icon": {

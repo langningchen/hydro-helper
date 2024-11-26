@@ -106,7 +106,6 @@ window.addEventListener('DOMContentLoaded', () => {
                     enableTab('Related', relatedHTML);
                 }
 
-                debugger;
                 const fileList = data.pdoc.additional_file.map((i) => {
                     return { ...i, type: 'additional_file', };
                 }).concat(data.pdoc.data);
@@ -138,10 +137,42 @@ window.addEventListener('DOMContentLoaded', () => {
                 if (data.psdocs.length === 0) {
                     break;
                 }
+
+                var voteData = {};
+                window.vote = (psid, vote) => {
+                    if (voteData[psid] !== vote) {
+                        const count = document.getElementById(psid + 'Count');
+                        const upvote = document.getElementById(psid + 'Upvote');
+                        const downvote = document.getElementById(psid + 'Downvote');
+                        if (vote === 1) {
+                            count.innerText = parseInt(count.innerText) + 2;
+                            upvote.name = 'thumbsup-filled';
+                            downvote.name = 'thumbsdown';
+                        } else {
+                            count.innerText = parseInt(count.innerText) - 2;
+                            upvote.name = 'thumbsup';
+                            downvote.name = 'thumbsdown-filled';
+                        }
+                        voteData[psid] = vote;
+                        vscode.postMessage({ command: 'voteSolution', data: [data.pdoc.docId, psid, vote] });
+                    }
+                };
+
                 var solutionHTML = '<p>';
                 for (var i = 0; i < data.psdocs.length; i++) {
-                    solutionHTML += `<vscode-badge style="background-color: var(--vscode-activityBarBadge-background);">${data.udict[data.psdocs[i].owner].uname}</vscode-badge>
-                    <vscode-badge variant="counter">${data.psdocs[i].vote}</vscode-badge>`;
+                    voteData[data.psdocs[i]._id] = data.pssdict[data.psdocs[i]._id]?.vote;
+                    solutionHTML += `<div style="display: flex; flex-direction: row; align-items: center;">
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-right: 20px;">
+                            <div>
+                                <span style="font-size: 26px" id="${data.psdocs[i]._id}Count">${data.psdocs[i].vote}</span>
+                            </div>
+                            <div>
+                                <vscode-icon action-icon id="${data.psdocs[i]._id}Upvote" name="thumbsup${voteData[data.psdocs[i]._id] === 1 ? '-filled' : ''}" onclick="vote('${data.psdocs[i]._id}',1)"></vscode-icon>
+                                <vscode-icon action-icon id="${data.psdocs[i]._id}Downvote" name="thumbsdown${voteData[data.psdocs[i]._id] === -1 ? '-filled' : ''}" onclick="vote('${data.psdocs[i]._id}',-1)"></vscode-icon>
+                            </div>
+                        </div>
+                        <div>${data.udict[data.psdocs[i].owner].uname}</div>
+                    </div>`;
                     solutionHTML += `<p>${parseMarkdown(data.psdocs[i].content)}</p>`;
                     if (data.psdocs[i].reply.length > 0) {
                         const collapsible = document.createElement('vscode-collapsible');

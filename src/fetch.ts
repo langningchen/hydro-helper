@@ -33,18 +33,18 @@ export default class {
         this.options = options;
     }
 
-    doFetch = async (options: fetchOptions): Promise<void> => {
+    doFetch = async (): Promise<void> => {
         outputChannel.trace('[fetch   ]', '"doFetch"');
-        this.response = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${options.path}`, {
-            method: options.body ? 'POST' : 'GET',
+        this.response = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${this.options.path}`, {
+            method: this.options.body ? 'POST' : 'GET',
             headers: {
                 'accept': 'application/json',
                 'content-type': 'application/json',
-                'cookie': options.addCookie ? await auth.getCookiesValue() : '',
+                'cookie': this.options.addCookie ? await auth.getCookiesValue() : '',
                 'user-agent': 'VSCode-CYEZOIHelper',
             },
-            body: options.body ? JSON.stringify(options.body) : undefined,
-            signal: options.abortController?.signal,
+            body: this.options.body ? JSON.stringify(this.options.body) : undefined,
+            signal: this.options.abortController?.signal,
         });
     };
 
@@ -91,7 +91,7 @@ export default class {
 
     start = async (): Promise<fetchReturn> => {
         outputChannel.trace('[fetch   ]', '"start"');
-        await this.doFetch(this.options);
+        await this.doFetch();
         await this.parseResponse();
         await this.checkError();
         await this.checkLogin();
