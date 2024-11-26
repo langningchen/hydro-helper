@@ -48,9 +48,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			saveLabel: 'Download',
 			defaultUri: vscode.Uri.file(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath + '/' + name : name),
 		});
-		if (file === undefined) {
-			return;
-		}
+		if (file === undefined) { return; }
 		outputChannel.info(url, file.toString());
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -58,13 +56,9 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			cancellable: true,
 		}, async (progress, token) => {
 			const abortController = new AbortController();
-			token.onCancellationRequested(() => {
-				abortController.abort();
-			});
+			token.onCancellationRequested(() => { abortController.abort(); });
 			const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${url}`, {
-				headers: {
-					'cookie': await auth.getCookiesValue(),
-				},
+				headers: { 'cookie': await auth.getCookiesValue(), },
 				redirect: 'follow',
 				signal: abortController.signal,
 			});
@@ -79,9 +73,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 						chunks.push(value);
 						receivedBytes += value.length;
 						if (!fileSize) {
-							progress.report({
-								message: `${receivedBytes} bytes received`
-							});
+							progress.report({ message: `${receivedBytes} bytes received` });
 						}
 						else {
 							progress.report({
@@ -92,10 +84,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 					}
 				}
 			}
-			progress.report({
-				message: 'Writing to file...',
-				increment: undefined,
-			});
+			progress.report({ message: 'Writing to file...', increment: undefined, });
 			const buffer = new Uint8Array(receivedBytes);
 			let offset = 0;
 			for (const chunk of chunks) {
@@ -121,9 +110,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			cancellable: true,
 		}, async (_progress, token) => {
 			const abortController = new AbortController();
-			token.onCancellationRequested(() => {
-				abortController.abort();
-			});
+			token.onCancellationRequested(() => { abortController.abort(); });
 			return await new cyezFetch({
 				path: '/d/' + settings.domain + '/p/' + pid + '/submit' + (tid ? '?tid=' + tid : ''),
 				addCookie: true, abortController
@@ -135,12 +122,8 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			label: langs[key],
 			description: key,
 		})).sort((a, b) => {
-			if (a.description === lastLanguage) {
-				return -1;
-			}
-			if (b.description === lastLanguage) {
-				return 1;
-			}
+			if (a.description === lastLanguage) { return -1; }
+			if (b.description === lastLanguage) { return 1; }
 			return 0;
 		}), {
 			title: 'Select the language',

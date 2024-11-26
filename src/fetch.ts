@@ -38,9 +38,9 @@ export default class {
         this.response = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${this.options.path}`, {
             method: this.options.body ? 'POST' : 'GET',
             headers: {
-                'accept': 'application/json',
+                accept: 'application/json',
                 'content-type': 'application/json',
-                'cookie': this.options.addCookie ? await auth.getCookiesValue() : '',
+                cookie: this.options.addCookie ?? true ? await auth.getCookiesValue() : '',
                 'user-agent': 'VSCode-CYEZOIHelper',
             },
             body: this.options.body ? JSON.stringify(this.options.body) : undefined,

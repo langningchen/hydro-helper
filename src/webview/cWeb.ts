@@ -11,11 +11,9 @@ export default class cWeb extends webview {
             data: { tid },
             getTitle: () => `T${tid}`,
             fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {
-                new fetch({
-                    path: `/d/${settings.domain}/${type}/${tid}`, addCookie: true
-                }).start().then(async (contestDetail) => {
-                    if (contestDetail?.json !== undefined) {
-                        const data = contestDetail.json;
+                new fetch({ path: `/d/${settings.domain}/${type}/${tid}` }).start().then(async (response) => {
+                    if (response?.json !== undefined) {
+                        const data = response.json;
                         data.tdoc.content = await parseMarkdown(data.tdoc.content);
                         for (const [id, url] of Object.entries(data.tdoc.content.fetchData)) {
                             addTempFile(id);
@@ -29,13 +27,11 @@ export default class cWeb extends webview {
                 }).catch(async (e: Error) => {
                     io.error(e.message);
                 });
-                new fetch({
-                    path: `/d/${settings.domain}/${type}/${tid}/scoreboard`, addCookie: true
-                }).start().then(async (contestDetail) => {
-                    if (contestDetail?.json !== undefined) {
+                new fetch({ path: `/d/${settings.domain}/${type}/${tid}/scoreboard` }).start().then(async (response) => {
+                    if (response?.json !== undefined) {
                         const message = {
                             command: 'scoreboard',
-                            data: contestDetail.json,
+                            data: response.json,
                         };
                         postMessage(message);
                     }

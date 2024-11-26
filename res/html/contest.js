@@ -8,8 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
         switch (message.command) {
             case 'info':
                 setTitle(data.tdoc.title);
-                // TODO: display the owner name
-                enableTab('Info', `<vscode-table zebra bordered-columns responsive breakpoint="400">
+                enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -17,7 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     <vscode-table-body slot="body">
                         <vscode-table-row>
                             <vscode-table-cell>Owner</vscode-table-cell>
-                            <vscode-table-cell>${data.tdoc.owner}</vscode-table-cell>
+                            <vscode-table-cell>${data.udict[data.tdoc.owner].uname}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Duration</vscode-table-cell>
@@ -49,11 +48,10 @@ window.addEventListener('DOMContentLoaded', () => {
                         </vscode-table-row>
                     </vscode-table-body>
                 </vscode-table>
-                <vscode-divider></vscode-divider>
                 ${parseMarkdown(data.tdoc.content)}`);
                 break;
             case 'scoreboard':
-                var scoreboardHTML = `<vscode-table zebra bordered-rows resizable>
+                var scoreboardHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400">
                     <vscode-table-header slot="header">`;
                 var isFirst = true;
                 for (const row of data.rows) {
@@ -65,7 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         switch (cell.type) {
                             case 'problem':
                                 scoreboardHTML += `<${elementName}>
-                                        <span onclick="vscode.postMessage({command:'openP',data:['${cell.raw}','${data.tdoc._id}']})" style="cursor: pointer;">
+                                        <span role="button" onclick="vscode.postMessage({command:'openP',data:['${cell.raw}','${data.tdoc._id}']})">
                                             ${cell.value} ${data.pdict[cell.raw].title} ${data.pdict[cell.raw].nAccept}/${data.pdict[cell.raw].nSubmit}
                                         </span>
                                     </${elementName}>`;
@@ -87,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                         scoreboardHTML += `<span>-</span>`;
                                     }
                                     else {
-                                        scoreboardHTML += `<span style="cursor: pointer; color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${record.raw}']})">${record.value}</span>`;
+                                        scoreboardHTML += `<span role="button" style="color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${record.raw}']})">${record.value}</span>`;
                                     }
                                     scoreboardHTML += " / ";
                                 }

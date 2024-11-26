@@ -61,15 +61,10 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         const previousToken = await this.currentToken;
         const session = (await this.getSessions())[0];
 
-        if (session?.accessToken && !previousToken) {
-            added.push(session);
-        } else if (!session?.accessToken && previousToken) {
-            removed.push(session);
-        } else if (session?.accessToken !== previousToken) {
-            changed.push(session);
-        } else {
-            return;
-        }
+        if (session?.accessToken && !previousToken) { added.push(session); }
+        else if (!session?.accessToken && previousToken) { removed.push(session); }
+        else if (session?.accessToken !== previousToken) { changed.push(session); }
+        else { return; }
 
         void this.cacheTokenFromStorage();
         this._onDidChangeSessions.fire({ added: added, removed: removed, changed: changed });
@@ -121,9 +116,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                     cancellable: true,
                 }, async (_progress, token) => {
                     const abortController = new AbortController();
-                    token.onCancellationRequested(() => {
-                        abortController.abort();
-                    });
+                    token.onCancellationRequested(() => { abortController.abort(); });
                     const response = await new fetch({ path: '/login', body: { uname, password }, addCookie: false, abortController, returnError: true, ignoreLogin: true }).start();
                     if (response.json.error) {
                         storage.username = undefined;
@@ -155,9 +148,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         outputChannel.trace('[auth    ]', '"removeSession"', arguments);
         const token = await this.currentToken;
         const name = await this.currentName;
-        if (!token || !name) {
-            return;
-        }
+        if (!token || !name) { return; }
         auth.setLoggedIn(false);
         this._onDidChangeSessions.fire({ added: [], removed: [new cyezoiSession(token, name)], changed: [] });;
     }
@@ -172,10 +163,8 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 cancellable: true,
             }, async (_progress, token) => {
                 const abortController = new AbortController();
-                token.onCancellationRequested(() => {
-                    abortController.abort();
-                });
-                return new fetch({ path: '/', addCookie: true, abortController, ignoreLogin: true }).start();
+                token.onCancellationRequested(() => { abortController.abort(); });
+                return new fetch({ path: '/', abortController, ignoreLogin: true }).start();
             });
             isLoggedIn = response.json.UserContext._id !== 0;
         }

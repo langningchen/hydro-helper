@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                enableTab('Info', `<vscode-table zebra bordered-columns responsive breakpoint="400">
+                enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -75,7 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <vscode-table-row>
                             <vscode-table-cell>Status (Ignored)</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.stats.IGN}</vscode-table-cell>
-                        </vscode-table-row>`}$
+                        </vscode-table-row>`}
                     </vscode-table-body>
                 </vscode-table>`);
 
@@ -92,24 +92,24 @@ window.addEventListener('DOMContentLoaded', () => {
                 focusTab('Problem');
 
                 const contestList = data.ctdocs.concat(data.htdocs);
-                if (contestList.length !== 0) {
+                if (contestList.length > 0) {
                     contestList.sort((a, b) => new Date(b.beginAt) - new Date(a.beginAt));
                     var relatedHTML = `<p>`;
-                    for (var i = 0; i < contestList.length; i++) {
-                        const type = contestList[i].rule === 'homework' ? 'Homework' : 'Contest';
-                        relatedHTML += `<vscode-label>${contestList[i].title}</vscode-label>`;
-                        relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contestList[i]._id}']})">Open ${type}</vscode-button>`;
-                        relatedHTML += `<vscode-button style="margin-right: 10px" onclick="vscode.postMessage({command: 'openP', data: ['${contestList[i].pids}', '${contestList[i]._id}']}); vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
+                    for (const contest of contestList) {
+                        const type = contest.rule === 'homework' ? 'Homework' : 'Contest';
+                        relatedHTML += `<vscode-label>${contest.title}</vscode-label>`;
+                        relatedHTML += `<vscode-button class="mr" onclick="vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contest._id}']})">Open ${type}</vscode-button>`;
+                        relatedHTML += `<vscode-button class="mr" onclick="vscode.postMessage({command: 'openP', data: ['${contest.pids}', '${contest._id}']}); vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
                         relatedHTML += `<vscode-divider></vscode-divider>`;
                     }
                     relatedHTML += `</p>`;
                     enableTab('Related', relatedHTML);
                 }
 
-                const fileList = data.pdoc.additional_file.map((i) => {
-                    return { ...i, type: 'additional_file', };
+                const files = data.pdoc.additional_file.map((file) => {
+                    return { ...file, type: 'additional_file', };
                 }).concat(data.pdoc.data);
-                var filesHTML = `<vscode-table zebra bordered-rows resizable>
+                var filesHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["20%", "20%", "20%", "20%", "20%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Filename</vscode-table-header-cell>
                         <vscode-table-header-cell>Last Modified</vscode-table-header-cell>
@@ -118,14 +118,14 @@ window.addEventListener('DOMContentLoaded', () => {
                         <vscode-table-header-cell>Action</vscode-table-header-cell>
                     </vscode-table-header>
                     <vscode-table-body slot="body">`;
-                for (const i of fileList) {
+                for (const file of files) {
                     filesHTML += `<vscode-table-row>
-                        <vscode-table-cell>${i.name}</vscode-table-cell>
-                        <vscode-table-cell>${toRelativeTime(new Date(i.lastModified).getTime())}</vscode-table-cell>
-                        <vscode-table-cell>${toMemory(i.size)}</vscode-table-cell>
-                        <vscode-table-cell>${atob(i.etag)}</vscode-table-cell>
+                        <vscode-table-cell>${file.name}</vscode-table-cell>
+                        <vscode-table-cell>${toRelativeTime(new Date(file.lastModified).getTime())}</vscode-table-cell>
+                        <vscode-table-cell>${toMemory(file.size)}</vscode-table-cell>
+                        <vscode-table-cell>${atob(file.etag)}</vscode-table-cell>
                         <vscode-table-cell>`;
-                    if (i.type === 'additional_file') { filesHTML += `<a style="cursor: pointer" onclick="vscode.postMessage({command:'downloadFile',data:['/d/problemset/p/${data.pdoc.docId}/file/${i.name}?type=additional_file','${i.name}',${i.size}]})">Download file</a>`; }
+                    if (file.type === 'additional_file') { filesHTML += `<a role="button" onclick="vscode.postMessage({command:'downloadFile',data:['/d/problemset/p/${data.pdoc.docId}/file/${file.name}?type=additional_file','${file.name}',${file.size}]})">Download file</a>`; }
                     filesHTML += `</vscode-table-cell>
                         </vscode-table-row>`;
                 }
@@ -134,9 +134,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 enableTab('Files', filesHTML);
                 break;
             case 'solution':
-                if (data.psdocs.length === 0) {
-                    break;
-                }
+                if (data.psdocs.length === 0) { break; }
 
                 var voteData = {};
                 window.vote = (psid, vote) => {
@@ -159,29 +157,29 @@ window.addEventListener('DOMContentLoaded', () => {
                 };
 
                 var solutionHTML = '<p>';
-                for (var i = 0; i < data.psdocs.length; i++) {
-                    voteData[data.psdocs[i]._id] = data.pssdict[data.psdocs[i]._id]?.vote;
-                    solutionHTML += `<div style="display: flex; flex-direction: row; align-items: center;">
-                        <div style="display: flex; flex-direction: column; align-items: center; margin-right: 20px;">
+                for (const psdoc of data.psdocs) {
+                    voteData[psdoc._id] = data.pssdict[psdoc._id]?.vote;
+                    solutionHTML += `<div class="solutionContainer">
+                        <div class="voteContainer mr">
                             <div>
-                                <span style="font-size: 26px" id="${data.psdocs[i]._id}Count">${data.psdocs[i].vote}</span>
+                                <span class="voteNumber" id="${psdoc._id}Count">${psdoc.vote}</span>
                             </div>
                             <div>
-                                <vscode-icon action-icon id="${data.psdocs[i]._id}Upvote" name="thumbsup${voteData[data.psdocs[i]._id] === 1 ? '-filled' : ''}" onclick="vote('${data.psdocs[i]._id}',1)"></vscode-icon>
-                                <vscode-icon action-icon id="${data.psdocs[i]._id}Downvote" name="thumbsdown${voteData[data.psdocs[i]._id] === -1 ? '-filled' : ''}" onclick="vote('${data.psdocs[i]._id}',-1)"></vscode-icon>
+                                <vscode-icon action-icon id="${psdoc._id}Upvote" name="thumbsup${voteData[psdoc._id] === 1 ? '-filled' : ''}" onclick="vote('${psdoc._id}',1)"></vscode-icon>
+                                <vscode-icon action-icon id="${psdoc._id}Downvote" name="thumbsdown${voteData[psdoc._id] === -1 ? '-filled' : ''}" onclick="vote('${psdoc._id}',-1)"></vscode-icon>
                             </div>
                         </div>
-                        <div>${data.udict[data.psdocs[i].owner].uname}</div>
+                        <div>${data.udict[psdoc.owner].uname}</div>
                     </div>`;
-                    solutionHTML += `<p>${parseMarkdown(data.psdocs[i].content)}</p>`;
-                    if (data.psdocs[i].reply.length > 0) {
+                    solutionHTML += `<p>${parseMarkdown(psdoc.content)}</p>`;
+                    if (psdoc.reply.length > 0) {
                         const collapsible = document.createElement('vscode-collapsible');
                         solution.appendChild(collapsible);
                         collapsible.setAttribute('title', 'Reply');
-                        for (var j = 0; j < data.psdocs[i].reply.length; j++) {
+                        for (const reply of psdoc.reply) {
                             collapsible.innerHTML += `<div style="padding: 10px">
-                            <vscode-badge>${data.udict[data.psdocs[i].reply[j].owner].uname}</vscode-badge>
-                                ${parseMarkdown(data.psdocs[i].reply[j].content)}
+                            <vscode-badge>${data.udict[reply.owner].uname}</vscode-badge>
+                                ${parseMarkdown(reply.content)}
                             </div>`;
                         }
                     }

@@ -13,9 +13,7 @@ export default class {
     }
     start = async () => {
         const ws = new WebSocket(`ws${settings.safeProtocol ? "s" : ""}://${settings.server}/${this.path}`, {
-            headers: {
-                'cookie': await auth.getCookiesValue(),
-            },
+            headers: { 'cookie': await auth.getCookiesValue(), },
         });
 
         ws.on('open', () => {
@@ -30,22 +28,13 @@ export default class {
                 ws.send('pong');
                 return;
             }
-            if (stringData === 'pong') {
-                return;
-            }
+            if (stringData === 'pong') { return; }
             const responseJSON = JSON.parse(stringData);
-            if (responseJSON.error === 'PermissionError' || responseJSON.error === 'PrivilegeError') {
-                ws.close();
-            }
+            if (responseJSON.error === 'PermissionError' || responseJSON.error === 'PrivilegeError') { ws.close(); }
             this.callback(responseJSON);
         });
 
-        ws.on('error', (err) => {
-            io.error(err.toString());
-        });
-
-        ws.on('close', (_code, _reason) => {
-            clearInterval(this.interval);
-        });
+        ws.on('error', (err) => { io.error(err.toString()); });
+        ws.on('close', (_code, _reason) => { clearInterval(this.interval); });
     };
 };

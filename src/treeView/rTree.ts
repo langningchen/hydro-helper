@@ -17,9 +17,9 @@ export default class extends treeView<Record> {
                 while (this.pendingRecords.length) {
                     const pendingRecord = this.pendingRecords.shift()!;
                     var replace: boolean = false;
-                    for (var i = 0; i < this.records.length; i++) {
-                        if (this.records[i].id === pendingRecord.id) {
-                            this.records[i] = pendingRecord;
+                    for (var record of this.records) {
+                        if (record.id === pendingRecord.id) {
+                            record = pendingRecord;
                             replace = true;
                             break;
                         }
@@ -30,7 +30,7 @@ export default class extends treeView<Record> {
                 }
                 return this.records;
             }
-            const response = await new fetch({ path: `/d/${settings.domain}/record?page=${page}`, addCookie: true }).start();
+            const response = await new fetch({ path: `/d/${settings.domain}/record?page=${page}` }).start();
             this.records = [];
             for (const rdoc of response.json.rdocs) {
                 this.records.push(new Record(rdoc, response.json.pdict[rdoc.pid], response.json.udict[rdoc.uid]));

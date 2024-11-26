@@ -13,7 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     vscode.postMessage({ command: 'openP', data: data.rdoc.contest ? [data.rdoc.pid, data.rdoc.contest] : [data.rdoc.pid] });
                 });
 
-                enableTab('Info', `<vscode-table zebra bordered-columns responsive breakpoint="400">
+                enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -39,7 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             <vscode-table-cell>Judge At</vscode-table-cell>
                             <vscode-table-cell>${toRelativeTime(new Date(data.rdoc.judgeAt).getTime())}</vscode-table-cell>
                         </vscode-table-row>
-                        <vscode-table-row style="border-top-width: 2px;">
+                        <vscode-table-row>
                             <vscode-table-cell>Score</vscode-table-cell>
                             <vscode-table-cell>${data.rdoc.score}</vscode-table-cell>
                         </vscode-table-row>
@@ -59,10 +59,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 </vscode-table>`);
 
                 if (data.rdoc.compilerTexts.length > 0) {
-                    enableTab('Compiler Texts', `<pre>${data.rdoc.compilerTexts.join('\n').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`);
+                    enableTab('Compiler Texts', `<pre>${sanitizeHtml(data.rdoc.compilerTexts.join('\n'))}</pre>`);
                 }
                 if (data.rdoc.code !== '') {
-                    enableTab('Last Code', `<pre>${data.rdoc.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>`);
+                    enableTab('Last Code', `<pre>${sanitizeHtml(data.rdoc.code)}</pre>`);
                 }
                 break;
             case 'record':
@@ -177,7 +177,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 <vscode-table-cell>
                                     <span class="icon record-status--icon ${statusIcon[testCase.status]}"></span>
                                     <span class="record-status--text ${statusIcon[testCase.status]}">${statusName[testCase.status]}</span>
-                                    <span style="margin-left: 10px;">${formatString(testCase.message)}</span>
+                                    <span class="mr">${formatString(testCase.message)}</span>
                                 </vscode-table-cell>
                                 <vscode-table-cell>${testCase.score}</vscode-table-cell>
                                 <vscode-table-cell>${toTime(testCase.time)}</vscode-table-cell>

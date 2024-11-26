@@ -185,8 +185,8 @@ const formatString = (str) => {
         return str;
     }
     var message = str.message;
-    for (var i = 0; i < str.params.length; i++) {
-        message = message.replace('{' + i + '}', str.params[i]);
+    for (const param of str.params) {
+        message = message.replace(`{${param.key}}`, param.value);
     }
     return message;
 };
@@ -196,18 +196,17 @@ const parseMarkdown = ({ content, fetchData }) => {
     });
 };
 const renderPdf = async () => {
-    const pdfData = document.getElementsByClassName('pdf');
-    for (var i = 0; i < pdfData.length; i++) {
-        const sourceUrl = pdfData[i].getAttribute('data-src');
+    for (const pdfElement of document.getElementsByClassName('pdf')) {
+        const sourceUrl = pdfElement.getAttribute('data-src');
         if (!sourceUrl) {
             continue;
         }
-        pdfData[i].style.width = '100%';
+        pdfElement.style.width = '100%';
         const pdf = await pdfjsLib.getDocument(sourceUrl).promise;
 
         for (var page = 1; page <= pdf.numPages; page++) {
             const canvas = document.createElement('canvas');
-            pdfData[i].appendChild(canvas);
+            pdfElement.appendChild(canvas);
 
             const pageData = await pdf.getPage(page);
             const viewport = pageData.getViewport({
@@ -225,17 +224,16 @@ const renderPdf = async () => {
             });
         }
 
-        pdfData[i].removeAttribute('data-src');
+        pdfElement.removeAttribute('data-src');
     }
 };
 const renderCode = () => {
-    const pres = document.getElementsByTagName('pre');
     const editors = [];
-    for (var i = 0; i < pres.length; i++) {
-        if (pres[i].className.indexOf('CodeMirror') !== -1) {
+    for (const pre of document.getElementsByTagName('pre')) {
+        if (pre.className.indexOf('CodeMirror') !== -1) {
             continue;
         }
-        const code = pres[i].innerText.trim();
+        const code = pre.innerText.trim();
         const codeElement = document.createElement('div');
         const copyButtonContainer = document.createElement('div');
         copyButtonContainer.style.position = 'absolute';
@@ -274,11 +272,14 @@ const renderCode = () => {
             foldGutter: true,
             styleActiveLine: true,
         }));
-        pres[i].parentNode.replaceChild(codeElement, pres[i]);
+        pre.parentNode.replaceChild(codeElement, pre);
     }
-    for (var i = 0; i < editors.length; i++) {
-        editors[i].setSize('100%', 'auto');
+    for (const editor of editors) {
+        editor.setSize('100%', 'auto');
     }
+};
+const sanitizeHtml = (html) => {
+    return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 
 const vscode = acquireVsCodeApi();

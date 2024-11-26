@@ -10,7 +10,7 @@ export default class extends treeView<Contest | ContestProblem | ContestRecord> 
         const type = homework ? 'homework' : 'contest';
         super(type, async ({ page, setPageCounter, element }) => {
             if (element === undefined) {
-                const response = await new fetch({ path: `/d/${settings.domain}/${type}?page=${page}`, addCookie: true }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/${type}?page=${page}` }).start();
                 setPageCounter(response.json.tpcount);
                 const contests: Contest[] = [];
                 for (const tdoc of response.json.tdocs) {
@@ -20,7 +20,7 @@ export default class extends treeView<Contest | ContestProblem | ContestRecord> 
             }
             else if (element.contextValue === type) {
                 const tid = (element as Contest).id!;
-                const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}` }).start();
                 const records: ContestProblem[] = [];
                 for (const rdoc of Object.keys(response.json.pdict)) {
                     records.push(new ContestProblem(tid, response.json.pdict[rdoc], response.json.psdict[rdoc]));
@@ -28,7 +28,7 @@ export default class extends treeView<Contest | ContestProblem | ContestRecord> 
                 return records;
             } else {
                 const [tid, pid] = (element as ContestProblem).id!.split('-');
-                const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}` }).start();
                 const records: ContestRecord[] = [];
                 for (const rdoc of Object.keys(response.json.rdict)) {
                     if (response.json.rdict[rdoc].pid === parseInt(pid)) {

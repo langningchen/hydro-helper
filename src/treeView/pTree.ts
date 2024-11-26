@@ -11,7 +11,7 @@ export default class extends treeView<Problem | ProblemRecord> {
     constructor() {
         super('problem', async ({ page, setPageCounter, element }) => {
             if (element === undefined) {
-                const response = await new fetch({ path: `/d/${settings.domain}/p?page=${page}`, addCookie: true }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/p?page=${page}` }).start();
                 setPageCounter(response.json.ppcount);
                 const problems: Problem[] = [];
                 for (const pdoc of response.json.pdocs) {
@@ -20,7 +20,7 @@ export default class extends treeView<Problem | ProblemRecord> {
                 return problems;
             }
             else {
-                const response = await new fetch({ path: `/d/${settings.domain}/record?uidOrName=${await storage.username}&pid=${(element.label as string).substring(1)}`, addCookie: true, }).start();
+                const response = await new fetch({ path: `/d/${settings.domain}/record?uidOrName=${await storage.username}&pid=${(element.label as string).substring(1)}` }).start();
                 const records: Record[] = [];
                 for (const rdoc of response.json.rdocs) {
                     records.push(new ProblemRecord(rdoc));

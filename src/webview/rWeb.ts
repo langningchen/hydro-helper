@@ -18,15 +18,15 @@ export default class rWeb extends webview {
                         data: responseJSON,
                     });
                     if (utils.statusEnded[responseJSON.status]) {
-                        new fetch({ path: `/d/${settings.domain}/record/${rid}`, addCookie: true }).start().then(async (recordDetail) => {
-                            if (recordDetail?.json !== undefined) {
+                        new fetch({ path: `/d/${settings.domain}/record/${rid}` }).start().then(async (response) => {
+                            if (response?.json !== undefined) {
                                 postMessage({
                                     command: 'info',
-                                    data: recordDetail.json
+                                    data: response.json
                                 });
                                 postMessage({
                                     command: 'record',
-                                    data: recordDetail.json
+                                    data: response.json
                                 });
                             }
                         }).catch(async (e: Error) => {
