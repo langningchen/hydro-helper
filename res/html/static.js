@@ -308,9 +308,17 @@ window.addEventListener('DOMContentLoaded', () => {
     window.registerTab = (name) => {
         const tabHeader = document.createElement('vscode-tab-header');
         tabHeader.slot = 'header';
-        tabHeader.innerText = name;
+        const headerName = document.createElement('span');
+        headerName.innerText = name;
+        tabHeader.appendChild(headerName);
+        const headerCount = document.createElement('vscode-badge');
+        headerCount.setAttribute('variant', 'counter');
+        headerCount.style.display = 'none';
+        headerCount.style.marginLeft = '5px';
+        tabHeader.appendChild(headerCount);
         tabHeader.style.display = 'none';
         tabs.appendChild(tabHeader);
+
         const tabPanel = document.createElement('vscode-tab-panel');
         tabs.appendChild(tabPanel);
         tabElements[name] = [tabHeader, tabPanel];
@@ -318,11 +326,16 @@ window.addEventListener('DOMContentLoaded', () => {
     window.focusTab = (name) => {
         tabs.setAttribute('selected-index', Object.keys(tabElements).indexOf(name));
     };
+    window.setTabCount = (name, count) => {
+        const tabCount = tabElements[name][0].lastChild;
+        tabCount.style.display = '';
+        tabCount.innerText = count;
+    };
     window.enableTab = (name, htmlContent) => {
         loading.style.display = 'none';
         content.style.display = '';
-        const [tab, panel] = tabElements[name];
-        tab.style.display = 'unset';
+        const [header, panel] = tabElements[name];
+        header.style.display = 'unset';
         panel.innerHTML = htmlContent;
         MathJax.typeset();
         renderPdf();

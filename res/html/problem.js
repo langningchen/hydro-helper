@@ -104,6 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                     relatedHTML += `</p>`;
                     enableTab('Related', relatedHTML);
+                    setTabCount('Related', contestList.length);
                 }
 
                 const files = data.pdoc.additional_file.map((file) => {
@@ -132,6 +133,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 filesHTML += `</vscode-table-body>
                 </vscode-table>`;
                 enableTab('Files', filesHTML);
+                setTabCount('Files', files.filter(file => file.type === 'additional_file').length);
                 break;
             case 'solution':
                 if (data.psdocs.length === 0) { break; }
@@ -187,6 +189,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
                 solutionHTML += '</p>';
                 enableTab('Solution', solutionHTML);
+                setTabCount('Solution', data.psdocs.length);
                 break;
             default:
                 break;
