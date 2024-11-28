@@ -15,6 +15,9 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	storage.secretStorage = context.secrets;
 	storage.extensionPath = context.extensionPath;
 
+	await vscode.workspace.fs.delete(vscode.Uri.file((await storage.extensionPath) + '/temp'), { recursive: true });
+	await vscode.workspace.fs.createDirectory(vscode.Uri.file((await storage.extensionPath) + '/temp'));
+
 	const disposables: vscode.Disposable[] = [];
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
 
@@ -258,6 +261,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	outputChannel.info('Extension activated');
 };
 
-export const deactivate = () => {
+export const deactivate = async () => {
 	outputChannel.info('Extension deactivated');
 };
