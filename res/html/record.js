@@ -58,12 +58,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-body>
                 </vscode-table>`);
 
-                if (data.rdoc.compilerTexts.length > 0) {
-                    enableTab('Compiler Texts', `<pre>${sanitizeHtml(data.rdoc.compilerTexts.join('\n'))}</pre>`);
-                }
-                if (data.rdoc.code !== '') {
-                    enableTab('Last Code', `<pre>${sanitizeHtml(data.rdoc.code)}</pre>`);
-                }
+                enableTab('Compiler Texts', data.rdoc.compilerTexts.length ? `<pre>${sanitizeHtml(data.rdoc.compilerTexts.join('\n'))}</pre>` : '');
+                enableTab('Last Code', data.rdoc.code ? `<pre>${sanitizeHtml(data.rdoc.code)}</pre>` : '');
                 break;
             case 'record':
                 const parsedSubtasks = {};

@@ -92,9 +92,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 focusTab('Problem');
 
                 const contestList = data.ctdocs.concat(data.htdocs);
+                var relatedHTML = '';
                 if (contestList.length > 0) {
                     contestList.sort((a, b) => new Date(b.beginAt) - new Date(a.beginAt));
-                    var relatedHTML = `<p>`;
+                    relatedHTML += `<p>`;
                     for (const contest of contestList) {
                         const type = contest.rule === 'homework' ? 'Homework' : 'Contest';
                         relatedHTML += `<vscode-label>${contest.title}</vscode-label>`;
@@ -103,11 +104,11 @@ window.addEventListener('DOMContentLoaded', () => {
                         relatedHTML += `<vscode-divider></vscode-divider>`;
                     }
                     relatedHTML += `</p>`;
-                    enableTab('Related', relatedHTML);
-                    setTabCount('Related', contestList.length);
                 }
+                enableTab('Related', relatedHTML);
+                setTabCount('Related', contestList.length);
 
-                const files = data.pdoc.additional_file.map((file) => {
+                const files = (data.pdoc.additional_file || []).map((file) => {
                     return { ...file, type: 'additional_file', };
                 }).concat(data.pdoc.data);
                 var filesHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["20%", "20%", "20%", "20%", "20%"]'>
@@ -136,8 +137,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 setTabCount('Files', files.filter(file => file.type === 'additional_file').length);
                 break;
             case 'solution':
-                if (data.psdocs.length === 0) { break; }
-
                 var voteData = {};
                 window.vote = (psid, vote) => {
                     if (voteData[psid] !== vote) {
@@ -158,10 +157,12 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 };
 
-                var solutionHTML = '<p>';
-                for (const psdoc of data.psdocs) {
-                    voteData[psdoc._id] = data.pssdict[psdoc._id]?.vote;
-                    solutionHTML += `<div class="solutionContainer">
+                var solutionHTML = '';
+                if (data.psdocs.length !== 0) {
+                    solutionHTML += '<p>';
+                    for (const psdoc of data.psdocs) {
+                        voteData[psdoc._id] = data.pssdict[psdoc._id]?.vote;
+                        solutionHTML += `<div class="solutionContainer">
                         <div class="voteContainer mr">
                             <div>
                                 <span class="voteNumber" id="${psdoc._id}Count">${psdoc.vote}</span>
@@ -173,21 +174,22 @@ window.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div>${data.udict[psdoc.owner].uname}</div>
                     </div>`;
-                    solutionHTML += `<p>${parseMarkdown(psdoc.content)}</p>`;
-                    if (psdoc.reply.length > 0) {
-                        const collapsible = document.createElement('vscode-collapsible');
-                        solution.appendChild(collapsible);
-                        collapsible.setAttribute('title', 'Reply');
-                        for (const reply of psdoc.reply) {
-                            collapsible.innerHTML += `<div style="padding: 10px">
+                        solutionHTML += `<p>${parseMarkdown(psdoc.content)}</p>`;
+                        if (psdoc.reply.length > 0) {
+                            const collapsible = document.createElement('vscode-collapsible');
+                            solution.appendChild(collapsible);
+                            collapsible.setAttribute('title', 'Reply');
+                            for (const reply of psdoc.reply) {
+                                collapsible.innerHTML += `<div style="padding: 10px">
                             <vscode-badge>${data.udict[reply.owner].uname}</vscode-badge>
                                 ${parseMarkdown(reply.content)}
                             </div>`;
+                            }
                         }
+                        solutionHTML += `<vscode-divider></vscode-divider>`;
                     }
-                    solutionHTML += `<vscode-divider></vscode-divider>`;
+                    solutionHTML += '</p>';
                 }
-                solutionHTML += '</p>';
                 enableTab('Solution', solutionHTML);
                 setTabCount('Solution', data.psdocs.length);
                 break;

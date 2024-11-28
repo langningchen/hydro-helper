@@ -308,6 +308,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.registerTab = (name) => {
         const tabHeader = document.createElement('vscode-tab-header');
         tabHeader.slot = 'header';
+        tabHeader.setAttribute('disabled', true);
         const headerName = document.createElement('span');
         headerName.innerText = name;
         tabHeader.appendChild(headerName);
@@ -316,7 +317,12 @@ window.addEventListener('DOMContentLoaded', () => {
         headerCount.style.display = 'none';
         headerCount.style.marginLeft = '5px';
         tabHeader.appendChild(headerCount);
-        tabHeader.style.display = 'none';
+        const headerLoading = document.createElement('vscode-progress-ring');
+        headerLoading.style.display = 'inline-block';
+        headerLoading.style.marginLeft = '5px';
+        headerLoading.style.height = '15px';
+        headerLoading.style.width = '15px';
+        tabHeader.appendChild(headerLoading);
         tabs.appendChild(tabHeader);
 
         const tabPanel = document.createElement('vscode-tab-panel');
@@ -327,16 +333,19 @@ window.addEventListener('DOMContentLoaded', () => {
         tabs.setAttribute('selected-index', Object.keys(tabElements).indexOf(name));
     };
     window.setTabCount = (name, count) => {
-        const tabCount = tabElements[name][0].lastChild;
-        tabCount.style.display = '';
+        const tabCount = tabElements[name][0].children[1];
+        tabCount.style.display = count ? '' : 'none';
         tabCount.innerText = count;
     };
     window.enableTab = (name, htmlContent) => {
         loading.style.display = 'none';
         content.style.display = '';
         const [header, panel] = tabElements[name];
-        header.style.display = 'unset';
-        panel.innerHTML = htmlContent;
+        header.lastChild.style.display = 'none';
+        if (htmlContent) {
+            header.removeAttribute('disabled');
+            panel.innerHTML = htmlContent;
+        }
         MathJax.typeset();
         renderPdf();
         renderCode();
