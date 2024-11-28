@@ -185,8 +185,8 @@ const formatString = (str) => {
         return str;
     }
     var message = str.message;
-    for (const param of str.params) {
-        message = message.replace(`{${param.key}}`, param.value);
+    for (const i in str.params) {
+        message = message.replace(`{${i}}`, str.params[i]);
     }
     return message;
 };
