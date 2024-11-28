@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 setTabCount('Files', files.filter(file => file.type === 'additional_file').length);
                 break;
             case 'solution':
-                var voteData = {};
+                const voteData = {};
                 window.vote = (psid, vote) => {
                     if (voteData[psid] !== vote) {
                         const count = document.getElementById(psid + 'Count');

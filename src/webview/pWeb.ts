@@ -12,8 +12,7 @@ export default class pWeb extends webview {
             fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {
                 new fetch({ path: `/d/${settings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '') }).start().then(async (response) => {
                     if (response?.json !== undefined) {
-                        var problemContent = response.json.pdoc.content;
-                        problemContent = JSON.parse(problemContent);
+                        const problemContent = JSON.parse(response.json.pdoc.content);
                         for (const [key, value] of Object.entries(problemContent)) {
                             problemContent[key] = await parseMarkdown(value as string, `/d/${settings.domain}/p/${pid}/file`);
                             for (const [id, url] of Object.entries(problemContent[key].fetchData)) {

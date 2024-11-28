@@ -204,7 +204,7 @@ const renderPdf = async () => {
         pdfElement.style.width = '100%';
         const pdf = await pdfjsLib.getDocument(sourceUrl).promise;
 
-        for (var page = 1; page <= pdf.numPages; page++) {
+        for (const page = 1; page <= pdf.numPages; page++) {
             const canvas = document.createElement('canvas');
             pdfElement.appendChild(canvas);
 

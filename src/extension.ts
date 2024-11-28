@@ -62,7 +62,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				redirect: 'follow',
 				signal: abortController.signal,
 			});
-			let receivedBytes = 0;
+			var receivedBytes = 0;
 			const reader = responseData.body?.getReader();
 			const chunks: Uint8Array[] = [];
 			if (reader) {
@@ -86,7 +86,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			}
 			progress.report({ message: 'Writing to file...', increment: undefined, });
 			const buffer = new Uint8Array(receivedBytes);
-			let offset = 0;
+			var offset = 0;
 			for (const chunk of chunks) {
 				buffer.set(chunk, offset);
 				offset += chunk.length;
