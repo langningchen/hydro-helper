@@ -91,7 +91,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 enableTab('Problem', problemHTML);
                 focusTab('Problem');
 
-                const contestList = data.ctdocs.concat(data.htdocs);
+                const contestList = (data.ctdocs || []).concat(data.htdocs);
                 var relatedHTML = '';
                 if (contestList.length > 0) {
                     contestList.sort((a, b) => new Date(b.beginAt) - new Date(a.beginAt));
