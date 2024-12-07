@@ -10,14 +10,11 @@ export default class cWeb extends webview {
             name: 'contest',
             data: { tid },
             getTitle: () => `T${tid}`,
-            fetchData: ({ postMessage, addTempFile, parseMarkdown }) => {
+            fetchData: ({ postMessage, parseMarkdown }) => {
                 new fetch({ path: `/d/${settings.domain}/${type}/${tid}` }).start().then(async (response) => {
                     if (response?.json !== undefined) {
                         const data = response.json;
                         data.tdoc.content = await parseMarkdown(data.tdoc.content);
-                        for (const [id, url] of Object.entries(data.tdoc.content.fetchData)) {
-                            addTempFile(id);
-                        }
                         const message = {
                             command: 'info',
                             data,

@@ -86,7 +86,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <vscode-divider></vscode-divider>`;
                 }
-                problemHTML += parseMarkdown(data.pdoc.content.zh);
+                problemHTML += parseMarkdown(data.pdoc.content.zh || data.pdoc.content);
                 problemHTML += '</p>';
                 enableTab('Problem', problemHTML);
                 focusTab('Problem');

@@ -8,7 +8,6 @@ import storage from '../storage';
 
 interface fetchDataParams {
     postMessage: (message: any) => void
-    addTempFile: (file: string) => void
     parseMarkdown: (markdown: string, prefix?: string) => Promise<{ fetchData: { [key: string]: string }, content: string }>
     dispose: () => void
 };
@@ -94,9 +93,6 @@ export default class {
                     this.panel.webview.postMessage(message);
                 }
             },
-            addTempFile: (file) => {
-                this.tempFiles.push(file);
-            },
             parseMarkdown: async (markdown, prefix?) => {
                 const fetchData: { [key: string]: string } = {};
                 markdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
@@ -126,6 +122,7 @@ export default class {
                     const webviewUri = this.panel.webview.asWebviewUri(filePath);
                     outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
                     fetchData[key] = webviewUri.toString();
+                    this.tempFiles.push(key);
                 }
                 return {
                     fetchData,
