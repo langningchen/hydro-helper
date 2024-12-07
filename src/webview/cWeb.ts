@@ -21,8 +21,6 @@ export default class cWeb extends webview {
                         };
                         postMessage(message);
                     }
-                }).catch(async (e: Error) => {
-                    io.error(e.message);
                 });
                 new fetch({ path: `/d/${settings.domain}/${type}/${tid}/scoreboard` }).start().then(async (response) => {
                     if (response?.json !== undefined) {
@@ -32,8 +30,6 @@ export default class cWeb extends webview {
                         };
                         postMessage(message);
                     }
-                }).catch(async (e: Error) => {
-                    io.error(e.message);
                 });
             },
         });

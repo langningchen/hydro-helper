@@ -2,8 +2,7 @@ window.addEventListener('DOMContentLoaded', () => {
     registerTab('Info');
     registerTab('Scoreboard');
 
-    window.onmessage = (event) => {
-        const message = event.data;
+    window.setMessageHandler((message) => {
         const data = message.data;
         switch (message.command) {
             case 'info':
@@ -112,5 +111,5 @@ window.addEventListener('DOMContentLoaded', () => {
             default:
                 break;
         }
-    };
+    });
 });

@@ -13,6 +13,13 @@ export default class rWeb extends webview {
             getTitle: () => `R${rid}`,
             fetchData: ({ postMessage }) => {
                 new rdWs(rid, (responseJSON) => {
+                    if (responseJSON.error) {
+                        postMessage({
+                            command: 'error',
+                            data: responseJSON.error,
+                        });
+                        return;
+                    }
                     postMessage({
                         command: 'record',
                         data: responseJSON,
@@ -29,8 +36,6 @@ export default class rWeb extends webview {
                                     data: response.json
                                 });
                             }
-                        }).catch(async (e: Error) => {
-                            io.error(e.message);
                         });
                     }
                 }).start();

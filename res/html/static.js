@@ -1,4 +1,46 @@
-const statusName = {
+const pageLoaded = new Promise((resolve) => {
+    if (document.readyState === 'complete') {
+        resolve();
+    } else {
+        window.addEventListener('DOMContentLoaded', resolve);
+    }
+});
+var loading, error, errorMessage, content;
+(async () => {
+    await pageLoaded;
+    loading = document.getElementById('loading');
+    error = document.getElementById('error');
+    errorMessage = document.getElementById('errorMessage');
+    content = document.getElementById('content');
+})();
+
+const messageQueue = [];
+var messageHandler = null;
+window.onmessage = (event) => {
+    const message = event.data;
+    if (messageHandler) {
+        messageHandler(message);
+    } else {
+        messageQueue.push(message);
+    }
+};
+window.setMessageHandler = (handler) => {
+    messageHandler = async (message) => {
+        if (message.command === 'error') {
+            await pageLoaded;
+            loading.classList.add('hidden');
+            error.classList.remove('hidden');
+            errorMessage.innerHTML = formatString(message.data);
+            return;
+        }
+        handler(message);
+    };
+    while (messageQueue.length > 0) {
+        messageHandler(messageQueue.shift());
+    }
+};
+
+window.statusName = {
     0: 'Waiting',
     1: 'Accepted',
     2: 'Wrong Answer',
@@ -19,7 +61,7 @@ const statusName = {
     32: 'Hack Successful',
     33: 'Hack Unsuccessful'
 };
-const statusShortName = {
+window.statusShortName = {
     1: 'AC',
     2: 'WA',
     3: 'TLE',
@@ -33,7 +75,7 @@ const statusShortName = {
     30: 'IGN',
     31: 'FE'
 };
-const statusIcon = {
+window.statusIcon = {
     0: 'pending',
     1: 'pass',
     2: 'fail',
@@ -54,7 +96,7 @@ const statusIcon = {
     32: 'pass',
     33: 'fail'
 };
-const statusEnded = {
+window.statusEnded = {
     0: false,
     1: true,
     2: true,
@@ -75,7 +117,7 @@ const statusEnded = {
     32: true,
     33: true
 };
-const languageDisplayName = {
+window.languageDisplayName = {
     "bash": "Bash",
     "c": "C",
     "cc": "C++",
@@ -106,7 +148,7 @@ const languageDisplayName = {
     "cs": "C#",
     "r": "R",
 };
-const contestRuleName = {
+window.contestRuleName = {
     "acm": "ACM/ICPC",
     "oi": "OI",
     "ioi": "IOI",
@@ -114,7 +156,7 @@ const contestRuleName = {
     "ledo": "Ledo",
     "homework": "Assignment",
 };
-const scoreColor = [
+window.scoreColor = [
     '#ff4f4f',
     '#ff694f',
     '#f8603a',
@@ -128,19 +170,17 @@ const scoreColor = [
     '#25ad40',
 ];
 
-const findIndex = (statusMap, target) => {
+window.findIndex = (statusMap, target) => {
     for (const [key, value] of Object.entries(statusMap)) {
-        if (value === target) {
-            return key;
-        }
+        if (value === target) { return key; }
     }
     return undefined;
 };
-const getUnit = (data, unit) => {
+window.getUnit = (data, unit) => {
     if (data >= 1 && data < 2) { return unit; }
     else { return unit + 's'; }
 };
-const toTime = (time) => {
+window.toTime = (time) => {
     if (time < 1000) { return time + 'ms'; } time = Math.floor(time / 1000);
     if (time < 60) { return time + 's'; } time = Math.floor(time / 60);
     if (time < 60) { return time + ' ' + getUnit(time, 'minute'); } time = Math.floor(time / 60);
@@ -149,27 +189,23 @@ const toTime = (time) => {
     if (time < 12) { return 'about ' + Math.floor(time) + ' ' + getUnit(time, 'month'); } time = Math.floor(time / 12);
     return 'about ' + Math.floor(time) + ' ' + getUnit(time, 'year');
 };
-const parseTime = (time) => {
+window.parseTime = (time) => {
     if (time.endsWith('ms')) { return parseInt(time.slice(0, -2)); }
     else if (time.startsWith('≥')) { return parseInt(time.slice(1)); }
-    else {
-        return -1;
-    }
+    else { return -1; }
 };
-const toMemory = (time) => {
+window.toMemory = (time) => {
     if (time < 1024) { return time + 'B'; } time = Math.floor(time / 1024);
     if (time < 1024) { return time + 'KiB'; } time = Math.floor(time / 1024);
     if (time < 1024) { return time + 'MiB'; } time = Math.floor(time / 1024);
     return time + 'GiB';
 };
-const parseMemory = (memory) => {
+window.parseMemory = (memory) => {
     if (memory.endsWith('KiB')) { return parseInt(memory.slice(0, -3)); }
     else if (memory.endsWith('MiB')) { return parseInt(memory.slice(0, -3)) * 1024; }
-    else {
-        return -1;
-    }
+    else { return -1; }
 };
-const toRelativeTime = (time) => {
+window.toRelativeTime = (time) => {
     const now = new Date().getTime();
     const suffix = (time > now ? 'later' : 'ago');
     var delta = Math.floor(Math.abs(now - time) / 1000);
@@ -180,22 +216,19 @@ const toRelativeTime = (time) => {
     if (delta < 12) { return 'about ' + delta + ' ' + getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
     return 'about ' + delta + ' ' + getUnit(delta, 'year') + ' ' + suffix;
 };
-const formatString = (str) => {
-    if (typeof str === 'string') {
-        return str;
-    }
-    var message = str.message;
+window.formatString = (str) => {
+    if (typeof str === 'string') { return str; }
+    var message = str.message || str.name;
     for (const i in str.params) {
-        message = message.replace(`{${i}}`, str.params[i]);
+        if (message.includes(`{${i}}`)) { message = message.replace(`{${i}}`, str.params[i]); }
+        else { message += `, ${str.params[i]}`; }
     }
     return message;
 };
-const parseMarkdown = ({ content, fetchData }) => {
-    return content.replace(/\{\{([a-z0-9]+)\}\}/g, (match, id) => {
-        return fetchData[id];
-    });
+window.parseMarkdown = ({ content, fetchData }) => {
+    return content.replace(/\{\{([a-z0-9]+)\}\}/g, (match, id) => fetchData[id]);
 };
-const renderPdf = async () => {
+window.renderPdf = async () => {
     for (const pdfElement of document.getElementsByClassName('pdf')) {
         const sourceUrl = pdfElement.getAttribute('data-src');
         if (!sourceUrl) {
@@ -204,7 +237,7 @@ const renderPdf = async () => {
         pdfElement.style.width = '100%';
         const pdf = await pdfjsLib.getDocument(sourceUrl).promise;
 
-        for (const page = 1; page <= pdf.numPages; page++) {
+        for (var page = 1; page <= pdf.numPages; page++) {
             const canvas = document.createElement('canvas');
             pdfElement.appendChild(canvas);
 
@@ -227,7 +260,7 @@ const renderPdf = async () => {
         pdfElement.removeAttribute('data-src');
     }
 };
-const renderCode = () => {
+window.renderCode = () => {
     const editors = [];
     for (const pre of document.getElementsByTagName('pre')) {
         if (pre.className.indexOf('CodeMirror') !== -1) {
@@ -278,17 +311,15 @@ const renderCode = () => {
         editor.setSize('100%', 'auto');
     }
 };
-const sanitizeHtml = (html) => {
+window.sanitizeHtml = (html) => {
     return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 
-const vscode = acquireVsCodeApi();
+window.vscode = acquireVsCodeApi();
 
 window.addEventListener('DOMContentLoaded', () => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
 
-    const loading = document.getElementById('loading');
-    const content = document.getElementById('content');
     const title = document.getElementById('title');
     const buttonGroup = document.getElementById('buttonGroup');
     const tabs = document.getElementById('tabs');
@@ -338,8 +369,8 @@ window.addEventListener('DOMContentLoaded', () => {
         tabCount.innerText = count;
     };
     window.enableTab = (name, htmlContent) => {
-        loading.style.display = 'none';
-        content.style.display = '';
+        content.classList.remove('hidden');
+        loading.classList.add('hidden');
         const [header, panel] = tabElements[name];
         header.lastChild.style.display = 'none';
         if (htmlContent) {
@@ -353,8 +384,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
     registerButton('refresh', 'Refresh', () => {
         vscode.postMessage({ command: 'refresh' });
-        loading.style.display = 'flex';
-        content.style.display = 'none';
+        loading.classList.remove('hidden');
+        content.classList.add('hidden');
         while (buttonGroup.children.length > 1) {
             buttonGroup.removeChild(buttonGroup.children[1]);
         }

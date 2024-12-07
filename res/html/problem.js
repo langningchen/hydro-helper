@@ -5,8 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
     registerTab('Related');
     registerTab('Files');
 
-    window.onmessage = event => {
-        const message = event.data;
+    window.setMessageHandler((message) => {
         const data = message.data;
         switch (message.command) {
             case 'problem':
@@ -196,5 +195,5 @@ window.addEventListener('DOMContentLoaded', () => {
             default:
                 break;
         }
-    };
+    });
 });

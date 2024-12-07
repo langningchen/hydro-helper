@@ -30,7 +30,7 @@ export default class {
             }
             if (stringData === 'pong') { return; }
             const responseJSON = JSON.parse(stringData);
-            if (responseJSON.error === 'PermissionError' || responseJSON.error === 'PrivilegeError') { ws.close(); }
+            if (responseJSON.error !== undefined) { ws.close(); }
             this.callback(responseJSON);
         });
 

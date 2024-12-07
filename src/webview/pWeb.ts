@@ -28,8 +28,6 @@ export default class pWeb extends webview {
                         };
                         postMessage(message);
                     }
-                }).catch(async (e: Error) => {
-                    io.error(e.message);
                 });
 
                 if (tid === undefined) {
@@ -47,8 +45,6 @@ export default class pWeb extends webview {
                             };
                             postMessage(message);
                         }
-                    }).catch(async (e: Error) => {
-                        io.error(e.message);
                     });
                 }
             },

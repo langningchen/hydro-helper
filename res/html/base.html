@@ -18,6 +18,26 @@
             margin-right: 10px;
         }
 
+        .cover {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #error {
+            font-size: 18px;
+        }
+
+        #error>vscode-icon {
+            color: #fb5555;
+            margin-right: 10px;
+        }
+
+        .cover.hidden {
+            display: none;
+        }
+
         .solutionContainer,
         .voteContainer {
             display: flex;
@@ -152,10 +172,12 @@
 </head>
 
 <body>
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;" id="loading">
-        <vscode-progress-ring></vscode-progress-ring>
+    <div class="cover" id="loading"><vscode-progress-ring></vscode-progress-ring></div>
+    <div class="cover hidden" id="error">
+        <vscode-icon name="error" size="18"></vscode-icon>
+        <div id="errorMessage"></div>
     </div>
-    <div id="content" style="display: none;">
+    <div class="hidden" id="content">
         <h1 id="title"></h1>
         <div id="buttonGroup"></div>
         <vscode-tabs id="tabs"></vscode-tabs>

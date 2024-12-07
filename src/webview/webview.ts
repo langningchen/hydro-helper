@@ -81,58 +81,62 @@ export default class {
         htmlContent = htmlContent.replace("{{codicon}}", (await this.getRealPath(['res', 'libs', 'codicon', 'codicon.css'])).toString());
         htmlContent = htmlContent.replace("{{static}}", (await this.getRealPath(['res', 'html', 'static.js'])).toString());
         htmlContent = htmlContent.replace("{{dynamic}}", (await this.getRealPath(['res', 'html', `${this.webviewData.name}.js`])).toString());
-        outputChannel.debug('HTML content', htmlContent);
         this.panel.webview.html = htmlContent;
     };
 
     private fetchData = () => {
         outputChannel.trace(`[${this.shortName}    ]`, '"fetchData"');
-        this.webviewData.fetchData({
-            postMessage: (message) => {
-                if (!this.disposed) {
-                    this.panel.webview.postMessage(message);
-                }
-            },
-            parseMarkdown: async (markdown, prefix?) => {
-                const fetchData: { [key: string]: string } = {};
-                markdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
-                    if (url.startsWith('file://')) {
-                        url = prefix + '/' + url.substring(7);
-                    }
-                    url = url.replace(/\?.*$/, '');
-                    const id = Math.random().toString(36).slice(2);
-                    fetchData[id] = url;
-                    if (type === 'video') {
-                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button><video src="{{${id}}}" controls></video>`;
-                    }
-                    else if (type === 'pdf') {
-                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','PDF.pdf']})">Download PDF</vscode-button><div data-src="{{${id}}}" class="pdf"></div>`;
-                    }
-                    return '<a href="' + id + '">' + url + '</a>';
-                });
-                for (const [key, value] of Object.entries(fetchData)) {
-                    const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}`, {
-                        headers: {
-                            'cookie': await auth.getCookiesValue(),
-                        },
-                        redirect: 'follow',
-                    });
-                    const filePath = vscode.Uri.file(`${(await storage.extensionPath)!}/temp/${key}`);
-                    await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
-                    const webviewUri = this.panel.webview.asWebviewUri(filePath);
-                    outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
-                    fetchData[key] = webviewUri.toString();
-                    this.tempFiles.push(key);
-                }
-                return {
-                    fetchData,
-                    content: await marked(markdown),
-                };
-            },
-            dispose: () => {
-                this.panel.dispose();
+        const safePostMessage = (message: any) => {
+            if (!this.disposed) {
+                this.panel.webview.postMessage(message);
             }
-        });
+        };
+        try {
+            this.webviewData.fetchData({
+                postMessage: safePostMessage,
+                parseMarkdown: async (markdown, prefix?) => {
+                    const fetchData: { [key: string]: string } = {};
+                    markdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
+                        if (url.startsWith('file://')) {
+                            url = prefix + '/' + url.substring(7);
+                        }
+                        url = url.replace(/\?.*$/, '');
+                        const id = Math.random().toString(36).slice(2);
+                        fetchData[id] = url;
+                        if (type === 'video') {
+                            return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button><video src="{{${id}}}" controls></video>`;
+                        }
+                        else if (type === 'pdf') {
+                            return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','PDF.pdf']})">Download PDF</vscode-button><div data-src="{{${id}}}" class="pdf"></div>`;
+                        }
+                        return '<a href="' + id + '">' + url + '</a>';
+                    });
+                    for (const [key, value] of Object.entries(fetchData)) {
+                        const responseData = await fetch(`http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}`, {
+                            headers: {
+                                'cookie': await auth.getCookiesValue(),
+                            },
+                            redirect: 'follow',
+                        });
+                        const filePath = vscode.Uri.file(`${(await storage.extensionPath)!}/temp/${key}`);
+                        await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
+                        const webviewUri = this.panel.webview.asWebviewUri(filePath);
+                        outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
+                        fetchData[key] = webviewUri.toString();
+                        this.tempFiles.push(key);
+                    }
+                    return {
+                        fetchData,
+                        content: await marked(markdown),
+                    };
+                },
+                dispose: () => {
+                    this.panel.dispose();
+                }
+            });
+        } catch (e) {
+            safePostMessage({ command: 'error', data: (e as Error).message });
+        };
     };
 
     private cleanup = async () => {
