@@ -46,6 +46,8 @@ export default class pWeb extends webview {
                             postMessage(message);
                         }
                     });
+                } else {
+                    postMessage({ command: 'solution', data: null });
                 }
             },
         });
