@@ -36,14 +36,22 @@ window.addEventListener('DOMContentLoaded', () => {
                             <vscode-table-cell>${data.udoc.uname}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
-                            <vscode-table-cell>Submit</vscode-table-cell>
-                            <vscode-table-cell>${data.pdoc.nSubmit}</vscode-table-cell>
+                            <vscode-table-cell>Time</vscode-table-cell>
+                            <vscode-table-cell>${toTime(data.pdoc.config.timeMin)} ~ ${toTime(data.pdoc.config.timeMax)}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
+                            <vscode-table-cell>Memory</vscode-table-cell>
+                            <vscode-table-cell>${toMemory(data.pdoc.config.memoryMin * 1024 * 1024)} ~ ${toMemory(data.pdoc.config.memoryMax * 1024 * 1024)}</vscode-table-cell>
+                        </vscode-table-row>
+                        ${data.pdoc.nSubmit ? `<vscode-table-row>
+                            <vscode-table-cell>Submit</vscode-table-cell>
+                            <vscode-table-cell>${data.pdoc.nSubmit}</vscode-table-cell>
+                        </vscode-table-row>`: ``}
+                        ${data.pdoc.nAccept ? `<vscode-table-row>
                             <vscode-table-cell>Accept</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.nAccept}</vscode-table-cell>
-                        </vscode-table-row>
-                        ${data.pdoc.stats && `<vscode-table-row>
+                        </vscode-table-row>`: ``}
+                        ${data.pdoc.stats ? `<vscode-table-row>
                             <vscode-table-cell>Status (Accepted)</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.stats.AC}</vscode-table-cell>
                         </vscode-table-row>
@@ -74,7 +82,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <vscode-table-row>
                             <vscode-table-cell>Status (Ignored)</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.stats.IGN}</vscode-table-cell>
-                        </vscode-table-row>`}
+                        </vscode-table-row>`: ``}
                     </vscode-table-body>
                 </vscode-table>`);
 
@@ -90,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 enableTab('Problem', problemHTML);
                 focusTab('Problem');
 
-                const contestList = (data.ctdocs || []).concat(data.htdocs);
+                const contestList = (data.ctdocs || []).concat(data.htdocs || []);
                 var relatedHTML = '';
                 if (contestList.length > 0) {
                     contestList.sort((a, b) => new Date(b.beginAt) - new Date(a.beginAt));
@@ -109,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 const files = (data.pdoc.additional_file || []).map((file) => {
                     return { ...file, type: 'additional_file', };
-                }).concat(data.pdoc.data);
+                }).concat(data.pdoc.data || []);
                 var filesHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["20%", "20%", "20%", "20%", "20%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Filename</vscode-table-header-cell>
@@ -136,6 +144,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 setTabCount('Files', files.filter(file => file.type === 'additional_file').length);
                 break;
             case 'solution':
+                if (data === null) {
+                    enableTab('Solution');
+                    break;
+                }
                 const voteData = {};
                 window.vote = (psid, vote) => {
                     if (voteData[psid] !== vote) {
