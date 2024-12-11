@@ -1,7 +1,7 @@
 import { WebSocket } from "ws";
 import settings from "../settings";
 import auth from "../auth";
-import { io } from '../io';
+import { io, outputChannel } from '../io';
 
 export default class {
     private interval: NodeJS.Timeout | undefined;
@@ -29,6 +29,7 @@ export default class {
                 return;
             }
             if (stringData === 'pong') { return; }
+            outputChannel.debug(stringData);
             const responseJSON = JSON.parse(stringData);
             if (responseJSON.error !== undefined) { ws.close(); }
             this.callback(responseJSON);
