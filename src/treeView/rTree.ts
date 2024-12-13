@@ -19,7 +19,7 @@ export default class extends treeView<Record> {
                     var replace: boolean = false;
                     for (var record of this.records) {
                         if (record.id === pendingRecord.id) {
-                            record = pendingRecord;
+                            Object.assign(record, pendingRecord);
                             replace = true;
                             break;
                         }
