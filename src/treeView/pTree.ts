@@ -32,29 +32,29 @@ export default class extends treeView<Problem | ProblemRecord> {
 }
 
 export class Problem extends vscode.TreeItem {
-    constructor(pdoc: utils.ProblemDoc, psdoc: utils.ProblemStatusDoc) {
+    constructor(pdoc: utils.ProblemDoc, psdoc: utils.ProblemStatusDoc, tid?: string) {
         super('P' + pdoc.docId, (psdoc && psdoc.status ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        this.id = (tid ? tid + '-' : '') + pdoc.docId;
         this.contextValue = 'problem';
         this.description = pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
-        if (pdoc.tag.length > 0) {
-            tooltipDoc.appendMarkdown(`- **Tags**: ${pdoc.tag.join(', ')}\n`);
+        if (pdoc.tag && pdoc.tag.length > 0) { tooltipDoc.appendMarkdown(`- **Tags**: ${pdoc.tag.join(', ')}\n`); }
+        if (psdoc && psdoc.score) {
+            tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
+            this.description += '  ' + psdoc.score;
         }
         if (psdoc && psdoc.status) {
             this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
-            tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
-            this.description += '  ' + psdoc.score + ' ' + utils.statusName[psdoc.status];
+            this.description += ' ' + utils.statusName[psdoc.status];
         }
-        if (pdoc.difficulty) {
-            tooltipDoc.appendMarkdown(`- **Difficulty**: ${pdoc.difficulty}\n`);
-        }
-        tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.nSubmit}\n`);
+        if (pdoc.difficulty) { tooltipDoc.appendMarkdown(`- **Difficulty**: ${pdoc.difficulty}\n`); }
+        if (pdoc.nAccept && pdoc.nSubmit) { tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.nSubmit}\n`); }
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'cyezoi.openP',
             title: 'Open Problem',
-            arguments: [pdoc.docId],
+            arguments: (tid ? [pdoc.docId, tid] : [pdoc.docId]),
         };
     }
 }

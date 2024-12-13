@@ -121,6 +121,7 @@ export interface ProblemDoc {
     domainId: string
     docType: number
     docId: number
+    pid: string
     title: string
     tag: string[]
     hidden: boolean

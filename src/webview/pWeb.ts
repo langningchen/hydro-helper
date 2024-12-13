@@ -1,4 +1,3 @@
-import { io } from '../io';
 import fetch from '../fetch';
 import settings from '../settings';
 import webview from './webview';

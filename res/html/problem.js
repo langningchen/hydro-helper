@@ -86,6 +86,15 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-body>
                 </vscode-table>`);
 
+                const markdownContent = data.pdoc.content.zh || data.pdoc.content;
+                window.copyMarkdown = () => {
+                    const dummy = document.createElement('textarea');
+                    document.body.appendChild(dummy);
+                    dummy.value = markdownContent;
+                    dummy.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummy);
+                };
                 var problemHTML = '<p>';
                 if (data.pdoc.config.subType) {
                     problemHTML += `<div>
@@ -93,7 +102,8 @@ window.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <vscode-divider></vscode-divider>`;
                 }
-                problemHTML += parseMarkdown(data.pdoc.content.zh || data.pdoc.content);
+                problemHTML += `<vscode-button icon="copy" class="mr" onclick="copyMarkdown()">Copy</vscode-button>`;
+                problemHTML += parseMarkdown(markdownContent);
                 problemHTML += '</p>';
                 enableTab('Problem', problemHTML);
                 focusTab('Problem');

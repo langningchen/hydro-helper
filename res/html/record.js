@@ -64,8 +64,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             case 'record':
                 const parsedSubtasks = {};
-                var status = "";
-                var score = "";
+                var status = undefined;
+                var score = undefined;
                 if (data.status_html) {
                     const html = data.status_html;
                     const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -144,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                setTitle(`<span class="icon record-status--icon ${statusIcon[status]}"></span><span class="record-status--text ${statusIcon[status]}">${score} ${statusName[status]}</span>`);
+                setTitle(`<span class="icon record-status--icon ${statusIcon[status]}"></span><span class="record-status--text ${statusIcon[status]}">${score ? `${score} ` : ``}${statusName[status]}</span>`);
 
                 if (Object.keys(parsedSubtasks).length > 0) {
                     var recordHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
