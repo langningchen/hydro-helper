@@ -1,5 +1,4 @@
 import * as utils from '../utils';
-import { io } from '../io';
 import fetch from '../fetch';
 import settings from '../settings';
 import webview from './webview';
@@ -10,7 +9,8 @@ export default class rWeb extends webview {
         super({
             name: 'record',
             data: { rid },
-            getTitle: () => `R${rid}`,
+            url: `/r/${rid}`,
+            title: `R${rid}`,
             fetchData: ({ postMessage }) => {
                 new rdWs(rid, (responseJSON) => {
                     if (responseJSON.error) {

@@ -7,7 +7,8 @@ export default class pWeb extends webview {
         super({
             name: 'problem',
             data: { pid, tid },
-            getTitle: () => 'P' + pid + (tid !== undefined ? ` - T${tid}` : ''),
+            url: `/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : ''),
+            title: 'P' + pid + (tid !== undefined ? ` - T${tid}` : ''),
             fetchData: ({ postMessage, parseMarkdown }) => {
                 new fetch({ path: `/d/${settings.domain}/p/${pid}` + (tid !== undefined ? `?tid=${tid}` : '') }).start().then(async (response) => {
                     if (response?.json !== undefined) {

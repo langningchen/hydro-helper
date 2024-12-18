@@ -390,4 +390,7 @@ window.addEventListener('DOMContentLoaded', () => {
             buttonGroup.removeChild(buttonGroup.children[1]);
         }
     });
+    registerButton('browser', 'Open in Browser', () => {
+        vscode.postMessage({ command: 'openInBrowser' });
+    });
 });

@@ -1,4 +1,3 @@
-import { io } from '../io';
 import fetch from '../fetch';
 import settings from '../settings';
 import webview from './webview';
@@ -9,7 +8,8 @@ export default class cWeb extends webview {
         super({
             name: 'contest',
             data: { tid },
-            getTitle: () => `T${tid}`,
+            url: `/contest/${tid}`,
+            title: `T${tid}`,
             fetchData: ({ postMessage, parseMarkdown }) => {
                 new fetch({ path: `/d/${settings.domain}/${type}/${tid}` }).start().then(async (response) => {
                     if (response?.json !== undefined) {

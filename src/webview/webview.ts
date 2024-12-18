@@ -15,7 +15,8 @@ interface fetchDataParams {
 export interface WebviewData {
     name: string;
     data: { [key: string]: any };
-    getTitle: () => string;
+    url: string;
+    title: string;
     fetchData: (params: fetchDataParams) => void;
 }
 
@@ -36,10 +37,10 @@ export default class {
         this.shortName = this.webviewData.name.charAt(0) + "Web";
 
         outputChannel.trace(`[${this.shortName}    ]`, '"constructor"', data);
-        outputChannel.info(`Open webview`, `"${this.webviewData.getTitle()}"`);
+        outputChannel.info(`Open webview`, `"${this.webviewData.title}"`);
         this.panel = vscode.window.createWebviewPanel(
             this.webviewData.name,
-            `CYEZOI - ` + this.webviewData.getTitle(),
+            `CYEZOI - ${this.webviewData.title}`,
             vscode.ViewColumn.Active,
             {
                 enableScripts: true,
@@ -54,6 +55,9 @@ export default class {
             }
             else if (message.command === 'dispose') {
                 this.panel.dispose();
+            }
+            else if (message.command === 'openInBrowser') {
+                vscode.env.openExternal(vscode.Uri.parse(`http${settings.safeProtocol ? "s" : ""}://${settings.server}/d/${settings.domain}${data.url}`));
             } else {
                 vscode.commands.executeCommand(`cyezoi.${message.command}`, ...message.data);
             }

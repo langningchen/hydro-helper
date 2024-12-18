@@ -115,7 +115,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			const abortController = new AbortController();
 			token.onCancellationRequested(() => { abortController.abort(); });
 			return await new cyezFetch({
-				path: '/d/' + settings.domain + '/p/' + pid + '/submit' + (tid ? '?tid=' + tid : ''),
+				path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 				addCookie: true, abortController
 			}).start();
 		}).then(response => response.json.langRange);
