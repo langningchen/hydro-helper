@@ -90,7 +90,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 window.copyMarkdown = () => {
                     const dummy = document.createElement('textarea');
                     document.body.appendChild(dummy);
-                    dummy.value = markdownContent;
+                    dummy.value = markdownContent.rawContent;
                     dummy.select();
                     document.execCommand('copy');
                     document.body.removeChild(dummy);

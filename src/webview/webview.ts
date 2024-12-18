@@ -100,7 +100,7 @@ export default class {
                 postMessage: safePostMessage,
                 parseMarkdown: async (markdown, prefix?) => {
                     const fetchData: { [key: string]: string } = {};
-                    markdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
+                    const parsedMarkdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
                         if (url.startsWith('file://')) {
                             url = prefix + '/' + url.substring(7);
                         }
@@ -131,7 +131,8 @@ export default class {
                     }
                     return {
                         fetchData,
-                        content: await marked(markdown),
+                        content: await marked(parsedMarkdown),
+                        rawContent: markdown,
                     };
                 },
                 dispose: () => {
