@@ -25,28 +25,41 @@ interface WebviewMessage {
     data: string[];
 }
 
-export default class {
-    private panel: vscode.WebviewPanel;
+const openedWebviews: Map<string, vscode.WebviewPanel> = new Map();
+
+export default class webview {
+    private panel: vscode.WebviewPanel | undefined;
     private tempFiles: string[] = [];
     private webviewData: WebviewData;
     private shortName: string;
     private disposed: boolean = false;
+    public dispose: Promise<void>;
+    private fireDispose: () => void = () => { };
 
     constructor(data: WebviewData) {
         this.webviewData = data;
         this.shortName = this.webviewData.name.charAt(0) + "Web";
+        this.dispose = new Promise<void>((resolve) => {
+            this.fireDispose = resolve;
+        });
+
+        if (openedWebviews.has(this.webviewData.title)) {
+            openedWebviews.get(this.webviewData.title)!.reveal();
+            return;
+        }
 
         outputChannel.trace(`[${this.shortName}    ]`, '"constructor"', data);
         outputChannel.info(`Open webview`, `"${this.webviewData.title}"`);
         this.panel = vscode.window.createWebviewPanel(
             this.webviewData.name,
             `CYEZOI - ${this.webviewData.title}`,
-            vscode.ViewColumn.Active,
+            vscode.ViewColumn.One,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
             },
         );
+        openedWebviews.set(this.webviewData.title, this.panel);
 
         this.getHTML();
         this.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
@@ -54,7 +67,7 @@ export default class {
                 this.fetchData();
             }
             else if (message.command === 'dispose') {
-                this.panel.dispose();
+                this.panel!.dispose();
             }
             else if (message.command === 'openInBrowser') {
                 vscode.env.openExternal(vscode.Uri.parse(`http${settings.safeProtocol ? "s" : ""}://${settings.server}/d/${settings.domain}${data.url}`));
@@ -69,10 +82,11 @@ export default class {
         } catch (e) {
             this.cleanup();
         }
+
     }
 
     private getRealPath = async (relativePath: string[]): Promise<vscode.Uri> => {
-        return this.panel?.webview.asWebviewUri(
+        return this.panel!.webview.asWebviewUri(
             vscode.Uri.file(path.join((await storage.extensionPath)!, ...relativePath)),
         );
     };
@@ -85,14 +99,14 @@ export default class {
         htmlContent = htmlContent.replace("{{codicon}}", (await this.getRealPath(['res', 'libs', 'codicon', 'codicon.css'])).toString());
         htmlContent = htmlContent.replace("{{static}}", (await this.getRealPath(['res', 'html', 'static.js'])).toString());
         htmlContent = htmlContent.replace("{{dynamic}}", (await this.getRealPath(['res', 'html', `${this.webviewData.name}.js`])).toString());
-        this.panel.webview.html = htmlContent;
+        this.panel!.webview.html = htmlContent;
     };
 
     private fetchData = () => {
         outputChannel.trace(`[${this.shortName}    ]`, '"fetchData"');
         const safePostMessage = (message: any) => {
             if (!this.disposed) {
-                this.panel.webview.postMessage(message);
+                this.panel!.webview.postMessage(message);
             }
         };
         try {
@@ -124,7 +138,7 @@ export default class {
                         });
                         const filePath = vscode.Uri.file(`${(await storage.extensionPath)!}/temp/${key}`);
                         await vscode.workspace.fs.writeFile(filePath, new Uint8Array(await responseData.arrayBuffer()));
-                        const webviewUri = this.panel.webview.asWebviewUri(filePath);
+                        const webviewUri = this.panel!.webview.asWebviewUri(filePath);
                         outputChannel.info('Saved', `"http${settings.safeProtocol ? "s" : ""}://${settings.server}${value}"`, 'to file', `"${filePath.toString()}"`, 'url', `"${webviewUri.toString()}"`);
                         fetchData[key] = webviewUri.toString();
                         this.tempFiles.push(key);
@@ -136,7 +150,7 @@ export default class {
                     };
                 },
                 dispose: () => {
-                    this.panel.dispose();
+                    this.panel!.dispose();
                 }
             });
         } catch (e) {
@@ -152,5 +166,7 @@ export default class {
             vscode.workspace.fs.delete(filePath);
             outputChannel.info("Delete temp file", `"${filePath.toString()}"`);
         }
+        openedWebviews.delete(this.webviewData.title);
+        this.fireDispose();
     };
 }
