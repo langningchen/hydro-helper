@@ -148,7 +148,9 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 }
 
-                setTitle(`<span class="icon record-status--icon ${statusIcon[status]}"></span><span class="record-status--text ${statusIcon[status]}">${score ? `${score} ` : ``}${statusName[status]}</span>`);
+                setTitle(`<span class="icon record-status--icon ${statusIcon[status]}"></span>
+                    <span class="record-status--text" style="color: ${scoreColor[Math.floor(score / 100 * 10)]}">${score ? `${score} ` : ``}</span>
+                    <span class="record-status--text ${statusIcon[status]}">${statusName[status]}</span>`);
 
                 if (Object.keys(parsedSubtasks).length > 0) {
                     var recordHTML = `<vscode-table zebra bordered-rows resizable columns='["10%", "40%", "10%", "20%", "20%"]'>
