@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 setTitle('#' + data.pdoc.docId + '. ' + data.pdoc.title);
 
                 registerButton('check', 'Submit', () => {
-                    vscode.postMessage({ command: 'submitProblem', data: [data.pdoc.docId, data.tdoc?._id] });
+                    vscode.postMessage({ command: 'submitP', data: [data.pdoc.docId, data.tdoc?._id] });
                 });
                 if (data.tdoc?._id !== undefined) {
                     registerButton('list-flat', 'Open in Problem Set', () => {

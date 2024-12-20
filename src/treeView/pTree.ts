@@ -10,7 +10,7 @@ import treeView from './treeView';
 export default class extends treeView<Problem | ProblemRecord> {
     constructor() {
         super('problem', async ({ page, setPageCounter, element }) => {
-            if (element === undefined) {
+            if (!element) {
                 const response = await new fetch({ path: `/d/${settings.domain}/p?page=${page}` }).start();
                 setPageCounter(response.json.ppcount);
                 const problems: Problem[] = [];

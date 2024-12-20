@@ -8,7 +8,7 @@ class storage {
         return this.secretStorage!.get(key);
     }
     private async store(key: string, value: string | undefined): Promise<void> {
-        if (value === undefined) {
+        if (!value) {
             outputChannel.trace('[storage ]', '"' + key + '"', 'delete');
             this.secretStorage!.delete(key);
         } else {

@@ -10,7 +10,7 @@ export default class extends treeView<Contest | Problem | Record> {
     constructor(homework: boolean = false) {
         const type = homework ? 'homework' : 'contest';
         super(type, async ({ page, setPageCounter, element }) => {
-            if (element === undefined) {
+            if (!element) {
                 const response = await new fetch({ path: `/d/${settings.domain}/${type}?page=${page}` }).start();
                 setPageCounter(response.json.tpcount);
                 const contests: Contest[] = [];

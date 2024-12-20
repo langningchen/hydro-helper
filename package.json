@@ -26,7 +26,7 @@
         "when": "editorTextFocus && cyezoi-helper.loggedIn"
       },
       {
-        "command": "cyezoi.submitProblem",
+        "command": "cyezoi.submitP",
         "key": "ctrl+shift+alt+s",
         "when": "editorTextFocus && cyezoi-helper.loggedIn"
       }
@@ -155,7 +155,7 @@
         }
       },
       {
-        "command": "cyezoi.submitProblem",
+        "command": "cyezoi.submitP",
         "title": "CYEZOI: Submit Problem",
         "icon": {
           "light": "res/icons/send-light.svg",
@@ -282,7 +282,7 @@
     "menus": {
       "view/item/context": [
         {
-          "command": "cyezoi.submitProblem",
+          "command": "cyezoi.submitP",
           "when": "viewItem == problem",
           "group": "inline"
         },

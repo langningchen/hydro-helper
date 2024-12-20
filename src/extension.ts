@@ -12,13 +12,13 @@ import rTree from './treeView/rTree';
 import cTree from './treeView/cTree';
 import attr from './attr';
 
-const ensureData = async (data: string | undefined, name: string, displayName: string, defaultValue?: string): Promise<string | undefined> => {
+const ensureData = async (data: string | undefined, name: string, displayName?: string, defaultValue?: string): Promise<string | undefined> => {
 	if (!data && vscode.window.activeTextEditor) {
 		const attribute = new attr(vscode.window.activeTextEditor.document.uri);
 		await attribute.load();
 		data = attribute.attributes.get(name);
 	}
-	if (!data) {
+	if (!data && displayName) {
 		data = await io.input(`Please input the ${displayName}`, defaultValue ? { value: defaultValue, } : {});
 	}
 	return data;
@@ -56,7 +56,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url?: string, name?: string, fileSize?: number) => {
 		url = url || await io.input('Please input the file URL');
-		if (url === undefined) { return; }
+		if (!url) { return; }
 		url = url.split('?')[0];
 		name = name || url.split('/').pop()!;
 		const file = await vscode.window.showSaveDialog({
@@ -64,7 +64,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			saveLabel: 'Download',
 			defaultUri: vscode.Uri.file(vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath + '/' + name : name),
 		});
-		if (file === undefined) { return; }
+		if (!file) { return; }
 		outputChannel.info(url, file.toString());
 		await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -110,15 +110,16 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			await vscode.workspace.fs.writeFile(file, buffer);
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.submitProblem', async (pid?: vscode.TreeItem | string, tid?: string) => {
+	disposables.push(vscode.commands.registerCommand('cyezoi.submitP', async (pid?: vscode.TreeItem | string, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			const args = pid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
 				[pid, tid] = args;
 			}
 		}
-		pid = await ensureData(pid as (string | undefined), 'pid', 'problem ID');
+		pid = await ensureData(pid as (string | undefined), 'pid', 'problem ID', vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
+		tid = await ensureData(tid, 'tid');
 
 		const langs = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -133,18 +134,21 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			}).start();
 		}).then(response => response.json.langRange);
 
-		const lastLanguage = await storage.lastLanguage;
-		const lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
-			label: langs[key],
-			description: key,
-		})).sort((a, b) => {
-			if (a.description === lastLanguage) { return -1; }
-			if (b.description === lastLanguage) { return 1; }
-			return 0;
-		}), {
-			title: 'Select the language',
-		}))?.description;
-		if (lang === undefined) { return; }
+		var lang = await ensureData(undefined, 'lang');
+		if (!lang) {
+			const lastLanguage = await storage.lastLanguage;
+			lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
+				label: langs[key],
+				description: key,
+			})).sort((a, b) => {
+				if (a.description === lastLanguage) { return -1; }
+				if (b.description === lastLanguage) { return 1; }
+				return 0;
+			}), {
+				title: 'Select the language',
+			}))?.description;
+		}
+		if (!lang) { return; }
 		storage.lastLanguage = lang;
 
 		const file = await vscode.window.showOpenDialog({
@@ -155,7 +159,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			openLabel: 'Submit',
 			defaultUri: vscode.window.activeTextEditor ? vscode.Uri.file(vscode.window.activeTextEditor.document.fileName) : undefined,
 		});
-		if (file === undefined) { return; }
+		if (!file) { return; }
 		const code = await vscode.workspace.fs.readFile(file[0]);
 
 		const response = await new cyezFetch({
@@ -167,7 +171,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			addCookie: true,
 		}).start();
 		const rid = response.json.rid;
-		if (rid === undefined) {
+		if (!rid) {
 			io.error('Submit failed');
 			return;
 		}
@@ -180,7 +184,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.voteSolution', async (pid?: number, psid?: string, vote?: number) => {
-		if (pid === undefined || psid === undefined || vote === undefined) {
+		if (!pid || !psid || !vote) {
 			io.warn('Please use the context menu to vote for a solution.', { modal: true });
 			return;
 		}
@@ -249,6 +253,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		if (pid instanceof vscode.TreeItem) { pid = undefined; }
 		pid = await ensureData(pid, 'pid', 'problem ID', vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
+		tid = await ensureData(tid, 'tid');
 		new pWeb(parseInt(pid), tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid?: vscode.TreeItem | string) => {

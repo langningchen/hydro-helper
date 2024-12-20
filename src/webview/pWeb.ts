@@ -30,7 +30,7 @@ export default class pWeb extends webview {
                     }
                 });
 
-                if (tid === undefined) {
+                if (!tid) {
                     new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (response) => {
                         if (response?.json !== undefined) {
                             for (const solution of response.json.psdocs) {
