@@ -20,6 +20,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-header>
                     <vscode-table-body slot="body">
                         <vscode-table-row>
+                            <vscode-table-cell>ID</vscode-table-cell>
+                            <vscode-table-cell>${data.rdoc._id}</vscode-table-cell>
+                        </vscode-table-row>
+                        <vscode-table-row>
                             <vscode-table-cell>Submit By</vscode-table-cell>
                             <vscode-table-cell>${data.udoc.uname}</vscode-table-cell>
                         </vscode-table-row>

@@ -14,6 +14,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-header>
                     <vscode-table-body slot="body">
                         <vscode-table-row>
+                            <vscode-table-cell>ID</vscode-table-cell>
+                            <vscode-table-cell>${data.tdoc._id}</vscode-table-cell>
+                        </vscode-table-row>
+                        <vscode-table-row>
                             <vscode-table-cell>Owner</vscode-table-cell>
                             <vscode-table-cell>${data.udict[data.tdoc.owner].uname}</vscode-table-cell>
                         </vscode-table-row>
