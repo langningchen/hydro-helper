@@ -9,7 +9,7 @@ export default class rWeb extends webview {
         super({
             name: 'record',
             data: { rid },
-            url: `/r/${rid}`,
+            url: `/record/${rid}`,
             title: `R${rid}`,
             fetchData: ({ postMessage }) => {
                 new rdWs(rid, (responseJSON) => {
