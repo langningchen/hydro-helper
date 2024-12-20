@@ -163,6 +163,14 @@
         }
       },
       {
+        "command": "cyezoi.starP",
+        "title": "CYEZOI: Star Problem",
+        "icon": {
+          "light": "res/icons/star-light.svg",
+          "dark": "res/icons/star-dark.svg"
+        }
+      },
+      {
         "command": "cyezoi.voteSolution",
         "title": "CYEZOI: Vote Solution"
       },
@@ -283,6 +291,11 @@
       "view/item/context": [
         {
           "command": "cyezoi.submitP",
+          "when": "viewItem == problem",
+          "group": "inline"
+        },
+        {
+          "command": "cyezoi.starP",
           "when": "viewItem == problem",
           "group": "inline"
         },

@@ -150,6 +150,7 @@ export interface ProblemStatusDoc {
     score: number
     status: number
     counter: number
+    star?: boolean
 }
 export interface RecordDoc {
     _id: string

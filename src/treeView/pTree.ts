@@ -33,7 +33,7 @@ export default class extends treeView<Problem | ProblemRecord> {
 
 export class Problem extends vscode.TreeItem {
     constructor(pdoc: utils.ProblemDoc, psdoc: utils.ProblemStatusDoc, tid?: string) {
-        super('P' + pdoc.docId, (psdoc && psdoc.status ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
+        super((psdoc && psdoc.star ? "★ " : "") + 'P' + pdoc.docId, (psdoc && psdoc.status ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None));
         this.id = (tid ? tid + '-' : '') + pdoc.docId;
         this.contextValue = 'problem';
         this.description = pdoc.title;

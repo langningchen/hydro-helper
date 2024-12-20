@@ -130,7 +130,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			token.onCancellationRequested(() => { abortController.abort(); });
 			return await new cyezFetch({
 				path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
-				addCookie: true, abortController
+				abortController
 			}).start();
 		}).then(response => response.json.langRange);
 
@@ -168,7 +168,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				lang,
 				code: code.toString(),
 			},
-			addCookie: true,
 		}).start();
 		const rid = response.json.rid;
 		if (!rid) {
@@ -183,6 +182,30 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			vscode.commands.executeCommand('cyezoi.refreshHTree');
 		}
 	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.starP', async (pid?: vscode.TreeItem | string) => {
+		if (pid instanceof vscode.TreeItem) {
+			const args = pid.command?.arguments;
+			if (args && args[Symbol.iterator]) {
+				[pid] = args;
+			}
+		}
+		pid = await ensureData(pid?.toString(), 'pid', 'problem ID', vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
+		if (!pid) { return; }
+		try {
+			const lastState = await new cyezFetch({ path: `/d/problemset/p/${pid}` }).start().then(response => response.json.psdoc.star);
+			await new cyezFetch({
+				path: `/d/problemset/p/${pid}`,
+				body: {
+					operation: 'star',
+					star: lastState === undefined ? true : !lastState,
+				},
+			}).start();
+			vscode.commands.executeCommand('cyezoi.refreshPTree');
+		} catch (e) {
+			io.error((e as Error).message);
+			return;
+		}
+	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.voteSolution', async (pid?: number, psid?: string, vote?: number) => {
 		if (!pid || !psid || !vote) {
 			io.warn('Please use the context menu to vote for a solution.', { modal: true });
@@ -195,7 +218,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 					operation: vote === 1 ? 'upvote' : 'downvote',
 					psid,
 				},
-				addCookie: true,
 			}).start();
 		} catch (e) {
 			io.error((e as Error).message);
@@ -213,7 +235,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		if (!tid) { return; }
 		try {
 			await new cyezFetch({
-				path: `/d/${settings.domain}/contest/${tid}`, addCookie: true,
+				path: `/d/${settings.domain}/contest/${tid}`,
 				body: {
 					"operation": "attend",
 				},
@@ -236,7 +258,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		if (!tid) { return; }
 		try {
 			await new cyezFetch({
-				path: `/d/${settings.domain}/homework/${tid}`, addCookie: true,
+				path: `/d/${settings.domain}/homework/${tid}`,
 				body: {
 					"operation": "attend",
 				},
