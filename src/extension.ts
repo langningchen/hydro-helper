@@ -192,7 +192,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		pid = await ensureData(pid?.toString(), 'pid', 'problem ID', vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
 		try {
-			const lastState = await new cyezFetch({ path: `/d/problemset/p/${pid}` }).start().then(response => response.json.psdoc.star);
+			const lastState = await new cyezFetch({ path: `/d/problemset/p/${pid}` }).start().then(response => response.json.psdoc?.star);
 			await new cyezFetch({
 				path: `/d/problemset/p/${pid}`,
 				body: {
