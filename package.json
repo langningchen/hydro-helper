@@ -248,7 +248,7 @@
       },
       {
         "command": "cyezoi.attendH",
-        "title": "CYEZOI: Attend Homework",
+        "title": "CYEZOI: Claim Homework",
         "icon": {
           "light": "res/icons/plus-light.svg",
           "dark": "res/icons/plus-dark.svg"

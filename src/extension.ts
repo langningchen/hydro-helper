@@ -267,7 +267,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			io.error((e as Error).message);
 			return;
 		}
-		io.info('Homework attended');
+		io.info('Homework claimed');
 		vscode.commands.executeCommand('cyezoi.refreshHTree');
 	}));
 
