@@ -75,7 +75,7 @@ export default class {
     checkLogin = async (): Promise<void> => {
         outputChannel.trace('[fetch   ]', '"checkLogin"');
         if (!this.options.ignoreLogin) {
-            if (this.returnValue.json.url.includes('/login')) {
+            if (this.returnValue.json.url?.includes('/login')) {
                 auth.setLoggedIn(false);
                 throw new Error('Not logged in');
             }

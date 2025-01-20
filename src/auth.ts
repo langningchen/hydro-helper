@@ -166,7 +166,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 token.onCancellationRequested(() => { abortController.abort(); });
                 return new fetch({ path: '/', abortController, ignoreLogin: true }).start();
             });
-            isLoggedIn = !response.json.url.includes('/login');
+            isLoggedIn = !response.json.url?.includes('/login');
         }
         return isLoggedIn;
     }
