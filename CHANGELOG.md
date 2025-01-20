@@ -2,8 +2,8 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
-## v0.0.35
+## v0.0.36
 
-- Use new login check policy
+- Oops! Fix the "Use new login check policy"
 
 Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)
