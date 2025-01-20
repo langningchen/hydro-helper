@@ -53,9 +53,6 @@ export default class {
         this.returnValue.status = this.response!.status;
         this.returnValue.cookies = this.response!.headers.getSetCookie();
         this.returnValue.json = await this.response!.json();
-        if (typeof this.returnValue.json.UserContext === 'string') {
-            this.returnValue.json.UserContext = JSON.parse(this.returnValue.json.UserContext);
-        }
         outputChannel.info('Fetched', this.options.path, 'status', this.returnValue.status);
         outputChannel.debug('Response', this.returnValue);
     };
@@ -78,7 +75,7 @@ export default class {
     checkLogin = async (): Promise<void> => {
         outputChannel.trace('[fetch   ]', '"checkLogin"');
         if (!this.options.ignoreLogin) {
-            if (this.returnValue.json.UserContext?._id === 0) {
+            if (this.returnValue.json.url.includes('/login')) {
                 auth.setLoggedIn(false);
                 throw new Error('Not logged in');
             }
