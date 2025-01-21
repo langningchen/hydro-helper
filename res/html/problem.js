@@ -11,8 +11,30 @@ window.addEventListener('DOMContentLoaded', () => {
             case 'problem':
                 setTitle('#' + data.pdoc.docId + '. ' + data.pdoc.title);
 
+                const markdownContent = data.pdoc.content.zh || data.pdoc.content;
+
                 registerButton('check', 'Submit', () => {
                     vscode.postMessage({ command: 'submitP', data: [data.pdoc.docId, data.tdoc?._id] });
+                });
+                registerButton('clippy', 'Send to CPH', () => {
+                    const testCases = markdownContent.rawContent.matchAll(/.*输入.*\s*```(plain)?\n((.|\n)*?)```\s*.*输出.*\s*```(plain)?\n((.|\n)*?)```/g);
+                    const problem = {
+                        name: data.pdoc.title,
+                        url: `https://example.com`,
+                        interactive: false,
+                        memoryLimit: data.pdoc.config.memoryMax * 1024 * 1024,
+                        timeLimit: data.pdoc.config.timeMax,
+                        group: `CYEZOI`,
+                        tests: [],
+                        srcPath: '',
+                        local: false,
+                    };
+                    for (const testCase of testCases) {
+                        const input = testCase[2];
+                        const output = testCase[5];
+                        problem.tests.push({ input, output, id: problem.tests.length });
+                    }
+                    vscode.postMessage({ command: 'sendToCPH', data: [JSON.stringify(problem)] });
                 });
                 if (data.tdoc?._id !== undefined) {
                     registerButton('list-flat', 'Open in Problem Set', () => {
@@ -86,7 +108,6 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table-body>
                 </vscode-table>`);
 
-                const markdownContent = data.pdoc.content.zh || data.pdoc.content;
                 window.copyMarkdown = () => {
                     const dummy = document.createElement('textarea');
                     document.body.appendChild(dummy);

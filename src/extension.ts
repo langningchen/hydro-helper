@@ -233,6 +233,17 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			return;
 		}
 	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.sendToCPH', async (problem?: string) => {
+		if (!problem) {
+			io.error('Please use the problem view to send the problem to the CPH.', { modal: true });
+		}
+		fetch(`http://localhost:27121`, {
+			method: 'POST',
+			body: problem,
+		}).catch(e => {
+			io.error((e as Error).message);
+		});
+	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) {
 			const args = tid.command?.arguments;

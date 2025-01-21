@@ -175,6 +175,10 @@
         "title": "CYEZOI: Vote Solution"
       },
       {
+        "command": "cyezoi.sendToCPH",
+        "title": "CYEZOI: Send to CPH"
+      },
+      {
         "command": "cyezoi.refreshCTree",
         "title": "CYEZOI: Refresh Contest Tree",
         "icon": {
