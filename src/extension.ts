@@ -174,6 +174,15 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			io.error('Submit failed');
 			return;
 		}
+
+		const attribute = new attr(file[0]);
+		await attribute.load();
+		attribute.attributes.set('pid', pid);
+		if (tid) { attribute.attributes.set('tid', tid); }
+		else { attribute.attributes.delete('tid'); }
+		attribute.attributes.set('lang', lang);
+		await attribute.save();
+
 		await new rWeb(rid).dispose;
 		vscode.commands.executeCommand('cyezoi.refreshPTree');
 		vscode.commands.executeCommand('cyezoi.refreshRTree');
