@@ -12,6 +12,22 @@ import rTree from './treeView/rTree';
 import cTree from './treeView/cTree';
 import attr from './attr';
 
+interface Problem {
+	name: string
+	url: string
+	interactive: boolean
+	memoryLimit: string
+	timeLimit: string
+	group: string
+	tests: {
+		input: string
+		output: string
+		id: number
+	}[]
+	srcPath: string
+	local: boolean
+}
+
 const ensureData = async (data: string | undefined, name: string, displayName?: string, defaultValue?: string): Promise<string | undefined> => {
 	if (!data && vscode.window.activeTextEditor) {
 		const attribute = new attr(vscode.window.activeTextEditor.document.uri);
@@ -233,13 +249,15 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			return;
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.sendToCPH', async (problem?: string) => {
-		if (!problem) {
+	disposables.push(vscode.commands.registerCommand('cyezoi.sendToCPH', async (problemString?: string) => {
+		if (!problemString) {
 			io.error('Please use the problem view to send the problem to the CPH.', { modal: true });
 		}
+		const problem = JSON.parse(problemString!) as Problem;
+		problem.url = `http${settings.safeProtocol ? "s" : ""}://${settings.server}/d/${settings.domain}/p/${problem.url}`;
 		fetch(`http://localhost:27121`, {
 			method: 'POST',
-			body: problem,
+			body: JSON.stringify(problem),
 		}).catch(e => {
 			io.error((e as Error).message);
 		});

@@ -19,8 +19,8 @@ window.addEventListener('DOMContentLoaded', () => {
                 registerButton('clippy', 'Send to CPH', () => {
                     const testCases = markdownContent.rawContent.matchAll(/.*输入.*\s*```(plain)?\n((.|\n)*?)```\s*.*输出.*\s*```(plain)?\n((.|\n)*?)```/g);
                     const problem = {
-                        name: data.pdoc.title,
-                        url: `https://example.com`,
+                        name: `${data.pdoc.docId}. ${data.pdoc.title}`,
+                        url: data.pdoc.docId,
                         interactive: false,
                         memoryLimit: data.pdoc.config.memoryMax * 1024 * 1024,
                         timeLimit: data.pdoc.config.timeMax,
