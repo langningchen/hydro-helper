@@ -55,6 +55,19 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		supportsMultipleAccounts: false,
 	}));
 
+	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1e10);
+	statusBarItem.command = 'cyezoi.changeD';
+	statusBarItem.text = `$(tools) CYEZOI: ${settings.domain}`;
+	statusBarItem.tooltip = 'Click to change the domain';
+	statusBarItem.show();
+	disposables.push(statusBarItem);
+	vscode.workspace.onDidChangeConfiguration(() => {
+		statusBarItem.text = `$(tools) CYEZOI: ${settings.domain}`;
+		vscode.commands.executeCommand('cyezoi.refreshPTree');
+		vscode.commands.executeCommand('cyezoi.refreshRTree');
+		vscode.commands.executeCommand('cyezoi.refreshCTree');
+	});
+
 	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
 		const session = await vscode.authentication.getSession(auth.id, [], { createIfNone: true });
 		if (!session) {
@@ -69,6 +82,30 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
 			modal: true,
 		});
+	}));
+	disposables.push(vscode.commands.registerCommand('cyezoi.changeD', async () => {
+		const domains = await vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: `Fetching domain list...`,
+			cancellable: true,
+		}, async (_progress, token) => {
+			const abortController = new AbortController();
+			token.onCancellationRequested(() => { abortController.abort(); });
+			const response = await new cyezFetch({
+				path: '/home/domain',
+				abortController,
+			}).start();
+			return response.json.ddocs;
+		});
+		const domain = (await vscode.window.showQuickPick(domains.map((domain: any) => ({
+			label: domain.name,
+			description: domain._id,
+		})) as vscode.QuickPickItem[], {
+			title: 'Select the domain',
+		}))?.description;
+		outputChannel.info(domain || 'No domain selected');
+		if (!domain) { return; }
+		await settings.setDomain(domain);
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url?: string, name?: string, fileSize?: number) => {
 		url = url || await io.input('Please input the file URL');

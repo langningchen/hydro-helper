@@ -119,6 +119,10 @@
         "title": "CYEZOI: Logout"
       },
       {
+        "command": "cyezoi.changeD",
+        "title": "CYEZOI: Change Domain"
+      },
+      {
         "command": "cyezoi.downloadFile",
         "title": "CYEZOI: Download File"
       },
