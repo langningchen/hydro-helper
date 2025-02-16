@@ -2,8 +2,8 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
-## v0.0.41
+## v0.0.42
 
-- Fix the incorrect name and url when adding problem to CPH
+- Fix the attribute matching error
 
 Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)
