@@ -2,9 +2,8 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
-## v0.0.42
+## v0.0.43
 
-- Fix the attribute matching error
-- Update packages and enable lock file
+- Save problem id when opening problem
 
 Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)

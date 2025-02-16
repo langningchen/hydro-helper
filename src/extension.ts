@@ -311,10 +311,19 @@ export const activate = async (context: vscode.ExtensionContext) => {
 
 	disposables.push(vscode.commands.registerCommand('cyezoi.openP', async (pid?: vscode.TreeItem | string, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) { pid = undefined; }
-		pid = await ensureData(pid, 'pid', 'problem ID', vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
+		const activeTextEditor = vscode.window.activeTextEditor;
+		pid = await ensureData(pid, 'pid', 'problem ID', activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
 		tid = await ensureData(tid, 'tid');
 		new pWeb(parseInt(pid), tid);
+		if (activeTextEditor) {
+			const attribute = new attr(activeTextEditor.document.uri);
+			await attribute.load();
+			attribute.attributes.set('pid', pid);
+			if (tid) { attribute.attributes.set('tid', tid); }
+			else { attribute.attributes.delete('tid'); }
+			await attribute.save();
+		}
 	}));
 	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid?: vscode.TreeItem | string) => {
 		if (rid instanceof vscode.TreeItem) { rid = undefined; }
