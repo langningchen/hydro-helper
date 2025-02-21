@@ -30,7 +30,7 @@ window.setMessageHandler = (handler) => {
             await pageLoaded;
             loading.classList.add('hidden');
             error.classList.remove('hidden');
-            errorMessage.innerHTML = formatString(message.data);
+            errorMessage.innerText = formatString(message.data);
             return;
         }
         handler(message);

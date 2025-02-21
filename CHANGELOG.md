@@ -2,8 +2,8 @@
 
 All notable changes to the "cyezoi" extension will be documented in this file.
 
-## v0.0.46
+## v0.0.47
 
-- Save attribute in source file before submit
+- Fix Code scanning alerts
 
 Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)
