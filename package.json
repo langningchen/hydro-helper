@@ -8,7 +8,7 @@
   "pricing": "Free",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CYEZOI/cyezoi-helper.git"
+    "url": "https://github.com/CYEZOI/cyezoi-helper"
   },
   "engines": {
     "vscode": "^1.94.0"

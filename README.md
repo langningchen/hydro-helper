@@ -35,4 +35,4 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-None
+See [GitHub Issues](https://github.com/CYEZOI/cyezoi-helper/issues).
