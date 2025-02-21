@@ -213,20 +213,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			defaultUri: vscode.window.activeTextEditor ? vscode.Uri.file(vscode.window.activeTextEditor.document.fileName) : undefined,
 		});
 		if (!file) { return; }
-		const code = await vscode.workspace.fs.readFile(file[0]);
-
-		const response = await new cyezFetch({
-			path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
-			body: {
-				lang,
-				code: code.toString(),
-			},
-		}).start();
-		const rid = response.json.rid;
-		if (!rid) {
-			io.error('Submit failed');
-			return;
-		}
 
 		const attribute = new attr(file[0]);
 		await attribute.load();
@@ -235,6 +221,19 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		else { attribute.attributes.delete('tid'); }
 		attribute.attributes.set('lang', lang);
 		await attribute.save();
+
+		const response = await new cyezFetch({
+			path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
+			body: {
+				lang,
+				code: (await vscode.workspace.fs.readFile(file[0])).toString(),
+			},
+		}).start();
+		const rid = response.json.rid;
+		if (!rid) {
+			io.error('Submit failed');
+			return;
+		}
 
 		await new rWeb(rid).dispose;
 		vscode.commands.executeCommand('cyezoi.refreshPTree');
