@@ -23,12 +23,12 @@ export default class {
     public save = async (): Promise<void> => {
         const regex = /((?<=\n))[ \t]*\/\/( @[a-zA-Z]* [a-zA-Z0-\\.]*)+\n/g;
         this.content = this.content.replace(regex, '').trimEnd();
+        this.content += '\n';
         if (this.content.length > 0) {
             this.content += '\n// ';
             this.attributes.forEach((value, key) => { this.content += `@${key} ${value} `; });
-
+            this.content += '\n';
         }
-        this.content += '\n';
         await vscode.workspace.fs.writeFile(this.file, new TextEncoder().encode(this.content));
     };
 }
