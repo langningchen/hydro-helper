@@ -32,7 +32,6 @@ jobs:
         with:
           path: ./*.vsix
           name: extension.vsix
-
       - uses: actions/attest-build-provenance@v2
         with:
           subject-name: extension.vsix
