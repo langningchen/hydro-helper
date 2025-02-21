@@ -3,9 +3,13 @@ name: Build
 on:
   - push
   - pull_request
+  
+permissions:
+  id-token: write
+  attestations: write
 
 jobs:
-  cache-and-install:
+  build:
     runs-on: ubuntu-latest
 
     steps:
