@@ -165,7 +165,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <vscode-table-cell>${toMemory(file.size)}</vscode-table-cell>
                         <vscode-table-cell>${atob(file.etag)}</vscode-table-cell>
                         <vscode-table-cell>`;
-                    if (file.type === 'additional_file') { filesHTML += `<a role="button" onclick="vscode.postMessage({command:'downloadFile',data:['/d/problemset/p/${data.pdoc.docId}/file/${file.name}?type=additional_file','${file.name}',${file.size}]})">Download file</a>`; }
+                    if (file.type === 'additional_file') { filesHTML += `<a role="button" onclick="vscode.postMessage({command:'downloadFile',data:['/d/problemset/p/${data.pdoc.docId}/file/${file.name}?type=additional_file${data.tdoc?._id ? "&tid=" + data.tdoc?._id : ""}','${file.name}',${file.size}]})">Download file</a>`; }
                     filesHTML += `</vscode-table-cell>
                         </vscode-table-row>`;
                 }

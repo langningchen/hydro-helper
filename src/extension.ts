@@ -110,7 +110,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url?: string, name?: string, fileSize?: number) => {
 		url = url || await io.input('Please input the file URL');
 		if (!url) { return; }
-		url = url.split('?')[0];
 		name = name || url.split('/').pop()!;
 		const file = await vscode.window.showSaveDialog({
 			title: 'Select the download location',
