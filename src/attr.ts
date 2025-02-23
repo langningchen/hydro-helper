@@ -21,8 +21,8 @@ export default class {
     };
 
     public save = async (): Promise<void> => {
-        const regex = /((?<=\n))[ \t]*\/\/( @[a-zA-Z]* [a-zA-Z0-\\.]*)+\n/g;
-        this.content = this.content.replace(regex, '').trimEnd();
+        const regex = /((?<=\n))[ \t]*\/\/( @[a-zA-Z]* [a-zA-Z0-\\.]*)+\n?/g;
+        this.content = this.content.replaceAll(regex, '').trimEnd();
         this.content += '\n';
         if (this.content.length > 0) {
             this.content += '\n// ';
