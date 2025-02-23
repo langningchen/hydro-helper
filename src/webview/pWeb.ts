@@ -16,7 +16,7 @@ export default class pWeb extends webview {
                         try {
                             problemContent = JSON.parse(problemContent);
                             for (const [key, value] of Object.entries(problemContent)) {
-                                problemContent[key] = await parseMarkdown(value as string, `/d/${settings.domain}/p/${pid}/file`);
+                                problemContent[key] = await parseMarkdown(value as string, `/d/${settings.domain}/p/${pid}/file`, tid ? "?tid=" + tid : "");
                             }
                         } catch {
                             problemContent = await parseMarkdown(problemContent, `/d/${settings.domain}/p/${pid}/file`);

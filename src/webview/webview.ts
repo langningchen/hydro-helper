@@ -8,7 +8,7 @@ import storage from '../storage';
 
 interface fetchDataParams {
     postMessage: (message: any) => void
-    parseMarkdown: (markdown: string, prefix?: string) => Promise<{ fetchData: { [key: string]: string }, content: string }>
+    parseMarkdown: (markdown: string, prefix?: string, suffix?: string) => Promise<{ fetchData: { [key: string]: string }, content: string }>
     dispose: () => void
 };
 
@@ -112,13 +112,14 @@ export default class webview {
         try {
             this.webviewData.fetchData({
                 postMessage: safePostMessage,
-                parseMarkdown: async (markdown, prefix?) => {
+                parseMarkdown: async (markdown, prefix?, suffix?) => {
                     const fetchData: { [key: string]: string } = {};
                     const parsedMarkdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
                         if (url.startsWith('file://')) {
                             url = prefix + '/' + url.substring(7);
                         }
-                        url = url.replace(/\?.*$/, '');
+                        url = url.split('?')[0];
+                        url += suffix ?? "";
                         const id = Math.random().toString(36).slice(2);
                         fetchData[id] = url;
                         if (type === 'video') {
