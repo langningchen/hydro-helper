@@ -318,7 +318,7 @@ window.sanitizeHtml = (html) => {
 window.vscode = acquireVsCodeApi();
 
 window.addEventListener('DOMContentLoaded', () => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
 
     const title = document.getElementById('title');
     const buttonGroup = document.getElementById('buttonGroup');
