@@ -8,7 +8,7 @@ export default class cWeb extends webview {
         super({
             name: 'contest',
             data: { tid },
-            url: `/contest/${tid}`,
+            url: `/${type}/${tid}`,
             title: `T${tid}`,
             fetchData: ({ postMessage, parseMarkdown }) => {
                 new fetch({ path: `/d/${settings.domain}/${type}/${tid}` }).start().then(async (response) => {
