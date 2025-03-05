@@ -41,7 +41,7 @@ export default class {
                 accept: 'application/json',
                 'content-type': 'application/json',
                 cookie: this.options.addCookie ?? true ? await auth.getCookiesValue() : '',
-                'user-agent': 'VSCode-CYEZOIHelper',
+                'user-agent': 'VSCode-HydroHelper',
             },
             body: this.options.body ? JSON.stringify(this.options.body) : undefined,
             signal: this.options.abortController?.signal,

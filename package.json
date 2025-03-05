@@ -1,14 +1,14 @@
 {
-  "name": "cyezoi",
-  "displayName": "CYEZOI Helper",
-  "description": "",
-  "version": "0.0.50",
-  "publisher": "CYEZOI",
-  "icon": "res/icons/CYEZOI.png",
+  "name": "hydro-helper",
+  "displayName": "Hydro Helper",
+  "description": "(UNOFFICIAL) Hydro Helper is an extension that can help users get and submit problems without opening the browser",
+  "version": "0.1.0",
+  "publisher": "langningchen",
+  "icon": "res/icons/Hydro.png",
   "pricing": "Free",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CYEZOI/cyezoi-helper"
+    "url": "https://github.com/langningchen/hydro-helper"
   },
   "engines": {
     "vscode": "^1.94.0"
@@ -21,77 +21,77 @@
   "contributes": {
     "keybindings": [
       {
-        "command": "cyezoi.openP",
+        "command": "hydro-helper.openP",
         "key": "ctrl+shift+alt+o",
-        "when": "editorTextFocus && cyezoi-helper.loggedIn"
+        "when": "editorTextFocus && hydro-helper.loggedIn"
       },
       {
-        "command": "cyezoi.submitP",
+        "command": "hydro-helper.submitP",
         "key": "ctrl+shift+alt+s",
-        "when": "editorTextFocus && cyezoi-helper.loggedIn"
+        "when": "editorTextFocus && hydro-helper.loggedIn"
       }
     ],
     "viewsWelcome": [
       {
         "view": "login",
-        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:cyezoi.login)"
+        "contents": "You haven't logged in yet. Click the button bellow to login. \n[Login](command:hydro-helper.login)"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "cyezoi",
-          "title": "CYEZOI",
-          "icon": "res/icons/CYEZ.svg"
+          "id": "hydro-helper",
+          "title": "Hydro Helper",
+          "icon": "res/icons/Hydro.svg"
         }
       ]
     },
     "configuration": {
-      "title": "CYEZOI Helper",
+      "title": "Hydro Helper",
       "properties": {
-        "cyezoi.server": {
+        "hydro-helper.server": {
           "type": "string",
-          "default": "newoj.cyezoi.com",
-          "description": "The server address of CYEZOI, without protocol"
+          "default": "hydro.ac",
+          "description": "The server address of Hydro, without protocol"
         },
-        "cyezoi.safeProtocol": {
+        "hydro-helper.safeProtocol": {
           "type": "boolean",
           "default": true,
           "description": "Use safe protocol (HTTPS/WSS)"
         },
-        "cyezoi.domain": {
+        "hydro-helper.domain": {
           "type": "string",
-          "default": "problemset",
-          "description": "The Hydro domain of CYEZOI"
+          "default": "system",
+          "description": "The domain of Hydro"
         }
       }
     },
     "views": {
-      "cyezoi": [
+      "hydro-helper": [
         {
           "id": "login",
           "name": "Login",
-          "when": "!cyezoi-helper.loggedIn"
+          "when": "!hydro-helper.loggedIn"
         },
         {
           "id": "pTree",
           "name": "Problem",
-          "when": "cyezoi-helper.loggedIn"
+          "when": "hydro-helper.loggedIn"
         },
         {
           "id": "rTree",
           "name": "Record",
-          "when": "cyezoi-helper.loggedIn"
+          "when": "hydro-helper.loggedIn"
         },
         {
           "id": "cTree",
           "name": "Contest",
-          "when": "cyezoi-helper.loggedIn"
+          "when": "hydro-helper.loggedIn"
         },
         {
           "id": "hTree",
           "name": "Homework",
-          "when": "cyezoi-helper.loggedIn"
+          "when": "hydro-helper.loggedIn"
         }
       ]
     },
@@ -111,184 +111,184 @@
     ],
     "commands": [
       {
-        "command": "cyezoi.login",
-        "title": "CYEZOI: Login"
+        "command": "hydro-helper.login",
+        "title": "Hydro: Login"
       },
       {
-        "command": "cyezoi.logout",
-        "title": "CYEZOI: Logout"
+        "command": "hydro-helper.logout",
+        "title": "Hydro: Logout"
       },
       {
-        "command": "cyezoi.changeD",
-        "title": "CYEZOI: Change Domain"
+        "command": "hydro-helper.changeD",
+        "title": "Hydro: Change Domain"
       },
       {
-        "command": "cyezoi.downloadFile",
-        "title": "CYEZOI: Download File"
+        "command": "hydro-helper.downloadFile",
+        "title": "Hydro: Download File"
       },
       {
-        "command": "cyezoi.refreshPTree",
-        "title": "CYEZOI: Refresh Problem Tree",
+        "command": "hydro-helper.refreshPTree",
+        "title": "Hydro: Refresh Problem Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
           "dark": "res/icons/arrow-clockwise-dark.svg"
         }
       },
       {
-        "command": "cyezoi.pTreeNxt",
-        "title": "CYEZOI: Problem Tree Next Page",
+        "command": "hydro-helper.pTreeNxt",
+        "title": "Hydro: Problem Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
         }
       },
       {
-        "command": "cyezoi.pTreePre",
-        "title": "CYEZOI: Problem Tree Previous Page",
+        "command": "hydro-helper.pTreePre",
+        "title": "Hydro: Problem Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
         }
       },
       {
-        "command": "cyezoi.openP",
-        "title": "CYEZOI: Open Problem",
+        "command": "hydro-helper.openP",
+        "title": "Hydro: Open Problem",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
           "dark": "res/icons/arrow-right-circle-dark.svg"
         }
       },
       {
-        "command": "cyezoi.submitP",
-        "title": "CYEZOI: Submit Problem",
+        "command": "hydro-helper.submitP",
+        "title": "Hydro: Submit Problem",
         "icon": {
           "light": "res/icons/send-light.svg",
           "dark": "res/icons/send-dark.svg"
         }
       },
       {
-        "command": "cyezoi.starP",
-        "title": "CYEZOI: Star Problem",
+        "command": "hydro-helper.starP",
+        "title": "Hydro: Star Problem",
         "icon": {
           "light": "res/icons/star-light.svg",
           "dark": "res/icons/star-dark.svg"
         }
       },
       {
-        "command": "cyezoi.voteSolution",
-        "title": "CYEZOI: Vote Solution"
+        "command": "hydro-helper.voteSolution",
+        "title": "Hydro: Vote Solution"
       },
       {
-        "command": "cyezoi.sendToCPH",
-        "title": "CYEZOI: Send to CPH"
+        "command": "hydro-helper.sendToCPH",
+        "title": "Hydro: Send to CPH"
       },
       {
-        "command": "cyezoi.refreshCTree",
-        "title": "CYEZOI: Refresh Contest Tree",
+        "command": "hydro-helper.refreshCTree",
+        "title": "Hydro: Refresh Contest Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
           "dark": "res/icons/arrow-clockwise-dark.svg"
         }
       },
       {
-        "command": "cyezoi.cTreeNxt",
-        "title": "CYEZOI: Contest Tree Next Page",
+        "command": "hydro-helper.cTreeNxt",
+        "title": "Hydro: Contest Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
         }
       },
       {
-        "command": "cyezoi.cTreePre",
-        "title": "CYEZOI: Contest Tree Previous Page",
+        "command": "hydro-helper.cTreePre",
+        "title": "Hydro: Contest Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
         }
       },
       {
-        "command": "cyezoi.openC",
-        "title": "CYEZOI: Open Contest",
+        "command": "hydro-helper.openC",
+        "title": "Hydro: Open Contest",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
           "dark": "res/icons/arrow-right-circle-dark.svg"
         }
       },
       {
-        "command": "cyezoi.attendC",
-        "title": "CYEZOI: Attend Contest",
+        "command": "hydro-helper.attendC",
+        "title": "Hydro: Attend Contest",
         "icon": {
           "light": "res/icons/plus-light.svg",
           "dark": "res/icons/plus-dark.svg"
         }
       },
       {
-        "command": "cyezoi.refreshHTree",
-        "title": "CYEZOI: Refresh Homework Tree",
+        "command": "hydro-helper.refreshHTree",
+        "title": "Hydro: Refresh Homework Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
           "dark": "res/icons/arrow-clockwise-dark.svg"
         }
       },
       {
-        "command": "cyezoi.hTreeNxt",
-        "title": "CYEZOI: Homework Tree Next Page",
+        "command": "hydro-helper.hTreeNxt",
+        "title": "Hydro: Homework Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
         }
       },
       {
-        "command": "cyezoi.hTreePre",
-        "title": "CYEZOI: Homework Tree Previous Page",
+        "command": "hydro-helper.hTreePre",
+        "title": "Hydro: Homework Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
         }
       },
       {
-        "command": "cyezoi.openH",
-        "title": "CYEZOI: Open Homework",
+        "command": "hydro-helper.openH",
+        "title": "Hydro: Open Homework",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
           "dark": "res/icons/arrow-right-circle-dark.svg"
         }
       },
       {
-        "command": "cyezoi.attendH",
-        "title": "CYEZOI: Claim Homework",
+        "command": "hydro-helper.attendH",
+        "title": "Hydro: Claim Homework",
         "icon": {
           "light": "res/icons/plus-light.svg",
           "dark": "res/icons/plus-dark.svg"
         }
       },
       {
-        "command": "cyezoi.refreshRTree",
-        "title": "CYEZOI: Refresh Record Tree",
+        "command": "hydro-helper.refreshRTree",
+        "title": "Hydro: Refresh Record Tree",
         "icon": {
           "light": "res/icons/arrow-clockwise-light.svg",
           "dark": "res/icons/arrow-clockwise-dark.svg"
         }
       },
       {
-        "command": "cyezoi.rTreeNxt",
-        "title": "CYEZOI: Record Tree Next Page",
+        "command": "hydro-helper.rTreeNxt",
+        "title": "Hydro: Record Tree Next Page",
         "icon": {
           "light": "res/icons/caret-right-light.svg",
           "dark": "res/icons/caret-right-dark.svg"
         }
       },
       {
-        "command": "cyezoi.rTreePre",
-        "title": "CYEZOI: Record Tree Previous Page",
+        "command": "hydro-helper.rTreePre",
+        "title": "Hydro: Record Tree Previous Page",
         "icon": {
           "light": "res/icons/caret-left-light.svg",
           "dark": "res/icons/caret-left-dark.svg"
         }
       },
       {
-        "command": "cyezoi.openT",
-        "title": "CYEZOI: Open Record",
+        "command": "hydro-helper.openT",
+        "title": "Hydro: Open Record",
         "icon": {
           "light": "res/icons/arrow-right-circle-light.svg",
           "dark": "res/icons/arrow-right-circle-dark.svg"
@@ -298,104 +298,104 @@
     "menus": {
       "view/item/context": [
         {
-          "command": "cyezoi.submitP",
+          "command": "hydro-helper.submitP",
           "when": "viewItem == problem",
           "group": "inline"
         },
         {
-          "command": "cyezoi.starP",
+          "command": "hydro-helper.starP",
           "when": "viewItem == problem",
           "group": "inline"
         },
         {
-          "command": "cyezoi.attendC",
+          "command": "hydro-helper.attendC",
           "when": "viewItem == contest",
           "group": "inline"
         },
         {
-          "command": "cyezoi.attendH",
+          "command": "hydro-helper.attendH",
           "when": "viewItem == homework",
           "group": "inline"
         }
       ],
       "view/title": [
         {
-          "command": "cyezoi.refreshPTree",
+          "command": "hydro-helper.refreshPTree",
           "when": "view == pTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.pTreePre",
+          "command": "hydro-helper.pTreePre",
           "when": "view == pTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.pTreeNxt",
+          "command": "hydro-helper.pTreeNxt",
           "when": "view == pTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openP",
+          "command": "hydro-helper.openP",
           "when": "view == pTree",
           "group": "navigation@4"
         },
         {
-          "command": "cyezoi.refreshRTree",
+          "command": "hydro-helper.refreshRTree",
           "when": "view == rTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.rTreePre",
+          "command": "hydro-helper.rTreePre",
           "when": "view == rTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.rTreeNxt",
+          "command": "hydro-helper.rTreeNxt",
           "when": "view == rTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openT",
+          "command": "hydro-helper.openT",
           "when": "view == rTree",
           "group": "navigation@4"
         },
         {
-          "command": "cyezoi.refreshCTree",
+          "command": "hydro-helper.refreshCTree",
           "when": "view == cTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.cTreePre",
+          "command": "hydro-helper.cTreePre",
           "when": "view == cTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.cTreeNxt",
+          "command": "hydro-helper.cTreeNxt",
           "when": "view == cTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openC",
+          "command": "hydro-helper.openC",
           "when": "view == cTree",
           "group": "navigation@4"
         },
         {
-          "command": "cyezoi.refreshHTree",
+          "command": "hydro-helper.refreshHTree",
           "when": "view == hTree",
           "group": "navigation@1"
         },
         {
-          "command": "cyezoi.hTreePre",
+          "command": "hydro-helper.hTreePre",
           "when": "view == hTree",
           "group": "navigation@2"
         },
         {
-          "command": "cyezoi.hTreeNxt",
+          "command": "hydro-helper.hTreeNxt",
           "when": "view == hTree",
           "group": "navigation@3"
         },
         {
-          "command": "cyezoi.openH",
+          "command": "hydro-helper.openH",
           "when": "view == hTree",
           "group": "navigation@4"
         }

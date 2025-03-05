@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         interactive: false,
                         memoryLimit: data.pdoc.config.memoryMax * 1024 * 1024,
                         timeLimit: data.pdoc.config.timeMax,
-                        group: `CYEZOI`,
+                        group: `Hydro`,
                         tests: [],
                         srcPath: '',
                         local: false,

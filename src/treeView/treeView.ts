@@ -21,18 +21,18 @@ export default class <T extends vscode.TreeItem> implements vscode.TreeDataProvi
         this.shortType = this.type.charAt(0);
         this._getChildren = _getChildren;
 
-        vscode.commands.registerCommand(`cyezoi.refresh${this.shortType.toUpperCase()}Tree`, () => {
-            outputChannel.trace(`[${this.shortType}Tree   ]`, `"cyezoi.refresh${this.shortType.toUpperCase()}Tree"`);
+        vscode.commands.registerCommand(`hydro-helper.refresh${this.shortType.toUpperCase()}Tree`, () => {
+            outputChannel.trace(`[${this.shortType}Tree   ]`, `"hydro-helper.refresh${this.shortType.toUpperCase()}Tree"`);
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand(`cyezoi.${this.shortType}TreeNxt`, () => {
+        vscode.commands.registerCommand(`hydro-helper.${this.shortType}TreeNxt`, () => {
             outputChannel.trace(`[${this.shortType}Tree   ]`, `"${this.shortType}TreeNxt"`);
             if (this.pageCounter === -1) { io.warn(`Please expand the ${this.type} tree first.`); return; }
             if (this.page < this.pageCounter) { this.page++; }
             else { io.warn('You are already on the last page.'); }
             return this._onDidChangeTreeData.fire(undefined);
         });
-        vscode.commands.registerCommand(`cyezoi.${this.shortType}TreePre`, () => {
+        vscode.commands.registerCommand(`hydro-helper.${this.shortType}TreePre`, () => {
             outputChannel.trace(`[${this.shortType}Tree   ]`, `"${this.shortType}TreePre"`);
             if (this.pageCounter === -1) { io.warn(`Please expand the ${this.type} tree first.`); return; }
             if (this.page > 1) { this.page--; }

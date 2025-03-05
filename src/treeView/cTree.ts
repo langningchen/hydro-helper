@@ -60,7 +60,7 @@ export class Contest extends vscode.TreeItem {
         }
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.open' + type.toUpperCase().charAt(0),
+            command: 'hydro-helper.open' + type.toUpperCase().charAt(0),
             title: 'Open ' + type.toUpperCase(),
             arguments: [tdoc._id],
         };
