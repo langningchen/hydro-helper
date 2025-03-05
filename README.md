@@ -1,6 +1,6 @@
 # Hydro Helper
 
-Hydro Helper is an extension that can help users get and submit problems without opening the browser.
+(UNOFFICIAL) Hydro Helper is an extension that can help users get and submit problems without opening the browser.
 
 ## Features
 

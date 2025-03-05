@@ -1,7 +1,7 @@
 {
   "name": "hydro-helper",
   "displayName": "Hydro Helper",
-  "description": "",
+  "description": "(UNOFFICIAL) Hydro Helper is an extension that can help users get and submit problems without opening the browser",
   "version": "0.0.50",
   "publisher": "langningchen",
   "icon": "res/icons/Hydro.png",
