@@ -117,7 +117,12 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 }, async (_progress, token) => {
                     const abortController = new AbortController();
                     token.onCancellationRequested(() => { abortController.abort(); });
-                    const response = await new fetch({ path: '/login', body: { uname, password }, addCookie: false, abortController, returnError: true, ignoreLogin: true }).start();
+                    const rememberme = (await vscode.window.showQuickPick(['Yes', 'No'], {
+                        placeHolder: 'Do you want to remember this session?',
+                    })) === 'Yes';
+                    const response = await new fetch({
+                        path: '/login', body: { uname, password, rememberme, }, addCookie: false, abortController, returnError: true, ignoreLogin: true
+                    }).start();
                     if (response.json.error) {
                         storage.username = undefined;
                         storage.password = undefined;

@@ -3,7 +3,7 @@ window.addEventListener('DOMContentLoaded', () => {
     registerTab('Judge result');
     registerTab('Compiler Texts');
     registerTab('Judge Texts');
-    registerTab('Last Code');
+    registerTab('Code');
 
     window.setMessageHandler((message) => {
         const data = message.data;
@@ -64,7 +64,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 enableTab('Compiler Texts', data.rdoc.compilerTexts.length ? `<pre>${sanitizeHtml(data.rdoc.compilerTexts.join('\n'))}</pre>` : '');
                 enableTab('Judge Texts', data.rdoc.judgeTexts.length ? `<pre>${sanitizeHtml(data.rdoc.judgeTexts.map((text) => formatString(text)).join('\n'))}</pre>` : '');
-                enableTab('Last Code', data.rdoc.code ? `<pre>${sanitizeHtml(data.rdoc.code)}</pre>` : '');
+                enableTab('Code', data.rdoc.code ? `<pre>${sanitizeHtml(data.rdoc.code)}</pre>` : '');
                 break;
             case 'record':
                 const parsedSubtasks = {};
