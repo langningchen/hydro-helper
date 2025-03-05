@@ -386,6 +386,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 
 	auth.setLoggedIn(await auth.getLoginStatus());
 
+	io.warn('WARNING: This extension will be deprecated soon. All of its features are being moved to the new extension "Hydro Helper". Please install it from the marketplace.', { modal: true });
 	outputChannel.info('Extension activated');
 };
 
