@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export const outputChannel = vscode.window.createOutputChannel('CYEZOI', {
+export const outputChannel = vscode.window.createOutputChannel('Hydro Helper', {
     log: true,
 });
 

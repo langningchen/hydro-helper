@@ -1,12 +1,9 @@
 # Change Log
 
-All notable changes to the "cyezoi" extension will be documented in this file.
+All notable changes to the "Hydro Helper" extension will be documented in this file.
 
-## v0.0.50
+## v0.1.0
 
-- **Add deprecated warning**
-- **Add option to remember session during login**
-- Fix the `Open in browser` command to open the correct page when in homework mode.
-- Rename `Last Code` tab to `Code` for consistency
+- Change from `CYEZOI Helper` to `Hydro Helper`
 
-Want to see the previous log? [Click here](https://github.com/CYEZOI/cyezoi-helper/commits/main/CHANGELOG.md)
+Want to see the previous log? [Click here](https://github.com/langningchen/hydro-helper/commits/main/CHANGELOG.md)

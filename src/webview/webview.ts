@@ -52,7 +52,7 @@ export default class webview {
         outputChannel.info(`Open webview`, `"${this.webviewData.title}"`);
         this.panel = vscode.window.createWebviewPanel(
             this.webviewData.name,
-            `CYEZOI - ${this.webviewData.title}`,
+            `Hydro - ${this.webviewData.title}`,
             vscode.ViewColumn.One,
             {
                 enableScripts: true,
@@ -72,7 +72,7 @@ export default class webview {
             else if (message.command === 'openInBrowser') {
                 vscode.env.openExternal(vscode.Uri.parse(`http${settings.safeProtocol ? "s" : ""}://${settings.server}/d/${settings.domain}${data.url}`));
             } else {
-                vscode.commands.executeCommand(`cyezoi.${message.command}`, ...message.data);
+                vscode.commands.executeCommand(`hydro-helper.${message.command}`, ...message.data);
             }
         });
         this.panel.onDidDispose(this.cleanup);

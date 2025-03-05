@@ -52,7 +52,7 @@ export class Problem extends vscode.TreeItem {
         if (pdoc.nAccept && pdoc.nSubmit) { tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.nSubmit}\n`); }
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openP',
+            command: 'hydro-helper.openP',
             title: 'Open Problem',
             arguments: (tid ? [pdoc.docId, tid] : [pdoc.docId]),
         };
@@ -73,7 +73,7 @@ export class ProblemRecord extends vscode.TreeItem {
         tooltipDoc.appendMarkdown(`- **Judge At**: ${utils.toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = tooltipDoc;
         this.command = {
-            command: 'cyezoi.openT',
+            command: 'hydro-helper.openT',
             title: 'Open Record',
             arguments: [rdoc._id],
         };

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import auth from './auth';
-import cyezFetch from './fetch';
+import hydroFetch from './fetch';
 import { outputChannel, io } from './io';
 import storage from './storage';
 import settings from './settings';
@@ -51,24 +51,24 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
 
 	disposables.push(outputChannel);
-	disposables.push(vscode.authentication.registerAuthenticationProvider('cyezoi', 'CYEZOI', new auth(), {
+	disposables.push(vscode.authentication.registerAuthenticationProvider('hydro', 'Hydro', new auth(), {
 		supportsMultipleAccounts: false,
 	}));
 
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1e10);
-	statusBarItem.command = 'cyezoi.changeD';
-	statusBarItem.text = `$(tools) CYEZOI: ${settings.domain}`;
+	statusBarItem.command = 'hydro-helper.changeD';
+	statusBarItem.text = `$(tools) Hydro: ${settings.domain}`;
 	statusBarItem.tooltip = 'Click to change the domain';
 	statusBarItem.show();
 	disposables.push(statusBarItem);
 	vscode.workspace.onDidChangeConfiguration(() => {
-		statusBarItem.text = `$(tools) CYEZOI: ${settings.domain}`;
-		vscode.commands.executeCommand('cyezoi.refreshPTree');
-		vscode.commands.executeCommand('cyezoi.refreshRTree');
-		vscode.commands.executeCommand('cyezoi.refreshCTree');
+		statusBarItem.text = `$(tools) Hydro: ${settings.domain}`;
+		vscode.commands.executeCommand('hydro-helper.refreshPTree');
+		vscode.commands.executeCommand('hydro-helper.refreshRTree');
+		vscode.commands.executeCommand('hydro-helper.refreshCTree');
 	});
 
-	disposables.push(vscode.commands.registerCommand('cyezoi.login', async () => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.login', async () => {
 		const session = await vscode.authentication.getSession(auth.id, [], { createIfNone: true });
 		if (!session) {
 			auth.setLoggedIn(false);
@@ -78,12 +78,12 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		auth.setLoggedIn(isLoggedIn);
 		if (isLoggedIn) { io.info(`Hi ${session.account.label}, you have successfully logged in!`); }
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.logout', async () => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.logout', async () => {
 		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
 			modal: true,
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.changeD', async () => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.changeD', async () => {
 		const domains = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
 			title: `Fetching domain list...`,
@@ -91,7 +91,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}, async (_progress, token) => {
 			const abortController = new AbortController();
 			token.onCancellationRequested(() => { abortController.abort(); });
-			const response = await new cyezFetch({
+			const response = await new hydroFetch({
 				path: '/home/domain',
 				abortController,
 			}).start();
@@ -107,7 +107,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		if (!domain) { return; }
 		await settings.setDomain(domain);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.downloadFile', async (url?: string, name?: string, fileSize?: number) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.downloadFile', async (url?: string, name?: string, fileSize?: number) => {
 		url = url || await io.input('Please input the file URL');
 		if (!url) { return; }
 		name = name || url.split('/').pop()!;
@@ -162,7 +162,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			await vscode.workspace.fs.writeFile(file, buffer);
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.submitP', async (pid?: vscode.TreeItem | string, tid?: string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.submitP', async (pid?: vscode.TreeItem | string, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) {
 			const args = pid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
@@ -180,7 +180,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}, async (_progress, token) => {
 			const abortController = new AbortController();
 			token.onCancellationRequested(() => { abortController.abort(); });
-			return await new cyezFetch({
+			return await new hydroFetch({
 				path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 				abortController
 			}).start();
@@ -221,7 +221,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		attribute.attributes.set('lang', lang);
 		await attribute.save();
 
-		const response = await new cyezFetch({
+		const response = await new hydroFetch({
 			path: `/d/${settings.domain}/p/${pid}/submit` + (tid ? '?tid=' + tid : ''),
 			body: {
 				lang,
@@ -235,14 +235,14 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		}
 
 		await new rWeb(rid).dispose;
-		vscode.commands.executeCommand('cyezoi.refreshPTree');
-		vscode.commands.executeCommand('cyezoi.refreshRTree');
+		vscode.commands.executeCommand('hydro-helper.refreshPTree');
+		vscode.commands.executeCommand('hydro-helper.refreshRTree');
 		if (tid) {
-			vscode.commands.executeCommand('cyezoi.refreshCTree');
-			vscode.commands.executeCommand('cyezoi.refreshHTree');
+			vscode.commands.executeCommand('hydro-helper.refreshCTree');
+			vscode.commands.executeCommand('hydro-helper.refreshHTree');
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.starP', async (pid?: vscode.TreeItem | string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.starP', async (pid?: vscode.TreeItem | string) => {
 		if (pid instanceof vscode.TreeItem) {
 			const args = pid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
@@ -252,27 +252,27 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		pid = await ensureData(pid?.toString(), 'pid', 'problem ID', vscode.window.activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
 		try {
-			const lastState = await new cyezFetch({ path: `/d/problemset/p/${pid}` }).start().then(response => response.json.psdoc?.star);
-			await new cyezFetch({
+			const lastState = await new hydroFetch({ path: `/d/problemset/p/${pid}` }).start().then(response => response.json.psdoc?.star);
+			await new hydroFetch({
 				path: `/d/problemset/p/${pid}`,
 				body: {
 					operation: 'star',
 					star: lastState === undefined ? true : !lastState,
 				},
 			}).start();
-			vscode.commands.executeCommand('cyezoi.refreshPTree');
+			vscode.commands.executeCommand('hydro-helper.refreshPTree');
 		} catch (e) {
 			io.error((e as Error).message);
 			return;
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.voteSolution', async (pid?: number, psid?: string, vote?: number) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.voteSolution', async (pid?: number, psid?: string, vote?: number) => {
 		if (!pid || !psid || !vote) {
 			io.warn('Please use the context menu to vote for a solution.', { modal: true });
 			return;
 		}
 		try {
-			await new cyezFetch({
+			await new hydroFetch({
 				path: `/d/${settings.domain}/p/${pid}/solution`,
 				body: {
 					operation: vote === 1 ? 'upvote' : 'downvote',
@@ -284,7 +284,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			return;
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.sendToCPH', async (problemString?: string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.sendToCPH', async (problemString?: string) => {
 		if (!problemString) {
 			io.error('Please use the problem view to send the problem to the CPH.', { modal: true });
 		}
@@ -297,7 +297,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			io.error((e as Error).message);
 		});
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.attendC', async (tid?: vscode.TreeItem | string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.attendC', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) {
 			const args = tid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
@@ -307,7 +307,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		tid = await ensureData(tid as (string | undefined), 'tid', 'contest ID');
 		if (!tid) { return; }
 		try {
-			await new cyezFetch({
+			await new hydroFetch({
 				path: `/d/${settings.domain}/contest/${tid}`,
 				body: {
 					"operation": "attend",
@@ -318,9 +318,9 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			return;
 		}
 		io.info('Contest attended');
-		vscode.commands.executeCommand('cyezoi.refreshCTree');
+		vscode.commands.executeCommand('hydro-helper.refreshCTree');
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.attendH', async (tid?: vscode.TreeItem | string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.attendH', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) {
 			const args = tid.command?.arguments;
 			if (args && args[Symbol.iterator]) {
@@ -330,7 +330,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		tid = await ensureData(tid as (string | undefined), 'tid', 'homework ID');
 		if (!tid) { return; }
 		try {
-			await new cyezFetch({
+			await new hydroFetch({
 				path: `/d/${settings.domain}/homework/${tid}`,
 				body: {
 					"operation": "attend",
@@ -341,10 +341,10 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			return;
 		}
 		io.info('Homework claimed');
-		vscode.commands.executeCommand('cyezoi.refreshHTree');
+		vscode.commands.executeCommand('hydro-helper.refreshHTree');
 	}));
 
-	disposables.push(vscode.commands.registerCommand('cyezoi.openP', async (pid?: vscode.TreeItem | string, tid?: string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.openP', async (pid?: vscode.TreeItem | string, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) { pid = undefined; }
 		const activeTextEditor = vscode.window.activeTextEditor;
 		pid = await ensureData(pid, 'pid', 'problem ID', activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
@@ -360,19 +360,19 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			await attribute.save();
 		}
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openT', async (rid?: vscode.TreeItem | string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.openT', async (rid?: vscode.TreeItem | string) => {
 		if (rid instanceof vscode.TreeItem) { rid = undefined; }
 		rid = await ensureData(rid, 'rid', 'RID');
 		if (!rid) { return; }
 		new rWeb(rid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openC', async (tid?: vscode.TreeItem | string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.openC', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) { tid = undefined; }
 		tid = await ensureData(tid, 'tid', 'contest ID');
 		if (!tid) { return; }
 		new cWeb(tid);
 	}));
-	disposables.push(vscode.commands.registerCommand('cyezoi.openH', async (tid?: vscode.TreeItem | string) => {
+	disposables.push(vscode.commands.registerCommand('hydro-helper.openH', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) { tid = undefined; }
 		tid = await ensureData(tid, 'tid', 'homework ID');
 		if (!tid) { return; }
@@ -386,7 +386,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 
 	auth.setLoggedIn(await auth.getLoginStatus());
 
-	io.warn('WARNING: This extension will be deprecated soon. All of its features are being moved to the new extension "Hydro Helper". Please install it from the marketplace.', { modal: true });
 	outputChannel.info('Extension activated');
 };
 

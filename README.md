@@ -1,6 +1,6 @@
-# CYEZOI README
+# Hydro Helper
 
-CYEZOI is an extension that can help user get and submit problems without opening the browser.
+Hydro Helper is an extension that can help users get and submit problems without opening the browser.
 
 ## Features
 
@@ -21,7 +21,7 @@ All the features are available in the VS Code sidebar.
 
 ## Requirements
 
-Users using this extension should have [an CYEZOI account](https://newoj.cyezoi.com).
+Users using this extension should have [an Hydro account](https://hydro.ac).
 
 ## Extension Settings
 
@@ -29,10 +29,10 @@ Currently there are no extension settings.
 
 This extension contributes the following settings:
 
-* `cyezoi.server`: The server address of CYEZOI. Default is `newoj.cyezoi.com`.
-* `cyezoi.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
-* `cyezoi.domain`: The Hydro domain of CYEZOI. Default is `problemset`.
+* `hydro-helper.server`: The server address of Hydro. Default is `hydro.ac`.
+* `hydro-helper.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
+* `hydro-helper.domain`: The Hydro domain of Hydro. Default is `system`.
 
 ## Known Issues
 
-See [GitHub Issues](https://github.com/CYEZOI/cyezoi-helper/issues).
+See [GitHub Issues](https://github.com/langningchen/hydro-helper/issues).

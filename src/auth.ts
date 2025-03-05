@@ -4,8 +4,8 @@ import { io, outputChannel } from './io';
 import storage from './storage';
 import { formatString } from './utils';
 
-class cyezoiSession implements vscode.AuthenticationSession {
-    account = { id: auth.id, label: 'CYEZOI' };
+class hydroSession implements vscode.AuthenticationSession {
+    account = { id: auth.id, label: 'Hydro' };
     readonly id = auth.id;
     readonly scopes = [];
 
@@ -15,7 +15,7 @@ class cyezoiSession implements vscode.AuthenticationSession {
 }
 
 export default class auth implements vscode.AuthenticationProvider, vscode.Disposable {
-    static id = 'cyezoi';
+    static id = 'hydro';
 
     private currentToken: Thenable<string | undefined> | undefined;
     private currentName: Thenable<string | undefined> | undefined;
@@ -31,7 +31,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
     }
 
     static getCookiesValue = async (): Promise<string> => {
-        return 'sid=' + (await vscode.authentication.getSession('cyezoi', ['cyezoi']).then((session: vscode.AuthenticationSession | undefined) => {
+        return 'sid=' + (await vscode.authentication.getSession('hydro', ['hydro']).then((session: vscode.AuthenticationSession | undefined) => {
             if (!session) {
                 return '';
             }
@@ -90,7 +90,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
             return [];
         }
 
-        return [new cyezoiSession(token, name)];
+        return [new hydroSession(token, name)];
     }
 
     async createSession(_scopes: string[]): Promise<vscode.AuthenticationSession> {
@@ -139,8 +139,8 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 storage.password = password;
                 storage.token = sid;
                 storage.name = uname;
-                this._onDidChangeSessions.fire({ added: [new cyezoiSession(sid, uname)], removed: [], changed: [] });
-                resolve(new cyezoiSession(sid, uname));
+                this._onDidChangeSessions.fire({ added: [new hydroSession(sid, uname)], removed: [], changed: [] });
+                resolve(new hydroSession(sid, uname));
             }
             catch (e) {
                 io.error((e as Error).message);
@@ -155,7 +155,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         const name = await this.currentName;
         if (!token || !name) { return; }
         auth.setLoggedIn(false);
-        this._onDidChangeSessions.fire({ added: [], removed: [new cyezoiSession(token, name)], changed: [] });;
+        this._onDidChangeSessions.fire({ added: [], removed: [new hydroSession(token, name)], changed: [] });;
     }
 
     static async getLoginStatus(): Promise<boolean> {
@@ -176,12 +176,12 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         return isLoggedIn;
     }
     static setLoggedIn(isLoggedIn: boolean): void {
-        vscode.commands.executeCommand('setContext', 'cyezoi-helper.loggedIn', isLoggedIn);
+        vscode.commands.executeCommand('setContext', 'hydro-helper.loggedIn', isLoggedIn);
         if (isLoggedIn) {
-            vscode.commands.executeCommand('cyezoi.refreshPTree');
-            vscode.commands.executeCommand('cyezoi.refreshRTree');
-            vscode.commands.executeCommand('cyezoi.refreshCTree');
-            vscode.commands.executeCommand('cyezoi.refreshHTree');
+            vscode.commands.executeCommand('hydro.refreshPTree');
+            vscode.commands.executeCommand('hydro.refreshRTree');
+            vscode.commands.executeCommand('hydro.refreshCTree');
+            vscode.commands.executeCommand('hydro.refreshHTree');
         } else {
             storage.token = undefined;
             storage.name = undefined;

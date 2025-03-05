@@ -65,7 +65,7 @@ export class Record extends vscode.TreeItem {
         TooltipDoc.appendMarkdown(`- **Judge At**: ${utils.toRelativeTime(new Date(rdoc.judgeAt).getTime())}\n`);
         this.tooltip = TooltipDoc;
         this.command = {
-            command: 'cyezoi.openT',
+            command: 'hydro-helper.openT',
             title: 'Open Record',
             arguments: [rdoc._id],
         };
