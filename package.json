@@ -41,7 +41,7 @@
       "activitybar": [
         {
           "id": "hydro-helper",
-          "title": "Hydro Helper",
+          "title": "Hydro",
           "icon": "res/icons/Hydro.svg"
         }
       ]
@@ -49,17 +49,17 @@
     "configuration": {
       "title": "Hydro Helper",
       "properties": {
-        "hydro-helper.server": {
+        "hydro.server": {
           "type": "string",
           "default": "hydro.ac",
           "description": "The server address of Hydro, without protocol"
         },
-        "hydro-helper.safeProtocol": {
+        "hydro.safeProtocol": {
           "type": "boolean",
           "default": true,
           "description": "Use safe protocol (HTTPS/WSS)"
         },
-        "hydro-helper.domain": {
+        "hydro.domain": {
           "type": "string",
           "default": "system",
           "description": "The domain of Hydro"
@@ -432,5 +432,12 @@
     "dom-parser": "^1.1.5",
     "marked": "^14.1.4",
     "ws": "^8.18.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@vscode/vsce-sign",
+      "esbuild",
+      "keytar"
+    ]
   }
 }

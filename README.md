@@ -29,9 +29,9 @@ Currently there are no extension settings.
 
 This extension contributes the following settings:
 
-* `hydro-helper.server`: The server address of Hydro. Default is `hydro.ac`.
-* `hydro-helper.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
-* `hydro-helper.domain`: The Hydro domain of Hydro. Default is `system`.
+* `hydro.server`: The server address of Hydro. Default is `hydro.ac`.
+* `hydro.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
+* `hydro.domain`: The Hydro domain of Hydro. Default is `system`.
 
 ## Known Issues
 
