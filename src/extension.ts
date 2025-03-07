@@ -68,6 +68,9 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		vscode.commands.executeCommand('hydro-helper.refreshCTree');
 	});
 
+	disposables.push(vscode.commands.registerCommand('hydro-helper.openSettings', () => {
+		vscode.commands.executeCommand('workbench.action.openSettings', '@ext:langningchen.hydro-helper');
+	}));
 	disposables.push(vscode.commands.registerCommand('hydro-helper.login', async () => {
 		const session = await vscode.authentication.getSession(auth.id, [], { createIfNone: true });
 		if (!session) {
