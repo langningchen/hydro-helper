@@ -15,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     <span role="button" class="record-status--text" style="color: ${scoreColor[Math.floor(data.rdoc.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${data.rdoc._id}']})">${data.rdoc.score ? `${data.rdoc.score}` : ``}</span> `;
                 }
                 if (!data.tdoc) {
-                    var starStatus = !!data.psdoc.star;
+                    var starStatus = !!data.psdoc?.star;
                     const starButton = document.createElement('vscode-icon');
                     starButton.id = 'starButton';
                     starButton.setAttribute('action-icon', '');
