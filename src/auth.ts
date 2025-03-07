@@ -178,10 +178,10 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
     static setLoggedIn(isLoggedIn: boolean): void {
         vscode.commands.executeCommand('setContext', 'hydro-helper.loggedIn', isLoggedIn);
         if (isLoggedIn) {
-            vscode.commands.executeCommand('hydro.refreshPTree');
-            vscode.commands.executeCommand('hydro.refreshRTree');
-            vscode.commands.executeCommand('hydro.refreshCTree');
-            vscode.commands.executeCommand('hydro.refreshHTree');
+            vscode.commands.executeCommand('hydro-helper.refreshPTree');
+            vscode.commands.executeCommand('hydro-helper.refreshRTree');
+            vscode.commands.executeCommand('hydro-helper.refreshCTree');
+            vscode.commands.executeCommand('hydro-helper.refreshHTree');
         } else {
             storage.token = undefined;
             storage.name = undefined;
