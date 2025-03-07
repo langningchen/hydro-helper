@@ -11,7 +11,7 @@ export default class rWeb extends webview {
             data: { rid },
             url: `/record/${rid}`,
             title: `R${rid}`,
-            fetchData: ({ postMessage }) => {
+            fetchData: async ({ postMessage }) => {
                 new rdWs(rid, (responseJSON) => {
                     if (responseJSON.error) {
                         postMessage({

@@ -9,8 +9,9 @@ export default class pWeb extends webview {
             data: { pid, tid },
             url: `/p/${pid}` + (tid ? `?tid=${tid}` : ''),
             title: 'P' + pid + (tid ? ` - T${tid}` : ''),
-            fetchData: ({ postMessage, parseMarkdown }) => {
-                new fetch({ path: `/d/${settings.domain}/p/${pid}` + (tid ? `?tid=${tid}` : '') }).start().then(async (response) => {
+            fetchData: async ({ postMessage, parseMarkdown }) => {
+                const awaitList = new Array<Promise<void>>();
+                awaitList.push(new fetch({ path: `/d/${settings.domain}/p/${pid}` + (tid ? `?tid=${tid}` : '') }).start().then(async (response) => {
                     if (response?.json !== undefined) {
                         var problemContent = response.json.pdoc.content;
                         try {
@@ -28,10 +29,12 @@ export default class pWeb extends webview {
                         };
                         postMessage(message);
                     }
-                });
+                }).catch((error) => {
+                    throw error;
+                }));
 
                 if (!tid) {
-                    new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (response) => {
+                    awaitList.push(new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (response) => {
                         if (response?.json !== undefined) {
                             for (const solution of response.json.psdocs) {
                                 solution.content = await parseMarkdown(solution.content as string, `/d/${settings.domain}/p/${pid}/file`);
@@ -45,10 +48,13 @@ export default class pWeb extends webview {
                             };
                             postMessage(message);
                         }
-                    });
+                    }).catch((error) => {
+                        throw error;
+                    }));
                 } else {
                     postMessage({ command: 'solution', data: null });
                 }
+                await Promise.all(awaitList);
             },
         });
     }
