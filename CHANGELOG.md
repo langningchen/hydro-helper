@@ -4,6 +4,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 
 ## v0.1.1
 
+- **Enhance problem title display with record status and star functionality**
 - Rename configuration keys
 - Add very simple walkthrough
 - Fix tree refresh
