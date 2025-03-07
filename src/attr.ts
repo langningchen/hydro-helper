@@ -14,7 +14,7 @@ export default class {
             return new TextDecoder().decode(data);
         });
         const regex = /@(\S+)\s+(\S+)/g;
-        let match;
+        var match;
         while ((match = regex.exec(this.content)) !== null) {
             this.attributes.set(match[1], match[2]);
         }
