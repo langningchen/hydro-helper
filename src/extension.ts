@@ -145,8 +145,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 						receivedBytes += value.length;
 						if (!fileSize) {
 							progress.report({ message: `${receivedBytes} bytes received` });
-						}
-						else {
+						} else {
 							progress.report({
 								message: `${receivedBytes}/${fileSize} bytes received`,
 								increment: value.length / fileSize * 100

@@ -10,7 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
         switch (message.command) {
             case 'info':
                 registerButton('arrow-right', 'Go to Problem', () => {
-                    vscode.postMessage({ command: 'openP', data: data.rdoc.contest ? [data.rdoc.pid, data.rdoc.contest] : [data.rdoc.pid] });
+                    vscode.postMessage({ command: 'openP', data: [data.rdoc.pid, data.rdoc.contest] });
                 });
 
                 enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
@@ -121,8 +121,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             message: message
                         });
                     }
-                }
-                else {
+                } else {
                     status = data.rdoc.status;
                     score = data.rdoc.score;
 
@@ -192,8 +191,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     </vscode-table>`;
                     enableTab('Judge result', recordHTML);
                     focusTab('Judge result');
-                }
-                else {
+                } else {
                     enableTab('Judge result');
                 }
                 break;

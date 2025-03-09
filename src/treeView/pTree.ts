@@ -18,8 +18,7 @@ export default class extends treeView<Problem | ProblemRecord> {
                     problems.push(new Problem(pdoc, response.json.psdict[pdoc.docId]));
                 }
                 return problems;
-            }
-            else {
+            } else {
                 const response = await new fetch({ path: `/d/${settings.domain}/record?uidOrName=${await storage.username}&pid=${(element.label as string).substring(1)}` }).start();
                 const records: Record[] = [];
                 for (const rdoc of response.json.rdocs) {
