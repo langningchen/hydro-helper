@@ -80,17 +80,17 @@
     "configuration": {
       "title": "Hydro Helper",
       "properties": {
-        "server.server": {
+        "hydro.server.server": {
           "type": "string",
           "default": "hydro.ac",
           "description": "The server address of Hydro, without protocol"
         },
-        "server.safeProtocol": {
+        "hydro.server.safeProtocol": {
           "type": "boolean",
           "default": true,
           "description": "Use safe protocol (HTTPS/WSS)"
         },
-        "server.domain": {
+        "hydro.server.domain": {
           "type": "string",
           "default": "system",
           "description": "The domain of Hydro"
