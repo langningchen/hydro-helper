@@ -2,6 +2,9 @@
 
 (UNOFFICIAL) Hydro Helper is an extension that can help users get and submit problems without opening the browser.
 
+> [!WARNING]  
+> This extension is still under development, and may have breaking changes without any notice.
+
 ## Features
 
 This extension provides the following features:
@@ -23,16 +26,23 @@ All the features are available in the VS Code sidebar.
 
 Users using this extension should have [an Hydro account](https://hydro.ac).
 
-## Extension Settings
+## Key Bindings
 
-Currently there are no extension settings.
+- `Ctrl+Alt+Shift+P`: Open problem
+- `Ctrl+Alt+Shift+S`: Submit problem
+
+## Extension Settings
 
 This extension contributes the following settings:
 
-* `hydro-helper.server`: The server address of Hydro. Default is `hydro.ac`.
-* `hydro-helper.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
-* `hydro-helper.domain`: The Hydro domain of Hydro. Default is `system`.
+* `hydro.server`: The server address of Hydro. Default is `hydro.ac`.
+* `hydro.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
+* `hydro.domain`: The Hydro domain of Hydro. Default is `system`.
 
 ## Known Issues
 
 See [GitHub Issues](https://github.com/langningchen/hydro-helper/issues).
+
+## Change Log
+
+See [CHANGELOG.md](https://github.com/langningchen/hydro-helper/blob/main/CHANGELOG.md)

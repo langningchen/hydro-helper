@@ -9,7 +9,28 @@ window.addEventListener('DOMContentLoaded', () => {
         const data = message.data;
         switch (message.command) {
             case 'problem':
-                setTitle('#' + data.pdoc.docId + '. ' + data.pdoc.title);
+                var title = '';
+                if (data.rdoc) {
+                    title += `<span class="icon record-status--icon ${statusIcon[data.rdoc.status]}"></span>
+                    <span role="button" class="record-status--text" style="color: ${scoreColor[Math.floor(data.rdoc.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${data.rdoc._id}']})">${data.rdoc.score ? `${data.rdoc.score}` : ``}</span> `;
+                }
+                if (!data.tdoc) {
+                    var starStatus = !!data.psdoc?.star;
+                    const starButton = document.createElement('vscode-icon');
+                    starButton.id = 'starButton';
+                    starButton.setAttribute('action-icon', '');
+                    starButton.setAttribute('name', starStatus ? 'star-full' : 'star-empty');
+                    starButton.setAttribute('onclick', 'star()');
+                    starButton.setAttribute('size', '20');
+                    window.star = () => {
+                        vscode.postMessage({ command: 'starP', data: [data.pdoc.docId] });
+                        starStatus = !starStatus;
+                        document.getElementById('starButton').setAttribute('name', starStatus ? 'star-full' : 'star-empty');
+                    };
+                    title += starButton.outerHTML + " ";
+                }
+                title += `#${data.pdoc.docId}. ${data.pdoc.title} `;
+                setTitle(title);
 
                 const markdownContent = data.pdoc.content.zh || data.pdoc.content;
 
