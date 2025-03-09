@@ -41,7 +41,7 @@ This extension contributes the following settings:
 
 ## License
 
-This project is licensed under the terms of the [GNU General Public License v3.0](https://github.com/langningchen/hydro-helper/blob/main/LICENSE) and is not affiliated with Hydro or any other organization. The icon of this extension is copyrighted by [Hydro](https://hydro.js.org).
+This project is licensed under the terms of the [GNU Affero General Public License v3.0](https://github.com/langningchen/hydro-helper/blob/main/LICENSE) and is not affiliated with Hydro or any other organization. The icon of this extension is copyrighted by [Hydro](https://hydro.js.org).
 
 ## Acknowledgements
 
