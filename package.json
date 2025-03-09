@@ -1,7 +1,7 @@
 {
   "name": "hydro-helper",
   "displayName": "Hydro Helper",
-  "description": "(UNOFFICIAL) Hydro Helper is an VSCode extension to solve Hydro problems easier",
+  "description": "(UNOFFICIAL) Hydro Helper is a VSCode extension to solve Hydro problems easier",
   "version": "0.1.1",
   "license": "AGPL-3.0-only",
   "publisher": "langningchen",
