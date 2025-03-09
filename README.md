@@ -42,3 +42,7 @@ This extension contributes the following settings:
 ## Known Issues
 
 See [GitHub Issues](https://github.com/langningchen/hydro-helper/issues).
+
+## Change Log
+
+See [CHANGELOG.md](https://github.com/langningchen/hydro-helper/blob/main/CHANGELOG.md)
