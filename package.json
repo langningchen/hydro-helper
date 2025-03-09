@@ -2,7 +2,7 @@
   "name": "hydro-helper",
   "displayName": "Hydro Helper",
   "description": "(UNOFFICIAL) Hydro Helper is a VSCode extension to solve Hydro problems easier",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "AGPL-3.0-only",
   "publisher": "langningchen",
   "icon": "res/icons/Hydro.png",
