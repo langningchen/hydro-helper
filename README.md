@@ -1,7 +1,6 @@
 # Hydro Helper
 
-(**UNOFFICIAL**) Hydro Helper is an VSCode extension to solve [Hydro](https://github.com/hydro-dev/Hydro) problems easier.
-
+(**UNOFFICIAL**) Hydro Helper is a VSCode extension to solve [Hydro](https://github.com/hydro-dev/Hydro) problems easier.
 > [!WARNING]  
 > This extension is still under development, and may have breaking changes without any notice.
 
