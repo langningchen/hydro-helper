@@ -1,1 +1,1 @@
-Nextly, you can login by inputting your username and password. 
+Next, you can log in by entering your username and password.
