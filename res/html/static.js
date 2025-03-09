@@ -16,7 +16,12 @@ var loading, error, errorMessage, content;
 
 const messageQueue = [];
 var messageHandler = null;
+const trustedOrigins = ['https://www.example.com', 'https://another-trusted-origin.com'];
 window.onmessage = (event) => {
+    if (!trustedOrigins.includes(event.origin)) {
+        console.warn('Untrusted origin:', event.origin);
+        return;
+    }
     const message = event.data;
     if (messageHandler) {
         messageHandler(message);
