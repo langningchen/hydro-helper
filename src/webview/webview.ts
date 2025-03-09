@@ -53,7 +53,7 @@ export default class webview {
         this.panel = vscode.window.createWebviewPanel(
             this.webviewData.name,
             `Hydro - ${this.webviewData.title}`,
-            vscode.ViewColumn.One,
+            settings.webviewColumn,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
