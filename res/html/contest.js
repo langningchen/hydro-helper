@@ -74,8 +74,7 @@ window.addEventListener('DOMContentLoaded', () => {
                             case 'record':
                                 if (cell.raw === null) {
                                     scoreboardHTML += `<${elementName}>-</${elementName}>`;
-                                }
-                                else {
+                                } else {
                                     scoreboardHTML += `<${elementName} style="${cell.style ? 'background-color: rgb(217, 240, 199)' : ''}">
                                         <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${cell.raw}']})">${cell.value}</span>
                                     </${elementName}>`;
@@ -86,8 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 for (const record of cell.raw) {
                                     if (record.value === "-") {
                                         scoreboardHTML += `<span>-</span>`;
-                                    }
-                                    else {
+                                    } else {
                                         scoreboardHTML += `<span role="button" style="color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${record.raw}']})">${record.value}</span>`;
                                     }
                                     scoreboardHTML += " / ";

@@ -17,6 +17,10 @@ var loading, error, errorMessage, content;
 const messageQueue = [];
 var messageHandler = null;
 window.onmessage = (event) => {
+    if (!event.origin.startsWith('vscode-webview')) {
+        console.warn('Untrusted origin:', event.origin);
+        return;
+    }
     const message = event.data;
     if (messageHandler) {
         messageHandler(message);

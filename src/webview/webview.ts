@@ -53,7 +53,7 @@ export default class webview {
         this.panel = vscode.window.createWebviewPanel(
             this.webviewData.name,
             `Hydro - ${this.webviewData.title}`,
-            vscode.ViewColumn.One,
+            settings.webviewColumn,
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
@@ -65,11 +65,9 @@ export default class webview {
         this.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
             if (message.command === 'refresh') {
                 this.fetchData();
-            }
-            else if (message.command === 'dispose') {
+            } else if (message.command === 'dispose') {
                 this.panel!.dispose();
-            }
-            else if (message.command === 'openInBrowser') {
+            } else if (message.command === 'openInBrowser') {
                 vscode.env.openExternal(vscode.Uri.parse(`http${settings.safeProtocol ? "s" : ""}://${settings.server}/d/${settings.domain}${data.url}`));
             } else {
                 vscode.commands.executeCommand(`hydro-helper.${message.command}`, ...message.data);
@@ -123,8 +121,7 @@ export default class webview {
                     fetchData[id] = url;
                     if (type === 'video') {
                         return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button><video src="{{${id}}}" controls></video>`;
-                    }
-                    else if (type === 'pdf') {
+                    } else if (type === 'pdf') {
                         return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','PDF.pdf']})">Download PDF</vscode-button><div data-src="{{${id}}}" class="pdf"></div>`;
                     }
                     return '<a href="' + id + '">' + url + '</a>';

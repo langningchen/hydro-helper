@@ -1,8 +1,9 @@
 {
   "name": "hydro-helper",
   "displayName": "Hydro Helper",
-  "description": "(UNOFFICIAL) Hydro Helper is an extension that can help users get and submit problems without opening the browser",
-  "version": "0.1.1",
+  "description": "(UNOFFICIAL) Hydro Helper is a VSCode extension to solve Hydro problems easier",
+  "version": "0.1.3",
+  "license": "AGPL-3.0-only",
   "publisher": "langningchen",
   "icon": "res/icons/Hydro.png",
   "pricing": "Free",
@@ -94,6 +95,50 @@
           "type": "string",
           "default": "system",
           "description": "The domain of Hydro"
+        },
+        "hydro.userInterface.webviewColumn": {
+          "type": "number",
+          "enum": [
+            -1,
+            -2,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "markdownEnumDescriptions": [
+            "A *symbolic* editor column representing the currently active column.",
+            "A *symbolic* editor column representing the column to the side of the active one.",
+            "The first editor column.",
+            "The second editor column.",
+            "The third editor column.",
+            "The fourth editor column.",
+            "The fifth editor column.",
+            "The sixth editor column.",
+            "The seventh editor column.",
+            "The eighth editor column.",
+            "The ninth editor column."
+          ],
+          "default": -1,
+          "enumItemLabels": [
+            "Active",
+            "Beside",
+            "One",
+            "Two",
+            "Three",
+            "Four",
+            "Five",
+            "Six",
+            "Seven",
+            "Eight",
+            "Nine"
+          ],
+          "description": "Determines the display position of the webview."
         }
       }
     },

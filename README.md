@@ -1,7 +1,6 @@
 # Hydro Helper
 
-(UNOFFICIAL) Hydro Helper is an extension that can help users get and submit problems without opening the browser.
-
+(**UNOFFICIAL**) Hydro Helper is a VSCode extension to solve [Hydro](https://github.com/hydro-dev/Hydro) problems easier.
 > [!WARNING]  
 > This extension is still under development, and may have breaking changes without any notice.
 
@@ -38,6 +37,14 @@ This extension contributes the following settings:
 * `hydro.server`: The server address of Hydro. Default is `hydro.ac`.
 * `hydro.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
 * `hydro.domain`: The Hydro domain of Hydro. Default is `system`.
+
+## License
+
+This project is licensed under the terms of the [GNU Affero General Public License v3.0](https://github.com/langningchen/hydro-helper/blob/main/LICENSE) and is not affiliated with Hydro or any other organization. The icon of this extension is copyrighted by [Hydro](https://hydro.js.org).
+
+## Acknowledgements
+
+This project is inspired by [vscode-luogu](https://github.com/himself65/vscode-luogu) and [the empty official vscode extension](https://github.com/hydro-dev/HydroVscode).
 
 ## Known Issues
 
