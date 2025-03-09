@@ -109,6 +109,9 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 if (!uname || !password) {
                     throw new Error('Username or password not provided');
                 }
+                const rememberme = (await vscode.window.showQuickPick(['Yes', 'No'], {
+                    placeHolder: 'Do you want to remember this session?',
+                })) === 'Yes';
 
                 const sid = await vscode.window.withProgress({
                     location: vscode.ProgressLocation.Notification,
@@ -117,9 +120,6 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 }, async (_progress, token) => {
                     const abortController = new AbortController();
                     token.onCancellationRequested(() => { abortController.abort(); });
-                    const rememberme = (await vscode.window.showQuickPick(['Yes', 'No'], {
-                        placeHolder: 'Do you want to remember this session?',
-                    })) === 'Yes';
                     const response = await new fetch({
                         path: '/login', body: { uname, password, rememberme, }, addCookie: false, abortController, returnError: true, ignoreLogin: true
                     }).start();
@@ -143,7 +143,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
                 resolve(new hydroSession(sid, uname));
             }
             catch (e) {
-                io.error((e as Error).message);
+                io.error((e as Error).message + " Check for the server configuration [here](command:hydro-helper.openSettings)?");
                 reject(e);
             }
         });
