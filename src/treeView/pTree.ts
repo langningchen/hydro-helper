@@ -39,17 +39,17 @@ export class Problem extends vscode.TreeItem {
         this.description = pdoc.title;
         const tooltipDoc = new vscode.MarkdownString();
         if (pdoc.tag && pdoc.tag.length > 0) { tooltipDoc.appendMarkdown(`- **Tags**: ${pdoc.tag.join(', ')}\n`); }
-        if (psdoc && psdoc.score) {
+        if (psdoc?.score !== undefined) {
             tooltipDoc.appendMarkdown(`- **Score**: ${psdoc.score}\n`);
             this.description += '  ' + psdoc.score;
         }
-        if (psdoc && psdoc.status) {
+        if (psdoc?.status !== undefined) {
             this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[psdoc.status] + '.svg');
             tooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[psdoc.status]}\n`);
             this.description += ' ' + utils.statusName[psdoc.status];
         }
-        if (pdoc.difficulty) { tooltipDoc.appendMarkdown(`- **Difficulty**: ${pdoc.difficulty}\n`); }
-        if (pdoc.nAccept && pdoc.nSubmit) { tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.nSubmit}\n`); }
+        if (pdoc.difficulty !== undefined) { tooltipDoc.appendMarkdown(`- **Difficulty**: ${pdoc.difficulty}\n`); }
+        if (pdoc.nAccept !== undefined && pdoc.nSubmit !== undefined) { tooltipDoc.appendMarkdown(`- **AC / Tried**: ${pdoc.nAccept}/${pdoc.nSubmit}\n`); }
         this.tooltip = tooltipDoc;
         this.command = {
             command: 'hydro-helper.openP',

@@ -149,7 +149,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
 
                 setTitle(`<span class="icon record-status--icon ${statusIcon[status]}"></span>
-                    <span class="record-status--text" style="color: ${scoreColor[Math.floor(score / 100 * 10)]}">${score ? `${score} ` : ``}</span>
+                    <span class="record-status--text" style="color: ${scoreColor[Math.floor(score / 100 * 10)]}">${score !== undefined ? `${score} ` : ``}</span>
                     <span class="record-status--text ${statusIcon[status]}">${statusName[status]}</span>`);
 
                 if (Object.keys(parsedSubtasks).length > 0) {
