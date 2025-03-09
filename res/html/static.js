@@ -16,9 +16,8 @@ var loading, error, errorMessage, content;
 
 const messageQueue = [];
 var messageHandler = null;
-const trustedOrigins = ['https://www.example.com', 'https://another-trusted-origin.com'];
 window.onmessage = (event) => {
-    if (!trustedOrigins.includes(event.origin)) {
+    if (!event.origin.startsWith('vscode-webview')) {
         console.warn('Untrusted origin:', event.origin);
         return;
     }
