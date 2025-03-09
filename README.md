@@ -23,9 +23,12 @@ All the features are available in the VS Code sidebar.
 
 Users using this extension should have [an Hydro account](https://hydro.ac).
 
-## Extension Settings
+## Key Bindings
 
-Currently there are no extension settings.
+- `Ctrl+Alt+Shift+P`: Open problem
+- `Ctrl+Alt+Shift+S`: Submit problem
+
+## Extension Settings
 
 This extension contributes the following settings:
 
