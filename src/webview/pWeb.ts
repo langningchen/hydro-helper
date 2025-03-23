@@ -13,7 +13,7 @@ export default class pWeb extends webview {
                 const awaitList = new Array<Promise<void>>();
                 awaitList.push(new fetch({ path: `/d/${settings.domain}/p/${pid}` + (tid ? `?tid=${tid}` : '') }).start().then(async (response) => {
                     if (response?.json !== undefined) {
-                        var problemContent = response.json.pdoc.content;
+                        let problemContent = response.json.pdoc.content;
                         try {
                             problemContent = JSON.parse(problemContent);
                             for (const [key, value] of Object.entries(problemContent)) {

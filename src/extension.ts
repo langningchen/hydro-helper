@@ -27,6 +27,10 @@ interface Problem {
 	srcPath: string
 	local: boolean
 }
+interface Domain {
+	name: string;
+	_id: string;
+}
 
 const ensureData = async (data: string | undefined, name: string, displayName?: string, defaultValue?: string): Promise<string | undefined> => {
 	if (!data && vscode.window.activeTextEditor) {
@@ -83,11 +87,6 @@ export const activate = async (context: vscode.ExtensionContext) => {
 		auth.setLoggedIn(isLoggedIn);
 		if (isLoggedIn) { io.info(`Hi ${session.account.label}, you have successfully logged in!`); }
 	}));
-	disposables.push(vscode.commands.registerCommand('hydro-helper.logout', async () => {
-		io.warn('Please go to the Accounts tab (generally on the bottom left corner of the window) and log out from there.', {
-			modal: true,
-		});
-	}));
 	disposables.push(vscode.commands.registerCommand('hydro-helper.changeD', async () => {
 		const domains = await vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -100,9 +99,10 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				path: '/home/domain',
 				abortController,
 			}).start();
-			return response.json.ddocs;
+			return response.json['ddocs'];
 		});
-		const domain = (await vscode.window.showQuickPick(domains.map((domain: any) => ({
+
+		const domain = (await vscode.window.showQuickPick(domains.map((domain: Domain) => ({
 			label: domain.name,
 			description: domain._id,
 		})) as vscode.QuickPickItem[], {
@@ -135,7 +135,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				redirect: 'follow',
 				signal: abortController.signal,
 			});
-			var receivedBytes = 0;
+			let receivedBytes = 0;
 			const reader = responseData.body?.getReader();
 			const chunks: Uint8Array[] = [];
 			if (reader) {
@@ -158,7 +158,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			}
 			progress.report({ message: 'Writing to file...', increment: undefined, });
 			const buffer = new Uint8Array(receivedBytes);
-			var offset = 0;
+			let offset = 0;
 			for (const chunk of chunks) {
 				buffer.set(chunk, offset);
 				offset += chunk.length;
@@ -190,7 +190,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 			}).start();
 		}).then(response => response.json.langRange);
 
-		var lang = await ensureData(undefined, 'lang');
+		let lang = await ensureData(undefined, 'lang');
 		if (!lang) {
 			const lastLanguage = await storage.lastLanguage;
 			lang = (await vscode.window.showQuickPick(Object.keys(langs).map(key => ({
@@ -351,7 +351,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	disposables.push(vscode.commands.registerCommand('hydro-helper.openP', async (pid?: vscode.TreeItem | string, tid?: string) => {
 		if (pid instanceof vscode.TreeItem) { pid = undefined; }
 		const activeTextEditor = vscode.window.activeTextEditor;
-		pid = await ensureData(pid, 'pid', 'problem ID', activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
+		pid = await ensureData(pid as string, 'pid', 'problem ID', activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
 		tid = await ensureData(tid, 'tid');
 		new pWeb(parseInt(pid), tid);
@@ -366,19 +366,19 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	}));
 	disposables.push(vscode.commands.registerCommand('hydro-helper.openT', async (rid?: vscode.TreeItem | string) => {
 		if (rid instanceof vscode.TreeItem) { rid = undefined; }
-		rid = await ensureData(rid, 'rid', 'RID');
+		rid = await ensureData(rid as string, 'rid', 'RID');
 		if (!rid) { return; }
 		new rWeb(rid);
 	}));
 	disposables.push(vscode.commands.registerCommand('hydro-helper.openC', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) { tid = undefined; }
-		tid = await ensureData(tid, 'tid', 'contest ID');
+		tid = await ensureData(tid as string, 'tid', 'contest ID');
 		if (!tid) { return; }
 		new cWeb(tid);
 	}));
 	disposables.push(vscode.commands.registerCommand('hydro-helper.openH', async (tid?: vscode.TreeItem | string) => {
 		if (tid instanceof vscode.TreeItem) { tid = undefined; }
-		tid = await ensureData(tid, 'tid', 'homework ID');
+		tid = await ensureData(tid as string, 'tid', 'homework ID');
 		if (!tid) { return; }
 		new cWeb(tid, true);
 	}));

@@ -34,7 +34,7 @@ window.setMessageHandler = (handler) => {
             await pageLoaded;
             loading.classList.add('hidden');
             error.classList.remove('hidden');
-            errorMessage.innerText = formatString(message.data);
+            errorMessage.innerText = window.formatString(message.data);
             return;
         }
         handler(message);
@@ -187,11 +187,11 @@ window.getUnit = (data, unit) => {
 window.toTime = (time) => {
     if (time < 1000) { return time + 'ms'; } time = Math.floor(time / 1000);
     if (time < 60) { return time + 's'; } time = Math.floor(time / 60);
-    if (time < 60) { return time + ' ' + getUnit(time, 'minute'); } time = Math.floor(time / 60);
-    if (time < 24) { return time + ' ' + getUnit(time, 'hour'); } time = Math.floor(time / 24);
-    if (time < 30) { return time + ' ' + getUnit(time, 'day'); } time = Math.floor(time / 30);
-    if (time < 12) { return 'about ' + Math.floor(time) + ' ' + getUnit(time, 'month'); } time = Math.floor(time / 12);
-    return 'about ' + Math.floor(time) + ' ' + getUnit(time, 'year');
+    if (time < 60) { return time + ' ' + window.getUnit(time, 'minute'); } time = Math.floor(time / 60);
+    if (time < 24) { return time + ' ' + window.getUnit(time, 'hour'); } time = Math.floor(time / 24);
+    if (time < 30) { return time + ' ' + window.getUnit(time, 'day'); } time = Math.floor(time / 30);
+    if (time < 12) { return 'about ' + Math.floor(time) + ' ' + window.getUnit(time, 'month'); } time = Math.floor(time / 12);
+    return 'about ' + Math.floor(time) + ' ' + window.getUnit(time, 'year');
 };
 window.parseTime = (time) => {
     if (time.endsWith('ms')) { return parseInt(time.slice(0, -2)); }
@@ -214,11 +214,11 @@ window.toRelativeTime = (time) => {
     const suffix = (time > now ? 'later' : 'ago');
     var delta = Math.floor(Math.abs(now - time) / 1000);
     if (delta < 60) { return 'just now'; } delta = Math.floor(delta / 60);
-    if (delta < 60) { return delta + ' ' + getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
-    if (delta < 24) { return delta + ' ' + getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
-    if (delta < 30) { return delta + ' ' + getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
-    if (delta < 12) { return 'about ' + delta + ' ' + getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
-    return 'about ' + delta + ' ' + getUnit(delta, 'year') + ' ' + suffix;
+    if (delta < 60) { return delta + ' ' + window.getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
+    if (delta < 24) { return delta + ' ' + window.getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
+    if (delta < 30) { return delta + ' ' + window.getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
+    if (delta < 12) { return 'about ' + delta + ' ' + window.getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
+    return 'about ' + delta + ' ' + window.getUnit(delta, 'year') + ' ' + suffix;
 };
 window.formatString = (str) => {
     if (typeof str === 'string') { return str; }
@@ -243,7 +243,7 @@ window.renderPdf = async () => {
 
         const render = async () => {
             pdfElement.innerHTML = '';
-            const pdf = await pdfjsLib.getDocument(sourceUrl).promise;
+            const pdf = await window.pdfjsLib.getDocument(sourceUrl).promise;
             for (var page = 1; page <= pdf.numPages; page++) {
                 const canvas = document.createElement('canvas');
                 pdfElement.appendChild(canvas);
@@ -321,10 +321,10 @@ window.sanitizeHtml = (html) => {
     return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 
-window.vscode = acquireVsCodeApi();
+window.vscode = window.acquireVsCodeApi();
 
 window.addEventListener('DOMContentLoaded', () => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs';
 
     const title = document.getElementById('title');
     const buttonGroup = document.getElementById('buttonGroup');
@@ -383,20 +383,20 @@ window.addEventListener('DOMContentLoaded', () => {
             header.removeAttribute('disabled');
             panel.innerHTML = htmlContent;
         }
-        MathJax.typeset();
-        renderPdf();
-        renderCode();
+        window.MathJax.typeset();
+        window.renderPdf();
+        window.renderCode();
     };
 
-    registerButton('refresh', 'Refresh', () => {
-        vscode.postMessage({ command: 'refresh' });
+    window.registerButton('refresh', 'Refresh', () => {
+        window.vscode.postMessage({ command: 'refresh' });
         loading.classList.remove('hidden');
         content.classList.add('hidden');
         while (buttonGroup.children.length > 1) {
             buttonGroup.removeChild(buttonGroup.children[1]);
         }
     });
-    registerButton('browser', 'Open in Browser', () => {
-        vscode.postMessage({ command: 'openInBrowser' });
+    window.registerButton('browser', 'Open in Browser', () => {
+        window.vscode.postMessage({ command: 'openInBrowser' });
     });
 });

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ESNext",
+        "outDir": "out",
+        "lib": [
+            "ESNext",
+        ],
+        "sourceMap": true,
+        "rootDir": "src",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+    }
+}

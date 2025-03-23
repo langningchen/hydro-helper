@@ -6,7 +6,7 @@ import settings from '../settings';
 
 export default class extends websocket {
     constructor(callback: (record: Record) => void) {
-        super(`record-conn?domainId=${settings.domain}`, (responseJSON: any) => {
+        super(`record-conn?domainId=${settings.domain}`, (responseJSON: { html: string }) => {
             const dom = parseFromString(responseJSON.html);
             const tr = dom.getElementsByTagName('tr')[0];
             const rdoc: utils.RecordDoc = {

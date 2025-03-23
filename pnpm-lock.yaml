@@ -21,8 +21,8 @@ importers:
         specifier: ^1.1.5
         version: 1.1.5
       marked:
-        specifier: ^14.1.4
-        version: 14.1.4
+        specifier: ^15.0.7
+        version: 15.0.7
       ws:
         specifier: ^8.18.0
         version: 8.18.0
@@ -42,6 +42,12 @@ importers:
       '@types/ws':
         specifier: ^8.5.14
         version: 8.5.14
+      '@typescript-eslint/eslint-plugin':
+        specifier: ^8.24.0
+        version: 8.27.0(@typescript-eslint/parser@8.27.0(eslint@9.23.0)(typescript@5.7.3))(eslint@9.23.0)(typescript@5.7.3)
+      '@typescript-eslint/parser':
+        specifier: ^8.24.0
+        version: 8.27.0(eslint@9.23.0)(typescript@5.7.3)
       '@vscode/test-cli':
         specifier: ^0.0.10
         version: 0.0.10
@@ -55,7 +61,7 @@ importers:
         specifier: ^0.25.0
         version: 0.25.0
       eslint:
-        specifier: ^9.23.0
+        specifier: ^9.20.1
         version: 9.23.0
       globals:
         specifier: ^16.0.0
@@ -1285,8 +1291,8 @@ packages:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
-  marked@14.1.4:
-    resolution: {integrity: sha512-vkVZ8ONmUdPnjCKc5uTRvmkRbx4EAi2OkTOXmfTDhZz3OFqMNBM1oTTWwTr4HY4uAEojhzPf+Fy8F1DWa3Sndg==}
+  marked@15.0.7:
+    resolution: {integrity: sha512-dgLIeKGLx5FwziAnsk4ONoGwHwGPJzselimvlVskE9XLN4Orv9u2VA3GWw/lYUqjfA0rUT/6fqKwfZJapP9BEg==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -3185,7 +3191,7 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  marked@14.1.4: {}
+  marked@15.0.7: {}
 
   math-intrinsics@1.1.0: {}
 

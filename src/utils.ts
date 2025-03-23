@@ -178,7 +178,7 @@ export interface RecordDoc {
     judgeAt: string
     rejudged: boolean
     contest?: string
-    files: any
+    files: Array<object>
     subtasks?: { [key: string]: { type: string, score: number, status: number } }
 }
 export interface UserDoc {
@@ -282,7 +282,7 @@ export const toMemory = (time: number): string => {
 export const toRelativeTime = (time: number): string => {
     const now: number = new Date().getTime();
     const suffix = (time > now ? 'later' : 'ago');
-    var delta = Math.floor(Math.abs(now - time) / 1000);
+    let delta = Math.floor(Math.abs(now - time) / 1000);
     if (delta < 60) { return 'just now'; } delta = Math.floor(delta / 60);
     if (delta < 60) { return delta + ' ' + getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
     if (delta < 24) { return delta + ' ' + getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);

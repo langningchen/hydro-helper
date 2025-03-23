@@ -195,10 +195,6 @@
         "title": "Hydro: Login"
       },
       {
-        "command": "hydro-helper.logout",
-        "title": "Hydro: Logout"
-      },
-      {
         "command": "hydro-helper.changeD",
         "title": "Hydro: Change Domain"
       },
@@ -483,15 +479,14 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run check-types && node esbuild.js --production",
-    "compile": "pnpm run check-types && node esbuild.js",
-    "check-types": "tsc --noEmit",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --watch --project tsconfig.json",
+    "vscode:prepublish": "node esbuild.mjs --production",
+    "compile": "node esbuild.mjs",
+    "watch:esbuild": "node esbuild.mjs --watch",
     "package": "pnpm vsce package --no-dependencies",
     "publish": "pnpm vsce publish --no-dependencies"
   },
   "devDependencies": {
+    "@eslint/js": "^9.23.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "~20.17.19",
     "@types/vscode": "1.94.0",
@@ -503,14 +498,16 @@
     "@vscode/vsce": "^3.2.2",
     "esbuild": "^0.25.0",
     "eslint": "^9.20.1",
-    "typescript": "^5.7.3"
+    "globals": "^16.0.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.27.0"
   },
   "dependencies": {
     "@types/dom-parser": "^0.1.4",
     "@vscode/codicons": "^0.0.36",
     "@vscode/l10n-dev": "^0.0.35",
     "dom-parser": "^1.1.5",
-    "marked": "^14.1.4",
+    "marked": "^15.0.7",
     "ws": "^8.18.0"
   },
   "pnpm": {

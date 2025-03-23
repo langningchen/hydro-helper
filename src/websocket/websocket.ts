@@ -6,8 +6,8 @@ import { io, outputChannel } from '../io';
 export default class {
     private interval: NodeJS.Timeout | undefined;
     private path: string;
-    private callback: (responseJSON: any) => void;
-    constructor(path: string, callback: (responseJSON: any) => void) {
+    private callback: (responseJSON) => void;
+    constructor(path: string, callback: (responseJSON) => void) {
         this.path = path;
         this.callback = callback;
     }
@@ -36,6 +36,13 @@ export default class {
         });
 
         ws.on('error', (err) => { io.error(err.toString()); });
-        ws.on('close', (_code, _reason) => { clearInterval(this.interval); });
+        ws.on('close', (code, reason) => {
+            io.info([
+                'WebSocket closed',
+                code ? `code: ${code}` : '',
+                reason ? `reason: ${reason}` : '',
+            ].join(', '));
+            clearInterval(this.interval);
+        });
     };
 };

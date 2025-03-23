@@ -3,13 +3,13 @@ import settings from './settings';
 import auth from './auth';
 
 interface HydroError extends Error {
-    params: any[]
+    params: string[]
     code: number
 }
 
 interface fetchOptions {
     path: string
-    body?: any
+    body?: string | object
     addCookie?: boolean
     abortController?: AbortController
     returnError?: boolean
@@ -18,7 +18,7 @@ interface fetchOptions {
 
 interface fetchReturn {
     status: number
-    json?: any
+    json?
     cookies?: string[]
     error?: Error
 }
@@ -59,11 +59,9 @@ export default class {
 
     checkError = async (): Promise<void> => {
         outputChannel.trace('[fetch   ]', '"checkError"');
-        if (this.returnValue.json.error) {
+        if (this.returnValue.json?.error) {
             const errorData = <HydroError>this.returnValue.json.error;
-            const message = errorData.message.replace(/{(\d+)}/g, (_match, number) => {
-                return errorData.params[number];
-            });
+            const message = errorData.message.replace(/{(\d+)}/g, (_, number) => errorData.params[number]);
             if (this.options.returnError) {
                 this.returnValue.error = new Error(message);
                 return;

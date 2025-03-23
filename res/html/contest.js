@@ -1,13 +1,13 @@
 window.addEventListener('DOMContentLoaded', () => {
-    registerTab('Info');
-    registerTab('Scoreboard');
+    window.registerTab('Info');
+    window.registerTab('Scoreboard');
 
     window.setMessageHandler((message) => {
         const data = message.data;
         switch (message.command) {
-            case 'info':
-                setTitle(data.tdoc.title);
-                enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
+            case 'info': {
+                window.setTitle(data.tdoc.title);
+                window.enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -23,11 +23,11 @@ window.addEventListener('DOMContentLoaded', () => {
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Duration</vscode-table-cell>
-                            <vscode-table-cell>${toTime(new Date(data.tdoc.endAt).getTime() - new Date(data.tdoc.beginAt).getTime())}</vscode-table-cell>
+                            <vscode-table-cell>${window.toTime(new Date(data.tdoc.endAt).getTime() - new Date(data.tdoc.beginAt).getTime())}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Rule</vscode-table-cell>
-                            <vscode-table-cell>${contestRuleName[data.tdoc.rule]}</vscode-table-cell>
+                            <vscode-table-cell>${window.contestRuleName[data.tdoc.rule]}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Begin At</vscode-table-cell>
@@ -51,9 +51,10 @@ window.addEventListener('DOMContentLoaded', () => {
                         </vscode-table-row>
                     </vscode-table-body>
                 </vscode-table>
-                ${parseMarkdown(data.tdoc.content)}`);
+                ${window.parseMarkdown(data.tdoc.content)}`);
                 break;
-            case 'scoreboard':
+            }
+            case 'scoreboard': {
                 var scoreboardHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400">
                     <vscode-table-header slot="header">`;
                 var isFirst = true;
@@ -64,35 +65,38 @@ window.addEventListener('DOMContentLoaded', () => {
                     for (const cell of row) {
                         const elementName = `vscode-table-${isFirst ? 'header-' : ''}cell`;
                         switch (cell.type) {
-                            case 'problem':
+                            case 'problem': {
                                 scoreboardHTML += `<${elementName}>
                                         <span role="button" onclick="vscode.postMessage({command:'openP',data:['${cell.raw}','${data.tdoc._id}']})">
                                             ${cell.value} ${data.pdict[cell.raw].title} ${data.pdict[cell.raw].nAccept}/${data.pdict[cell.raw].nSubmit}
                                         </span>
                                     </${elementName}>`;
                                 break;
-                            case 'record':
+                            }
+                            case 'record': {
                                 if (cell.raw === null) {
                                     scoreboardHTML += `<${elementName}>-</${elementName}>`;
                                 } else {
                                     scoreboardHTML += `<${elementName} style="${cell.style ? 'background-color: rgb(217, 240, 199)' : ''}">
-                                        <span style="cursor: pointer; color: ${scoreColor[Math.floor(cell.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${cell.raw}']})">${cell.value}</span>
+                                        <span style="cursor: pointer; color: ${window.scoreColor[Math.floor(cell.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${cell.raw}']})">${cell.value}</span>
                                     </${elementName}>`;
                                 }
                                 break;
-                            case 'records':
+                            }
+                            case 'records': {
                                 scoreboardHTML += `<${elementName}>`;
                                 for (const record of cell.raw) {
                                     if (record.value === "-") {
                                         scoreboardHTML += `<span>-</span>`;
                                     } else {
-                                        scoreboardHTML += `<span role="button" style="color: ${scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${record.raw}']})">${record.value}</span>`;
+                                        scoreboardHTML += `<span role="button" style="color: ${window.scoreColor[Math.floor(record.value / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${record.raw}']})">${record.value}</span>`;
                                     }
                                     scoreboardHTML += " / ";
                                 }
                                 scoreboardHTML = scoreboardHTML.slice(0, -3);
                                 scoreboardHTML += `</${elementName}>`;
                                 break;
+                            }
                             default:
                                 scoreboardHTML += `<${elementName}>${cell.value ?? 'Unknown'}</${elementName}>`;
                                 break;
@@ -107,9 +111,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 scoreboardHTML += `</vscode-table-body></vscode-table>`;
-                enableTab('Scoreboard', scoreboardHTML);
-                focusTab('Scoreboard');
+                window.enableTab('Scoreboard', scoreboardHTML);
+                window.focusTab('Scoreboard');
                 break;
+            }
             default:
                 break;
         }

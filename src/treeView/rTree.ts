@@ -16,8 +16,8 @@ export default class extends treeView<Record> {
             if (this.pendingRecords.length) {
                 while (this.pendingRecords.length) {
                     const pendingRecord = this.pendingRecords.shift()!;
-                    var replace: boolean = false;
-                    for (var record of this.records) {
+                    let replace: boolean = false;
+                    for (const record of this.records) {
                         if (record.id === pendingRecord.id) {
                             Object.assign(record, pendingRecord);
                             replace = true;
