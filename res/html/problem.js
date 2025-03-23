@@ -240,15 +240,14 @@ window.addEventListener('DOMContentLoaded', () => {
                     </div>`;
                         solutionHTML += `<p>${window.parseMarkdown(psdoc.content)}</p>`;
                         if (psdoc.reply.length > 0) {
-                            const collapsible = document.createElement('vscode-collapsible');
-                            solution.appendChild(collapsible);
-                            collapsible.setAttribute('title', 'Reply');
+                            solutionHTML += `<vscode-collapsible title="Reply">`;
                             for (const reply of psdoc.reply) {
-                                collapsible.innerHTML += `<div style="padding: 10px">
-                            <vscode-badge>${data.udict[reply.owner].uname}</vscode-badge>
-                                ${window.parseMarkdown(reply.content)}
-                            </div>`;
+                                solutionHTML += `<div style="padding: 10px">
+                                <vscode-badge>${data.udict[reply.owner].uname}</vscode-badge>
+                                    ${window.parseMarkdown(reply.content)}
+                                </div>`;
                             }
+                            solutionHTML += '</vscode-collapsible>';
                         }
                         solutionHTML += `<vscode-divider></vscode-divider>`;
                     }

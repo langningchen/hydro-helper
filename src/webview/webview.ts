@@ -119,11 +119,12 @@ export default class webview {
                     }
                     url = url.split('?')[0];
                     url += suffix ?? "";
+                    if (type === 'video') {
+                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button>`;
+                    }
                     const id = Math.random().toString(36).slice(2);
                     fetchData[id] = url;
-                    if (type === 'video') {
-                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button><video src="{{${id}}}" controls></video>`;
-                    } else if (type === 'pdf') {
+                    if (type === 'pdf') {
                         return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','PDF.pdf']})">Download PDF</vscode-button><div data-src="{{${id}}}" class="pdf"></div>`;
                     }
                     return '<a href="' + id + '">' + url + '</a>';
