@@ -44,8 +44,10 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	storage.secretStorage = context.secrets;
 	storage.extensionPath = context.extensionPath;
 
-	await vscode.workspace.fs.delete(vscode.Uri.file((await storage.extensionPath) + '/temp'), { recursive: true });
-	await vscode.workspace.fs.createDirectory(vscode.Uri.file((await storage.extensionPath) + '/temp'));
+	vscode.workspace.fs.delete(vscode.Uri.file((await storage.extensionPath) + '/temp'), { recursive: true })
+		.then(async () => {
+			vscode.workspace.fs.createDirectory(vscode.Uri.file((await storage.extensionPath) + '/temp'))
+		});
 
 	const disposables: vscode.Disposable[] = [];
 	context.subscriptions.push(new vscode.Disposable(() => vscode.Disposable.from(...disposables).dispose()));
@@ -386,7 +388,7 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	disposables.push(vscode.window.registerTreeDataProvider('cTree', new cTree()));
 	disposables.push(vscode.window.registerTreeDataProvider('hTree', new cTree(true)));
 
-	auth.setLoggedIn(await auth.getLoginStatus());
+	auth.getLoginStatus().then((status: boolean) => { auth.setLoggedIn(status); });
 
 	outputChannel.info('Extension activated');
 };
