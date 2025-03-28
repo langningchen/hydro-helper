@@ -6,6 +6,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 
 - **Add settings for loading and saving attributes**
 - Fix solution reply rendering
+- Fix "Open in Broswer" button disappear after refreshing
 - Avoid cache video files
 - Refactor code
 

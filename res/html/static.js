@@ -334,9 +334,10 @@ window.addEventListener('DOMContentLoaded', () => {
     window.setTitle = (html) => {
         title.innerHTML = html;
     };
-    window.registerButton = (icon, name, callback) => {
+    window.registerButton = (icon, name, callback, frozen = false) => {
         const button = document.createElement('vscode-button');
         button.setAttribute('icon', icon);
+        button.setAttribute('frozen', frozen);
         button.innerText = name;
         button.style.marginRight = '10px';
         button.onclick = callback;
@@ -392,11 +393,14 @@ window.addEventListener('DOMContentLoaded', () => {
         window.vscode.postMessage({ command: 'refresh' });
         loading.classList.remove('hidden');
         content.classList.add('hidden');
-        while (buttonGroup.children.length > 1) {
-            buttonGroup.removeChild(buttonGroup.children[1]);
+        const children = buttonGroup.children;
+        for (let i = children.length - 1; i >= 0; i--) {
+            if (children[i].getAttribute('frozen') !== 'true') {
+                buttonGroup.removeChild(children[i]);
+            }
         }
-    });
+    }, true);
     window.registerButton('browser', 'Open in Browser', () => {
         window.vscode.postMessage({ command: 'openInBrowser' });
-    });
+    }, true);
 });
