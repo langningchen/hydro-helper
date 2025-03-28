@@ -4,6 +4,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 
 ## v0.1.4
 
+- **Add settings for loading and saving attributes**
 - Fix solution reply rendering
 - Avoid cache video files
 - Refactor code

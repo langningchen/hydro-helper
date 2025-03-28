@@ -139,6 +139,16 @@
             "Nine"
           ],
           "description": "Determines the display position of the webview."
+        },
+        "hydro.attributes.loadAttributes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Load attributes of problems from the source file"
+        },
+        "hydro.attributes.saveAttributes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Save attributes of problems to the source file"
         }
       }
     },

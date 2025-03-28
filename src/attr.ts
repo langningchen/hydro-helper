@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import settings from './settings';
 
 export default class {
     private file: vscode.Uri;
@@ -10,6 +11,7 @@ export default class {
     };
 
     public load = async (): Promise<void> => {
+        if (!settings.loadAttributes) return;
         this.content = await vscode.workspace.fs.readFile(this.file).then(data => {
             return new TextDecoder().decode(data);
         });
@@ -21,6 +23,7 @@ export default class {
     };
 
     public save = async (): Promise<void> => {
+        if (!settings.saveAttributes) return;
         const regex = /((?<=\n))[ \t]*\/\/( @[a-zA-Z]* [a-zA-Z0-\\.]*)+\n?/g;
         this.content = this.content.replaceAll(regex, '').trimEnd();
         this.content += '\n';

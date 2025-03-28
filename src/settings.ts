@@ -17,4 +17,6 @@ export default class settings {
         await settings.configuration.update('server.domain', value.toString());
     }
     static get webviewColumn(): vscode.ViewColumn { return settings.get('userInterface.webviewColumn') as vscode.ViewColumn; }
+    static get loadAttributes(): vscode.ViewColumn { return settings.get('attributes.loadAttributes') as vscode.ViewColumn; }
+    static get saveAttributes(): vscode.ViewColumn { return settings.get('attributes.saveAttributes') as vscode.ViewColumn; }
 }
