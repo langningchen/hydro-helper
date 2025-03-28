@@ -6,6 +6,13 @@ window.addEventListener('DOMContentLoaded', () => {
         const data = message.data;
         switch (message.command) {
             case 'info': {
+                if (message.error) {
+                    window.enableTab('Info', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
                 window.setTitle(data.tdoc.title);
                 window.enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
                     <vscode-table-header slot="header">
@@ -55,6 +62,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             }
             case 'scoreboard': {
+                if (message.error) {
+                    window.enableTab('Scoreboard', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
                 var scoreboardHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400">
                     <vscode-table-header slot="header">`;
                 var isFirst = true;

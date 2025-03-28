@@ -30,7 +30,7 @@ export default class pWeb extends webview {
                         postMessage(message);
                     }
                 }).catch((error) => {
-                    throw error;
+                    postMessage({ command: 'problem', error: (error as Error).message });
                 }));
 
                 if (!tid) {
@@ -49,7 +49,7 @@ export default class pWeb extends webview {
                             postMessage(message);
                         }
                     }).catch((error) => {
-                        throw error;
+                        postMessage({ command: 'solution', error: (error as Error).message });
                     }));
                 } else {
                     postMessage({ command: 'solution', data: null });

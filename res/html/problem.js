@@ -9,6 +9,13 @@ window.addEventListener('DOMContentLoaded', () => {
         const data = message.data;
         switch (message.command) {
             case 'problem': {
+                if (message.error) {
+                    window.enableTab('Problem', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
                 var title = '';
                 if (data.rdoc) {
                     title += `<span class="icon record-status--icon ${window.statusIcon[data.rdoc.status]}"></span>
@@ -197,6 +204,13 @@ window.addEventListener('DOMContentLoaded', () => {
                 break;
             }
             case 'solution': {
+                if (message.error) {
+                    window.enableTab('Solution', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
                 if (data === null) {
                     window.enableTab('Solution');
                     break;

@@ -23,7 +23,7 @@ export default class cWeb extends webview {
                         postMessage(message);
                     }
                 }).catch((error) => {
-                    throw error;
+                    postMessage({ command: 'info', error: (error as Error).message });
                 }));
                 awaitList.push(new fetch({ path: `/d/${settings.domain}/${type}/${tid}/scoreboard` }).start().then(async (response) => {
                     if (response?.json !== undefined) {
@@ -34,7 +34,7 @@ export default class cWeb extends webview {
                         postMessage(message);
                     }
                 }).catch((error) => {
-                    throw error;
+                    postMessage({ command: 'scoreboard', error: (error as Error).message });
                 }));
                 await Promise.all(awaitList);
             },

@@ -23,6 +23,7 @@ export interface WebviewData {
 
 interface WebviewMessage {
     command: string;
+    error?: string;
     data: string[];
 }
 

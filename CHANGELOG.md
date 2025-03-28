@@ -5,6 +5,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 ## v0.1.4
 
 - **Add settings for loading and saving attributes**
+- Fix tab error causing page unavailable
 - Fix solution reply rendering
 - Fix "Open in Broswer" button disappear after refreshing
 - Avoid cache video files

@@ -18,24 +18,34 @@
             margin-right: 10px;
         }
 
-        .cover {
+        html,
+        body {
+            height: 100%;
+        }
+
+        .center {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 100%;
         }
 
-        #error {
+        .error {
+            width: 100%;
             font-size: 18px;
         }
 
-        #error>vscode-icon {
+        .error>vscode-icon {
             color: #fb5555;
             margin-right: 10px;
         }
 
-        .cover.hidden {
+        .hidden {
             display: none;
+        }
+
+        #title {
+            margin-top: 0;
         }
 
         .solutionContainer,
@@ -202,8 +212,8 @@
 </head>
 
 <body>
-    <div class="cover" id="loading"><vscode-progress-ring></vscode-progress-ring></div>
-    <div class="cover hidden" id="error">
+    <div class="center" id="loading"><vscode-progress-ring></vscode-progress-ring></div>
+    <div class="center error hidden" id="error">
         <vscode-icon name="error" size="18"></vscode-icon>
         <div id="errorMessage"></div>
     </div>
