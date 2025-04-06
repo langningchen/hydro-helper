@@ -8,6 +8,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 - Fix solution vote number
 - Enhance error handling in fetch to manage rate limits
 - Fix tab error causing page unavailable
+- Fix homework treeview judging result
 - Fix solution reply rendering
 - Fix "Open in Broswer" button disappear after refreshing
 - Avoid cache video files

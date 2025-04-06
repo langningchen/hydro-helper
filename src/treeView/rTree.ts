@@ -46,18 +46,18 @@ export default class extends treeView<Record> {
 }
 
 export class Record extends vscode.TreeItem {
-    constructor(rdoc: utils.RecordDoc, pdoc: utils.ProblemDoc | string, udoc: utils.UserDoc | string) {
+    constructor(rdoc: utils.RecordDoc, pdoc: utils.ProblemDoc | string, udoc?: utils.UserDoc | string) {
         const pTitle = typeof pdoc === 'string' ? pdoc : pdoc.title;
-        const uName = typeof udoc === 'string' ? udoc : udoc.uname;
+        const uName = typeof udoc === 'string' ? udoc : udoc?.uname;
 
         super((rdoc.score !== undefined ? `${rdoc.score} ` : ``) + utils.statusName[rdoc.status], vscode.TreeItemCollapsibleState.None);
         this.id = rdoc._id;
         this.contextValue = 'record';
-        this.description = `P${rdoc.pid} ${pTitle}  ${uName}`;
+        this.description = `P${rdoc.pid} ${pTitle}` + (uName ? `  ${uName}` : "");
         this.iconPath = path.join(__dirname, '..', 'res', 'icons', utils.statusIcon[rdoc.status] + '.svg');
         const TooltipDoc = new vscode.MarkdownString();
         TooltipDoc.appendMarkdown(`- **Status**: ${utils.statusName[rdoc.status]}\n`);
-        TooltipDoc.appendMarkdown(`- **User**: ${uName}\n`);
+        if (uName) { TooltipDoc.appendMarkdown(`- **User**: ${uName}\n`); }
         if (rdoc.score !== undefined) { TooltipDoc.appendMarkdown(`- **Score**: ${rdoc.score}\n`); }
         if (rdoc.time !== undefined) { TooltipDoc.appendMarkdown(`- **Time**: ${utils.toTime(rdoc.time)}\n`); }
         if (rdoc.memory !== undefined) { TooltipDoc.appendMarkdown(`- **Memory**: ${utils.toMemory(rdoc.memory)}\n`); }
