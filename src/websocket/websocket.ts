@@ -29,7 +29,7 @@ export default class {
                 return;
             }
             if (stringData === 'pong') { return; }
-            outputChannel.debug(stringData);
+            outputChannel.debug('Socket response', stringData);
             const responseJSON = JSON.parse(stringData);
             if (responseJSON.error !== undefined) { ws.close(); }
             this.callback(responseJSON);

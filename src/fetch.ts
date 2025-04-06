@@ -1,4 +1,4 @@
-import { outputChannel } from './io';
+import { io, outputChannel } from './io';
 import settings from './settings';
 import auth from './auth';
 
@@ -61,6 +61,13 @@ export default class {
         outputChannel.trace('[fetch   ]', '"checkError"');
         if (this.returnValue.json?.error) {
             const errorData = <HydroError>this.returnValue.json.error;
+            if (errorData.message === 'Too frequent operations of {0} (limit: {2} operations in {1} seconds).') {
+                const retryAfter = parseInt(errorData.params[1]);
+                io.warn(`Too frequent operations, retrying after ${retryAfter}s`);
+                await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+                await this.start();
+                return;
+            }
             const message = errorData.message.replace(/{(\d+)}/g, (_, number) => errorData.params[number]);
             if (this.options.returnError) {
                 this.returnValue.error = new Error(message);
