@@ -221,12 +221,11 @@ window.addEventListener('DOMContentLoaded', () => {
                         const count = document.getElementById(psid + 'Count');
                         const upvote = document.getElementById(psid + 'Upvote');
                         const downvote = document.getElementById(psid + 'Downvote');
+                        count.innerText = parseInt(count.innerText) + vote - (voteData[psid] ?? 0);
                         if (vote === 1) {
-                            count.innerText = parseInt(count.innerText) + 2;
                             upvote.name = 'thumbsup-filled';
                             downvote.name = 'thumbsdown';
                         } else {
-                            count.innerText = parseInt(count.innerText) - 2;
                             upvote.name = 'thumbsup';
                             downvote.name = 'thumbsdown-filled';
                         }
