@@ -14,6 +14,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 - Fix solution reply rendering
 - Fix "Open in Broswer" button disappear after refreshing
 - Avoid cache video files
+- Fix score 0 doesn't display
 - Refactor code
 
 Want to see the previous log? [Click here](https://github.com/langningchen/hydro-helper/commits/main/CHANGELOG.md)

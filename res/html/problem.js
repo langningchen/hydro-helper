@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 var title = '';
                 if (data.rdoc) {
                     title += `<span class="icon record-status--icon ${window.statusIcon[data.rdoc.status]}"></span>
-                    <span role="button" class="record-status--text" style="color: ${window.scoreColor[Math.floor(data.rdoc.score / 100 * 10)]}" onclick="window.vscode.postMessage({command:'openT',data:['${data.rdoc._id}']})">${data.rdoc.score ? `${data.rdoc.score}` : ``}</span> `;
+                    <span role="button" class="record-status--text" style="color: ${window.scoreColor[Math.floor(data.rdoc.score / 100 * 10)]}" onclick="window.vscode.postMessage({command:'openT',data:['${data.rdoc._id}']})">${data.rdoc.score !== undefined ? `${data.rdoc.score}` : ``}</span> `;
                 }
                 if (!data.tdoc) {
                     var starStatus = !!data.psdoc?.star;
