@@ -2,27 +2,21 @@ import * as vscode from 'vscode';
 import { outputChannel } from './io';
 
 export default class settings {
-    static get configuration(): vscode.WorkspaceConfiguration {
-        return vscode.workspace.getConfiguration('hydro');
+    private static get(key: string): unknown {
+        const value = settings.configuration.get(key);
+        outputChannel.trace('[settings]', `"${key}"`, 'get', `"${value}"`);
+        return value;
     }
-    static get server(): string {
-        outputChannel.trace('[settings]', '"get server.server"');
-        return settings.configuration.get('server.server') as string;
-    }
-    static get safeProtocol(): boolean {
-        outputChannel.trace('[settings]', '"get server.safeProtocol"');
-        return settings.configuration.get('server.safeProtocol') as boolean;
-    }
-    static get domain(): string {
-        outputChannel.trace('[settings]', '"get server.domain"');
-        return settings.configuration.get('server.domain') as string;
-    }
+
+    static get configuration(): vscode.WorkspaceConfiguration { return vscode.workspace.getConfiguration('hydro'); }
+    static get server(): string { return settings.get('server.server') as string; }
+    static get safeProtocol(): boolean { return settings.get('server.safeProtocol') as boolean; }
+    static get domain(): string { return settings.get('server.domain') as string; }
     static async setDomain(value: string) {
-        outputChannel.trace('[settings]', '"set server.domain"', arguments);
+        outputChannel.trace('[settings]', '"set server.domain"', value);
         await settings.configuration.update('server.domain', value.toString());
     }
-    static get webviewColumn(): vscode.ViewColumn {
-        outputChannel.trace('[settings]', '"get webviewColumn"');
-        return settings.configuration.get('userInterface.webviewColumn') as vscode.ViewColumn;
-    }
+    static get webviewColumn(): vscode.ViewColumn { return settings.get('userInterface.webviewColumn') as vscode.ViewColumn; }
+    static get loadAttributes(): vscode.ViewColumn { return settings.get('attributes.loadAttributes') as vscode.ViewColumn; }
+    static get saveAttributes(): vscode.ViewColumn { return settings.get('attributes.saveAttributes') as vscode.ViewColumn; }
 }

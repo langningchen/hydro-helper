@@ -8,7 +8,7 @@ interface getChildrenParams {
 };
 
 export default class <T extends vscode.TreeItem> implements vscode.TreeDataProvider<T> {
-    protected _onDidChangeTreeData: vscode.EventEmitter<T | undefined> = new vscode.EventEmitter<any | undefined>();
+    protected _onDidChangeTreeData: vscode.EventEmitter<T | undefined> = new vscode.EventEmitter<T | undefined>();
     readonly onDidChangeTreeData: vscode.Event<T | undefined> = this._onDidChangeTreeData.event;
     private page: number = 1;
     private pageCounter: number = -1;
@@ -42,12 +42,12 @@ export default class <T extends vscode.TreeItem> implements vscode.TreeDataProvi
     }
 
     getTreeItem(element: T): vscode.TreeItem {
-        outputChannel.trace(`[${this.shortType}Tree   ]`, `"getTreeItem"`, arguments);
+        outputChannel.trace(`[${this.shortType}Tree   ]`, `"getTreeItem"`, element);
         return element;
     }
 
     async getChildren(element?: vscode.TreeItem): Promise<T[]> {
-        outputChannel.trace(`[${this.shortType}Tree   ]`, `"getChildren"`, arguments);
+        outputChannel.trace(`[${this.shortType}Tree   ]`, `"getChildren"`, element);
         try {
             return this._getChildren({
                 page: this.page,

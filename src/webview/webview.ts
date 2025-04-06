@@ -1,20 +1,21 @@
 import * as vscode from 'vscode';
-import path from 'path';
-import { outputChannel } from '../io';
+import * as path from 'path';
 import { marked } from 'marked';
+import { outputChannel } from '../io';
 import auth from '../auth';
 import settings from '../settings';
 import storage from '../storage';
+import { readFileSync } from 'fs';
 
 interface fetchDataParams {
-    postMessage: (message: any) => void
+    postMessage: (message) => void
     parseMarkdown: (markdown: string, prefix?: string, suffix?: string) => Promise<{ fetchData: { [key: string]: string }, content: string }>
     dispose: () => void
 };
 
 export interface WebviewData {
     name: string;
-    data: { [key: string]: any };
+    data: { [key: string]: string | number };
     url: string;
     title: string;
     fetchData: (params: fetchDataParams) => Promise<void>;
@@ -22,6 +23,7 @@ export interface WebviewData {
 
 interface WebviewMessage {
     command: string;
+    error?: string;
     data: string[];
 }
 
@@ -78,6 +80,7 @@ export default class webview {
         try {
             this.fetchData();
         } catch (e) {
+            outputChannel.error('Error fetching data:', (e as Error).message);
             this.cleanup();
         }
 
@@ -91,7 +94,7 @@ export default class webview {
 
     private getHTML = async (): Promise<void> => {
         outputChannel.trace(`[${this.shortName}    ]`, '"getHTML"');
-        var htmlContent = require('fs').readFileSync(path.join((await storage.extensionPath)!, 'res', 'html', 'base.html'), 'utf8');
+        let htmlContent = readFileSync(path.join((await storage.extensionPath)!, 'res', 'html', 'base.html'), 'utf8');
         htmlContent = htmlContent.replace("{{hydroIcons}}", (await this.getRealPath(['res', 'fonts', 'hydro-icons.woff2'])).toString());
         htmlContent = htmlContent.replace("{{vscodeElements}}", (await this.getRealPath(['res', 'libs', 'vscode-elements', 'bundled.js'])).toString());
         htmlContent = htmlContent.replace("{{codicon}}", (await this.getRealPath(['res', 'libs', 'codicon', 'codicon.css'])).toString());
@@ -102,7 +105,7 @@ export default class webview {
 
     private fetchData = () => {
         outputChannel.trace(`[${this.shortName}    ]`, '"fetchData"');
-        const safePostMessage = (message: any) => {
+        const safePostMessage = (message) => {
             if (!this.disposed) {
                 this.panel!.webview.postMessage(message);
             }
@@ -111,17 +114,18 @@ export default class webview {
             postMessage: safePostMessage,
             parseMarkdown: async (markdown, prefix?, suffix?) => {
                 const fetchData: { [key: string]: string } = {};
-                const parsedMarkdown = markdown.replace(/\@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
+                const parsedMarkdown = markdown.replace(/@\[(video|pdf)\]\((.+?)\)/g, (_match, type, url) => {
                     if (url.startsWith('file://')) {
                         url = prefix + '/' + url.substring(7);
                     }
                     url = url.split('?')[0];
                     url += suffix ?? "";
+                    if (type === 'video') {
+                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button>`;
+                    }
                     const id = Math.random().toString(36).slice(2);
                     fetchData[id] = url;
-                    if (type === 'video') {
-                        return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','Video.mp4']})">Download Video</vscode-button><video src="{{${id}}}" controls></video>`;
-                    } else if (type === 'pdf') {
+                    if (type === 'pdf') {
                         return `<vscode-button onclick="vscode.postMessage({command:'downloadFile',data:['${url}','PDF.pdf']})">Download PDF</vscode-button><div data-src="{{${id}}}" class="pdf"></div>`;
                     }
                     return '<a href="' + id + '">' + url + '</a>';

@@ -16,25 +16,17 @@ export default class cWeb extends webview {
                     if (response?.json !== undefined) {
                         const data = response.json;
                         data.tdoc.content = await parseMarkdown(data.tdoc.content);
-                        const message = {
-                            command: 'info',
-                            data,
-                        };
-                        postMessage(message);
+                        postMessage({ command: 'info', data, });
                     }
                 }).catch((error) => {
-                    throw error;
+                    postMessage({ command: 'info', error: (error as Error).message });
                 }));
                 awaitList.push(new fetch({ path: `/d/${settings.domain}/${type}/${tid}/scoreboard` }).start().then(async (response) => {
                     if (response?.json !== undefined) {
-                        const message = {
-                            command: 'scoreboard',
-                            data: response.json,
-                        };
-                        postMessage(message);
+                        postMessage({ command: 'scoreboard', data: response.json, });
                     }
                 }).catch((error) => {
-                    throw error;
+                    postMessage({ command: 'scoreboard', error: (error as Error).message });
                 }));
                 await Promise.all(awaitList);
             },

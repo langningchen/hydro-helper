@@ -80,8 +80,8 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         return this.currentName;
     }
 
-    async getSessions(_scopes?: readonly string[], _options?: vscode.AuthenticationProviderSessionOptions): Promise<vscode.AuthenticationSession[]> {
-        outputChannel.trace('[auth    ]', '"getSessions"', arguments);
+    async getSessions(): Promise<vscode.AuthenticationSession[]> {
+        outputChannel.trace('[auth    ]', '"getSessions"');
         this.ensureInitialized();
         const token = await this.cacheTokenFromStorage();
         const name = await this.cacheNameFromStorage();
@@ -93,64 +93,65 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
         return [new hydroSession(token, name)];
     }
 
-    async createSession(_scopes: string[]): Promise<vscode.AuthenticationSession> {
-        outputChannel.trace('[auth    ]', '"createSession"', arguments);
+    async createSession(): Promise<vscode.AuthenticationSession> {
+        outputChannel.trace('[auth    ]', '"createSession"');
         this.ensureInitialized();
-        return new Promise(async (resolve, reject) => {
-            try {
-                var uname: string | undefined = await storage.username;
-                var password: string | undefined = await storage.password;
-                if (!uname || !password) {
-                    uname = await io.input('Please input your username');
-                    password = await io.input('Please input your password', {
-                        password: true,
+        return new Promise((resolve, reject) => {
+            (async () => {
+                try {
+                    let uname: string | undefined = await storage.username;
+                    let password: string | undefined = await storage.password;
+                    if (!uname || !password) {
+                        uname = await io.input('Please input your username');
+                        password = await io.input('Please input your password', {
+                            password: true,
+                        });
+                    }
+                    if (!uname || !password) {
+                        throw new Error('Username or password not provided');
+                    }
+                    const rememberme = (await vscode.window.showQuickPick(['Yes', 'No'], {
+                        placeHolder: 'Do you want to remember this session?',
+                    })) === 'Yes';
+
+                    const sid = await vscode.window.withProgress({
+                        location: vscode.ProgressLocation.Notification,
+                        title: 'Logging in...',
+                        cancellable: true,
+                    }, async (_progress, token) => {
+                        const abortController = new AbortController();
+                        token.onCancellationRequested(() => { abortController.abort(); });
+                        const response = await new fetch({
+                            path: '/login', body: { uname, password, rememberme, }, addCookie: false, abortController, returnError: true, ignoreLogin: true
+                        }).start();
+                        if (response.json.error) {
+                            storage.username = undefined;
+                            storage.password = undefined;
+                            auth.setLoggedIn(false);
+                            throw new Error(formatString(response.json.error));
+                        }
+                        if (!response.cookies) {
+                            throw new Error('Failed to create session');
+                        }
+                        return response.cookies[0].split(';')[0].split('=')[1];
                     });
-                }
-                if (!uname || !password) {
-                    throw new Error('Username or password not provided');
-                }
-                const rememberme = (await vscode.window.showQuickPick(['Yes', 'No'], {
-                    placeHolder: 'Do you want to remember this session?',
-                })) === 'Yes';
 
-                const sid = await vscode.window.withProgress({
-                    location: vscode.ProgressLocation.Notification,
-                    title: 'Logging in...',
-                    cancellable: true,
-                }, async (_progress, token) => {
-                    const abortController = new AbortController();
-                    token.onCancellationRequested(() => { abortController.abort(); });
-                    const response = await new fetch({
-                        path: '/login', body: { uname, password, rememberme, }, addCookie: false, abortController, returnError: true, ignoreLogin: true
-                    }).start();
-                    if (response.json.error) {
-                        storage.username = undefined;
-                        storage.password = undefined;
-                        auth.setLoggedIn(false);
-                        throw new Error(formatString(response.json.error));
-                    }
-                    if (!response.cookies) {
-                        throw new Error('Failed to create session');
-                    }
-                    return response.cookies[0].split(';')[0].split('=')[1];
-                });
-
-                storage.username = uname;
-                storage.password = password;
-                storage.token = sid;
-                storage.name = uname;
-                this._onDidChangeSessions.fire({ added: [new hydroSession(sid, uname)], removed: [], changed: [] });
-                resolve(new hydroSession(sid, uname));
-            }
-            catch (e) {
-                io.error((e as Error).message + " Check for the server configuration [here](command:hydro-helper.openSettings)?");
-                reject(e);
-            }
+                    storage.username = uname;
+                    storage.password = password;
+                    storage.token = sid;
+                    storage.name = uname;
+                    this._onDidChangeSessions.fire({ added: [new hydroSession(sid, uname)], removed: [], changed: [] });
+                    resolve(new hydroSession(sid, uname));
+                }
+                catch (e) {
+                    reject(e);
+                }
+            })();
         });
     }
 
-    async removeSession(_sessionId: string): Promise<void> {
-        outputChannel.trace('[auth    ]', '"removeSession"', arguments);
+    async removeSession(): Promise<void> {
+        outputChannel.trace('[auth    ]', '"removeSession"');
         const token = await this.currentToken;
         const name = await this.currentName;
         if (!token || !name) { return; }
@@ -159,7 +160,7 @@ export default class auth implements vscode.AuthenticationProvider, vscode.Dispo
     }
 
     static async getLoginStatus(): Promise<boolean> {
-        var isLoggedIn = false;
+        let isLoggedIn = false;
         const session = await vscode.authentication.getSession(this.id, []);
         if (session !== undefined) {
             const response = await vscode.window.withProgress({

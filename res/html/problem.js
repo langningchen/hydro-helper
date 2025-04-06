@@ -1,18 +1,26 @@
 window.addEventListener('DOMContentLoaded', () => {
-    registerTab('Info');
-    registerTab('Problem');
-    registerTab('Solution');
-    registerTab('Related');
-    registerTab('Files');
+    window.registerTab('Info');
+    window.registerTab('Problem');
+    window.registerTab('Solution');
+    window.registerTab('Related');
+    window.registerTab('Files');
+    window.registerTab('Record');
 
     window.setMessageHandler((message) => {
         const data = message.data;
         switch (message.command) {
-            case 'problem':
+            case 'problem': {
+                if (message.error) {
+                    window.enableTab('Problem', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
                 var title = '';
                 if (data.rdoc) {
-                    title += `<span class="icon record-status--icon ${statusIcon[data.rdoc.status]}"></span>
-                    <span role="button" class="record-status--text" style="color: ${scoreColor[Math.floor(data.rdoc.score / 100 * 10)]}" onclick="vscode.postMessage({command:'openT',data:['${data.rdoc._id}']})">${data.rdoc.score ? `${data.rdoc.score}` : ``}</span> `;
+                    title += `<span class="icon record-status--icon ${window.statusIcon[data.rdoc.status]}"></span>
+                    <span role="button" class="record-status--text" style="color: ${window.scoreColor[Math.floor(data.rdoc.score / 100 * 10)]}" onclick="window.vscode.postMessage({command:'openT',data:['${data.rdoc._id}']})">${data.rdoc.score !== undefined ? `${data.rdoc.score}` : ``}</span> `;
                 }
                 if (!data.tdoc) {
                     var starStatus = !!data.psdoc?.star;
@@ -23,21 +31,21 @@ window.addEventListener('DOMContentLoaded', () => {
                     starButton.setAttribute('onclick', 'star()');
                     starButton.setAttribute('size', '20');
                     window.star = () => {
-                        vscode.postMessage({ command: 'starP', data: [data.pdoc.docId] });
+                        window.vscode.postMessage({ command: 'starP', data: [data.pdoc.docId] });
                         starStatus = !starStatus;
                         document.getElementById('starButton').setAttribute('name', starStatus ? 'star-full' : 'star-empty');
                     };
                     title += starButton.outerHTML + " ";
                 }
                 title += `#${data.pdoc.docId}. ${data.pdoc.title} `;
-                setTitle(title);
+                window.setTitle(title);
 
                 const markdownContent = data.pdoc.content.zh || data.pdoc.content;
 
-                registerButton('check', 'Submit', () => {
-                    vscode.postMessage({ command: 'submitP', data: [data.pdoc.docId, data.tdoc?._id] });
+                window.registerButton('check', 'Submit', () => {
+                    window.vscode.postMessage({ command: 'submitP', data: [data.pdoc.docId, data.tdoc?._id] });
                 });
-                registerButton('clippy', 'Send to CPH', () => {
+                window.registerButton('clippy', 'Send to CPH', () => {
                     const testCases = markdownContent.rawContent.matchAll(/.*输入.*\s*```(plain)?\n((.|\n)*?)```\s*.*输出.*\s*```(plain)?\n((.|\n)*?)```/g);
                     const problem = {
                         name: `${data.pdoc.docId}. ${data.pdoc.title}`,
@@ -55,20 +63,20 @@ window.addEventListener('DOMContentLoaded', () => {
                         const output = testCase[5];
                         problem.tests.push({ input, output, id: problem.tests.length });
                     }
-                    vscode.postMessage({ command: 'sendToCPH', data: [JSON.stringify(problem)] });
+                    window.vscode.postMessage({ command: 'sendToCPH', data: [JSON.stringify(problem)] });
                 });
                 if (data.tdoc?._id !== undefined) {
-                    registerButton('list-flat', 'Open in Problem Set', () => {
-                        vscode.postMessage({ command: 'openP', data: [data.pdoc.docId] });
-                        vscode.postMessage({ command: 'dispose' });
+                    window.registerButton('list-flat', 'Open in Problem Set', () => {
+                        window.vscode.postMessage({ command: 'openP', data: [data.pdoc.docId] });
+                        window.vscode.postMessage({ command: 'dispose' });
                     });
                     const type = data.tdoc.rule === 'homework' ? 'Homework' : 'Contest';
-                    registerButton('checklist', `Open ${type}`, () => {
-                        vscode.postMessage({ command: `open${type.charAt(0)}`, data: [data.tdoc._id] });
+                    window.registerButton('checklist', `Open ${type}`, () => {
+                        window.vscode.postMessage({ command: `open${type.charAt(0)}`, data: [data.tdoc._id] });
                     });
                 }
 
-                enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
+                window.enableTab('Info', `<vscode-table zebra bordered-columns responsive resizable breakpoint="400" columns='["50%", "50%"]'>
                     <vscode-table-header slot="header">
                         <vscode-table-header-cell>Name</vscode-table-header-cell>
                         <vscode-table-header-cell>Value</vscode-table-header-cell>
@@ -80,11 +88,11 @@ window.addEventListener('DOMContentLoaded', () => {
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Time</vscode-table-cell>
-                            <vscode-table-cell>${toTime(data.pdoc.config.timeMin)} ~ ${toTime(data.pdoc.config.timeMax)}</vscode-table-cell>
+                            <vscode-table-cell>${window.toTime(data.pdoc.config.timeMin)} ~ ${window.toTime(data.pdoc.config.timeMax)}</vscode-table-cell>
                         </vscode-table-row>
                         <vscode-table-row>
                             <vscode-table-cell>Memory</vscode-table-cell>
-                            <vscode-table-cell>${toMemory(data.pdoc.config.memoryMin * 1024 * 1024)} ~ ${toMemory(data.pdoc.config.memoryMax * 1024 * 1024)}</vscode-table-cell>
+                            <vscode-table-cell>${window.toMemory(data.pdoc.config.memoryMin * 1024 * 1024)} ~ ${window.toMemory(data.pdoc.config.memoryMax * 1024 * 1024)}</vscode-table-cell>
                         </vscode-table-row>
                         ${data.pdoc.nSubmit ? `<vscode-table-row>
                             <vscode-table-cell>Submit</vscode-table-cell>
@@ -145,10 +153,10 @@ window.addEventListener('DOMContentLoaded', () => {
                     <vscode-divider></vscode-divider>`;
                 }
                 problemHTML += `<vscode-button icon="copy" class="mr" onclick="copyMarkdown()">Copy</vscode-button>`;
-                problemHTML += parseMarkdown(markdownContent);
+                problemHTML += window.parseMarkdown(markdownContent);
                 problemHTML += '</p>';
-                enableTab('Problem', problemHTML);
-                focusTab('Problem');
+                window.enableTab('Problem', problemHTML);
+                window.focusTab('Problem');
 
                 const contestList = (data.ctdocs || []).concat(data.htdocs || []);
                 var relatedHTML = '';
@@ -158,14 +166,14 @@ window.addEventListener('DOMContentLoaded', () => {
                     for (const contest of contestList) {
                         const type = contest.rule === 'homework' ? 'Homework' : 'Contest';
                         relatedHTML += `<vscode-label>${contest.title}</vscode-label>`;
-                        relatedHTML += `<vscode-button class="mr" onclick="vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contest._id}']})">Open ${type}</vscode-button>`;
-                        relatedHTML += `<vscode-button class="mr" onclick="vscode.postMessage({command: 'openP', data: ['${contest.pids}', '${contest._id}']}); vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
+                        relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contest._id}']})">Open ${type}</vscode-button>`;
+                        relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'openP', data: ['${contest.pids}', '${contest._id}']}); window.vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
                         relatedHTML += `<vscode-divider></vscode-divider>`;
                     }
                     relatedHTML += `</p>`;
                 }
-                enableTab('Related', relatedHTML);
-                setTabCount('Related', contestList.length);
+                window.enableTab('Related', relatedHTML);
+                window.setTabCount('Related', contestList.length);
 
                 const files = (data.pdoc.additional_file || []).map((file) => {
                     return { ...file, type: 'additional_file', };
@@ -182,22 +190,30 @@ window.addEventListener('DOMContentLoaded', () => {
                 for (const file of files) {
                     filesHTML += `<vscode-table-row>
                         <vscode-table-cell>${file.name}</vscode-table-cell>
-                        <vscode-table-cell>${toRelativeTime(new Date(file.lastModified).getTime())}</vscode-table-cell>
-                        <vscode-table-cell>${toMemory(file.size)}</vscode-table-cell>
+                        <vscode-table-cell>${window.toRelativeTime(new Date(file.lastModified).getTime())}</vscode-table-cell>
+                        <vscode-table-cell>${window.toMemory(file.size)}</vscode-table-cell>
                         <vscode-table-cell>${atob(file.etag)}</vscode-table-cell>
                         <vscode-table-cell>`;
-                    if (file.type === 'additional_file') { filesHTML += `<a role="button" onclick="vscode.postMessage({command:'downloadFile',data:['/d/problemset/p/${data.pdoc.docId}/file/${file.name}?type=additional_file${data.tdoc?._id ? "&tid=" + data.tdoc?._id : ""}','${file.name}',${file.size}]})">Download file</a>`; }
+                    if (file.type === 'additional_file') { filesHTML += `<a role="button" onclick="window.vscode.postMessage({command:'downloadFile',data:['/d/problemset/p/${data.pdoc.docId}/file/${file.name}?type=additional_file${data.tdoc?._id ? "&tid=" + data.tdoc?._id : ""}','${file.name}',${file.size}]})">Download file</a>`; }
                     filesHTML += `</vscode-table-cell>
                         </vscode-table-row>`;
                 }
                 filesHTML += `</vscode-table-body>
                 </vscode-table>`;
-                enableTab('Files', filesHTML);
-                setTabCount('Files', files.filter(file => file.type === 'additional_file').length);
+                window.enableTab('Files', filesHTML);
+                window.setTabCount('Files', files.filter(file => file.type === 'additional_file').length);
                 break;
-            case 'solution':
+            }
+            case 'solution': {
+                if (message.error) {
+                    window.enableTab('Solution', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
                 if (data === null) {
-                    enableTab('Solution');
+                    window.enableTab('Solution');
                     break;
                 }
                 const voteData = {};
@@ -206,17 +222,16 @@ window.addEventListener('DOMContentLoaded', () => {
                         const count = document.getElementById(psid + 'Count');
                         const upvote = document.getElementById(psid + 'Upvote');
                         const downvote = document.getElementById(psid + 'Downvote');
+                        count.innerText = parseInt(count.innerText) + vote - (voteData[psid] ?? 0);
                         if (vote === 1) {
-                            count.innerText = parseInt(count.innerText) + 2;
                             upvote.name = 'thumbsup-filled';
                             downvote.name = 'thumbsdown';
                         } else {
-                            count.innerText = parseInt(count.innerText) - 2;
                             upvote.name = 'thumbsup';
                             downvote.name = 'thumbsdown-filled';
                         }
                         voteData[psid] = vote;
-                        vscode.postMessage({ command: 'voteSolution', data: [data.pdoc.docId, psid, vote] });
+                        window.vscode.postMessage({ command: 'voteSolution', data: [data.pdoc.docId, psid, vote] });
                     }
                 };
 
@@ -237,25 +252,63 @@ window.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div>${data.udict[psdoc.owner].uname}</div>
                     </div>`;
-                        solutionHTML += `<p>${parseMarkdown(psdoc.content)}</p>`;
+                        solutionHTML += `<p>${window.parseMarkdown(psdoc.content)}</p>`;
                         if (psdoc.reply.length > 0) {
-                            const collapsible = document.createElement('vscode-collapsible');
-                            solution.appendChild(collapsible);
-                            collapsible.setAttribute('title', 'Reply');
+                            solutionHTML += `<vscode-collapsible title="Reply">`;
                             for (const reply of psdoc.reply) {
-                                collapsible.innerHTML += `<div style="padding: 10px">
-                            <vscode-badge>${data.udict[reply.owner].uname}</vscode-badge>
-                                ${parseMarkdown(reply.content)}
-                            </div>`;
+                                solutionHTML += `<div style="padding: 10px">
+                                <vscode-badge>${data.udict[reply.owner].uname}</vscode-badge>
+                                    ${window.parseMarkdown(reply.content)}
+                                </div>`;
                             }
+                            solutionHTML += '</vscode-collapsible>';
                         }
                         solutionHTML += `<vscode-divider></vscode-divider>`;
                     }
                     solutionHTML += '</p>';
                 }
-                enableTab('Solution', solutionHTML);
-                setTabCount('Solution', data.psdocs.length);
+                window.enableTab('Solution', solutionHTML);
+                window.setTabCount('Solution', data.psdocs.length);
                 break;
+            }
+            case 'record': {
+                if (message.error) {
+                    window.enableTab('Record', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
+                var recordHTML = `
+                <vscode-table zebra bordered-columns responsive resizable breakpoint="400">
+                    <vscode-table-header slot="header">
+                        <vscode-table-header-cell>Status</vscode-table-header-cell>
+                        <vscode-table-header-cell>Submit By</vscode-table-header-cell>
+                        <vscode-table-header-cell>Time</vscode-table-header-cell>
+                        <vscode-table-header-cell>Memory</vscode-table-header-cell>
+                        <vscode-table-header-cell>Language</vscode-table-header-cell>
+                        <vscode-table-header-cell>Submit At</vscode-table-header-cell>
+                    </vscode-table-header>
+                    <vscode-table-body slot="body">`;
+                for (const rdoc of data.rdocs) {
+                    recordHTML += `<vscode-table-row>
+                        <vscode-table-cell style="cursor: pointer" onclick="vscode.postMessage({command:'openT',data:['${rdoc._id}']})">
+                            <span class="icon record-status--icon ${window.statusIcon[rdoc.status]}"></span>
+                            <span style="color: ${window.scoreColor[Math.floor(rdoc.score / 100 * 10)]}">${rdoc.score}</span>
+                            <span class="record-status--text ${window.statusIcon[rdoc.status]}">${window.statusName[rdoc.status]}</span>
+                        </vscode-table-cell>
+                        <vscode-table-cell>${data.udict[rdoc.uid].uname}</vscode-table-cell>
+                        <vscode-table-cell>${window.toTime(rdoc.time)}</vscode-table-cell>
+                        <vscode-table-cell>${window.toMemory(rdoc.memory * 1024)}</vscode-table-cell>
+                        <vscode-table-cell>${window.languageDisplayName[rdoc.lang]}</vscode-table-cell>
+                        <vscode-table-cell>${window.toRelativeTime(new Date(rdoc.judgeAt).getTime())}</vscode-table-cell>
+                    </vscode-table-row>`;
+                }
+                recordHTML += `</vscode-table-body></vscode-table>`;
+                window.enableTab('Record', recordHTML);
+                window.setTabCount('Record', data.rdocs.length);
+                break;
+            }
             default:
                 break;
         }

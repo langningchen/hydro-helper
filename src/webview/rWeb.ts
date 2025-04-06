@@ -14,27 +14,15 @@ export default class rWeb extends webview {
             fetchData: async ({ postMessage }) => {
                 new rdWs(rid, (responseJSON) => {
                     if (responseJSON.error) {
-                        postMessage({
-                            command: 'error',
-                            data: responseJSON.error,
-                        });
+                        postMessage({ command: 'error', data: responseJSON.error, });
                         return;
                     }
-                    postMessage({
-                        command: 'record',
-                        data: responseJSON,
-                    });
+                    postMessage({ command: 'record', data: responseJSON, });
                     if (utils.statusEnded[responseJSON.status]) {
                         new fetch({ path: `/d/${settings.domain}/record/${rid}` }).start().then(async (response) => {
                             if (response?.json !== undefined) {
-                                postMessage({
-                                    command: 'info',
-                                    data: response.json
-                                });
-                                postMessage({
-                                    command: 'record',
-                                    data: response.json
-                                });
+                                postMessage({ command: 'info', data: response.json });
+                                postMessage({ command: 'record', data: response.json });
                             }
                         });
                     }
