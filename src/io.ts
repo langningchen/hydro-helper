@@ -5,15 +5,15 @@ export const outputChannel = vscode.window.createOutputChannel('Hydro Helper', {
 });
 
 export class io {
-    static info = (message: string, options?: vscode.MessageOptions): undefined => {
+    static info = (message: string, options?: vscode.MessageOptions) => {
         outputChannel.info(`Show information message`, '"' + message + '"', options);
         vscode.window.showInformationMessage(message, options);
     };
-    static warn = (message: string, options?: vscode.MessageOptions): undefined => {
+    static warn = (message: string, options?: vscode.MessageOptions) => {
         outputChannel.warn(`Show warning message`, '"' + message + '"', options);
         vscode.window.showWarningMessage(message, options);
     };
-    static error = (message: string, options?: vscode.MessageOptions): undefined => {
+    static error = (message: string, options?: vscode.MessageOptions) => {
         outputChannel.error(`Show error message`, '"' + message + '"', options);
         vscode.window.showErrorMessage(message, options);
     };
