@@ -122,43 +122,43 @@ window.statusEnded = {
     33: true
 };
 window.languageDisplayName = {
-    "bash": "Bash",
-    "c": "C",
-    "cc": "C++",
-    "cc.cc98": "C++98",
-    "cc.cc98o2": "C++98(O2)",
-    "cc.cc11": "C++11",
-    "cc.cc11o2": "C++11(O2)",
-    "cc.cc14": "C++14",
-    "cc.cc14o2": "C++14(O2)",
-    "cc.cc17": "C++17",
-    "cc.cc17o2": "C++17(O2)",
-    "cc.cc20": "C++20",
-    "cc.cc20o2": "C++20(O2)",
-    "pas": "Pascal",
-    "java": "Java",
-    "kt": "Kotlin",
-    "kt.jvm": "Kotlin/JVM",
-    "py": "Python",
-    "py.py2": "Python 2",
-    "py.py3": "Python 3",
-    "py.pypy3": "PyPy3",
-    "php": "PHP",
-    "rs": "Rust",
-    "hs": "Haskell",
-    "js": "NodeJS",
-    "go": "Golang",
-    "rb": "Ruby",
-    "cs": "C#",
-    "r": "R",
+    'bash': 'Bash',
+    'c': 'C',
+    'cc': 'C++',
+    'cc.cc98': 'C++98',
+    'cc.cc98o2': 'C++98(O2)',
+    'cc.cc11': 'C++11',
+    'cc.cc11o2': 'C++11(O2)',
+    'cc.cc14': 'C++14',
+    'cc.cc14o2': 'C++14(O2)',
+    'cc.cc17': 'C++17',
+    'cc.cc17o2': 'C++17(O2)',
+    'cc.cc20': 'C++20',
+    'cc.cc20o2': 'C++20(O2)',
+    'pas': 'Pascal',
+    'java': 'Java',
+    'kt': 'Kotlin',
+    'kt.jvm': 'Kotlin/JVM',
+    'py': 'Python',
+    'py.py2': 'Python 2',
+    'py.py3': 'Python 3',
+    'py.pypy3': 'PyPy3',
+    'php': 'PHP',
+    'rs': 'Rust',
+    'hs': 'Haskell',
+    'js': 'NodeJS',
+    'go': 'Golang',
+    'rb': 'Ruby',
+    'cs': 'C#',
+    'r': 'R',
 };
 window.contestRuleName = {
-    "acm": "ACM/ICPC",
-    "oi": "OI",
-    "ioi": "IOI",
-    "strictioi": "IOI(Strict)",
-    "ledo": "Ledo",
-    "homework": "Assignment",
+    'acm': 'ACM/ICPC',
+    'oi': 'OI',
+    'ioi': 'IOI',
+    'strictioi': 'IOI(Strict)',
+    'ledo': 'Ledo',
+    'homework': 'Assignment',
 };
 window.scoreColor = [
     '#ff4f4f',
@@ -185,6 +185,7 @@ window.getUnit = (data, unit) => {
     else { return unit + 's'; }
 };
 window.toTime = (time) => {
+    if (time == 0) { return '-'; }
     if (time < 1000) { return time + 'ms'; } time = Math.floor(time / 1000);
     if (time < 60) { return time + 's'; } time = Math.floor(time / 60);
     if (time < 60) { return time + ' ' + window.getUnit(time, 'minute'); } time = Math.floor(time / 60);
@@ -198,11 +199,12 @@ window.parseTime = (time) => {
     else if (time.startsWith('≥')) { return parseInt(time.slice(1)); }
     else { return -1; }
 };
-window.toMemory = (time) => {
-    if (time < 1024) { return time + 'B'; } time = Math.floor(time / 1024);
-    if (time < 1024) { return time + 'KiB'; } time = Math.floor(time / 1024);
-    if (time < 1024) { return time + 'MiB'; } time = Math.floor(time / 1024);
-    return time + 'GiB';
+window.toMemory = (memory) => {
+    if (memory == 0) { return '-'; }
+    if (memory < 1024) { return memory + 'B'; } memory = Math.floor(memory / 1024);
+    if (memory < 1024) { return memory + 'KiB'; } memory = Math.floor(memory / 1024);
+    if (memory < 1024) { return memory + 'MiB'; } memory = Math.floor(memory / 1024);
+    return memory + 'GiB';
 };
 window.parseMemory = (memory) => {
     if (memory.endsWith('KiB')) { return parseInt(memory.slice(0, -3)); }
@@ -217,8 +219,8 @@ window.toRelativeTime = (time) => {
     if (delta < 60) { return delta + ' ' + window.getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
     if (delta < 24) { return delta + ' ' + window.getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
     if (delta < 30) { return delta + ' ' + window.getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
-    if (delta < 12) { return 'about ' + delta + ' ' + window.getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
-    return 'about ' + delta + ' ' + window.getUnit(delta, 'year') + ' ' + suffix;
+    if (delta < 12) { return delta + ' ' + window.getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
+    return delta + ' ' + window.getUnit(delta, 'year') + ' ' + suffix;
 };
 window.formatString = (str) => {
     if (typeof str === 'string') { return str; }
@@ -254,8 +256,8 @@ window.renderPdf = async () => {
                 });
                 canvas.width = Math.floor(viewport.width);
                 canvas.height = Math.floor(viewport.height);
-                canvas.style.width = Math.floor(viewport.width) + "px";
-                canvas.style.height = Math.floor(viewport.height) + "px";
+                canvas.style.width = Math.floor(viewport.width) + 'px';
+                canvas.style.height = Math.floor(viewport.height) + 'px';
                 pageData.render({
                     canvasContext: canvas.getContext('2d'),
                     viewport,

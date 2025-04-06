@@ -23,15 +23,19 @@ export default class pWeb extends webview {
                             problemContent = await parseMarkdown(problemContent, `/d/${settings.domain}/p/${pid}/file`);
                         }
                         response.json.pdoc.content = problemContent;
-                        const message = {
-                            command: 'problem',
-                            data: response.json,
-                        };
-                        postMessage(message);
+                        postMessage({ command: 'problem', data: response.json, });
                     }
                 }).catch((error) => {
                     postMessage({ command: 'problem', error: (error as Error).message });
                 }));
+
+                awaitList.push(new fetch({ path: `/d/${settings.domain}/record?pid=${pid}` }).start().then(async (response) => {
+                    if (response?.json !== undefined) {
+                        postMessage({ command: 'record', data: response.json, })
+                    }
+                }).catch((error) => {
+                    postMessage({ command: 'record', error: (error as Error).message });
+                }))
 
                 if (!tid) {
                     awaitList.push(new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (response) => {
@@ -42,11 +46,7 @@ export default class pWeb extends webview {
                                     reply.content = await parseMarkdown(reply.content as string, `/d/${settings.domain}/p/${pid}/file`);
                                 }
                             }
-                            const message = {
-                                command: 'solution',
-                                data: response.json,
-                            };
-                            postMessage(message);
+                            postMessage({ command: 'solution', data: response.json, });
                         }
                     }).catch((error) => {
                         postMessage({ command: 'solution', error: (error as Error).message });

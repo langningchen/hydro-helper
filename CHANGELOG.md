@@ -4,6 +4,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 
 ## v0.1.4
 
+- **Add record in problem webview**
 - **Add settings for loading and saving attributes**
 - **Auto activatate the extension**
 - Fix solution vote number
