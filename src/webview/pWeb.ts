@@ -23,6 +23,7 @@ export default class pWeb extends webview {
                             problemContent = await parseMarkdown(problemContent, `/d/${settings.domain}/p/${pid}/file`);
                         }
                         response.json.pdoc.content = problemContent;
+                        response.json.cphFilename = settings.cphFilename;
                         postMessage({ command: 'problem', data: response.json, });
                     }
                 }).catch((error) => {

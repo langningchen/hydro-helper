@@ -47,8 +47,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
                 window.registerButton('clippy', 'Send to CPH', () => {
                     const testCases = markdownContent.rawContent.matchAll(/.*输入.*\s*```(plain)?\n((.|\n)*?)```\s*.*输出.*\s*```(plain)?\n((.|\n)*?)```/g);
+                    let name = data.cphFilename;
+                    name = name.replaceAll('${_id}', data.pdoc._id);
+                    name = name.replaceAll('${owner}', data.pdoc.owner);
+                    name = name.replaceAll('${ownerUname}', data.udoc.uname);
+                    name = name.replaceAll('${domainId}', data.pdoc.domainId);
+                    name = name.replaceAll('${docId}', data.pdoc.docId);
+                    name = name.replaceAll('${title}', data.pdoc.title);
+                    name = name.replaceAll('${nSubmit}', data.pdoc.nSubmit);
+                    name = name.replaceAll('${nAccept}', data.pdoc.nAccept);
+                    name = name.replaceAll('${memoryMin}', data.pdoc.config.memoryMin);
+                    name = name.replaceAll('${memoryMax}', data.pdoc.config.memoryMax);
+                    name = name.replaceAll('${timeMin}', data.pdoc.config.timeMin);
+                    name = name.replaceAll('${timeMax}', data.pdoc.config.timeMax);
+                    name = name.replaceAll('${type}', data.pdoc.config.type);
+                    name = name.replaceAll('${subType}', data.pdoc.config.subType);
                     const problem = {
-                        name: `${data.pdoc.docId}. ${data.pdoc.title}`,
+                        name,
                         url: data.pdoc.docId,
                         interactive: false,
                         memoryLimit: data.pdoc.config.memoryMax * 1024 * 1024,

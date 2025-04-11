@@ -2,20 +2,8 @@
 
 All notable changes to the "Hydro Helper" extension will be documented in this file.
 
-## v0.1.4
+## v0.1.5
 
-- **Add record in problem webview**
-- **Add settings for loading and saving attributes**
-- **Auto activatate the extension**
-- Fix solution vote number
-- Enhance error handling in fetch to manage rate limits
-- Fix tab error causing page unavailable
-- Fix homework treeview judging result
-- Fix solution reply rendering
-- Handle potential errors during MathJax typesetting
-- Fix "Open in Broswer" button disappear after refreshing
-- Avoid cache video files
-- Fix score 0 doesn't display
-- Refactor code
+- **Add support for customizable CPH filename**
 
 Want to see the previous log? [Click here](https://github.com/langningchen/hydro-helper/commits/main/CHANGELOG.md)

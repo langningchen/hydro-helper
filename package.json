@@ -151,6 +151,11 @@
           "type": "boolean",
           "default": true,
           "description": "Save attributes of problems to the source file"
+        },
+        "hydro.problems.cphFilename": {
+          "type": "string",
+          "default": "${docId}_${title}",
+          "markdownDescription": "The filename of the CPH file. You can use the following variables:\n- ${_id}: The raw ID of the problem (e.g. `66c739de21385536a27470b0`)\n- ${owner}: The owner of the problem (e.g. `1`)\n- ${ownerUname}: The username of the owner (e.g. `langningchen`)\n- ${domainId}: The domain ID of the problem (e.g. `system`)\n- ${docId}: The document ID of the problem (e.g. `1`)\n- ${title}: The title of the problem (e.g. `A+B Problem`)\n- ${nSubmit}: The number of submissions of the problem (e.g. `111`)\n- ${nAccept}: The number of accepted submissions of the problem (e.g. `48`)\n- ${memoryMin}: The minimum memory limit of the problem (e.g. `64`)\n- ${memoryMax}: The maximum memory limit of the problem (e.g. `64`)\n- ${timeMin}: The minimum time limit of the problem (e.g. `1000`)\n- ${timeMax}: The maximum time limit of the problem (e.g. `1000`)\n- ${type}: The type of the problem (e.g. `default`)"
         }
       }
     },
