@@ -91,12 +91,12 @@
         "hydro.server.safeProtocol": {
           "type": "boolean",
           "default": true,
-          "description": "Use safe protocol (HTTPS/WSS)"
+          "description": "Whether to use safe protocol (HTTPS/WSS)"
         },
         "hydro.server.domain": {
           "type": "string",
           "default": "system",
-          "description": "The domain of Hydro"
+          "description": "The Hydro domain of Hydro"
         },
         "hydro.userInterface.webviewColumn": {
           "type": "number",
@@ -140,22 +140,22 @@
             "Eight",
             "Nine"
           ],
-          "description": "Determines the display position of the webview."
+          "description": "Determines the display position of the webview"
         },
         "hydro.attributes.loadAttributes": {
           "type": "boolean",
           "default": true,
-          "description": "Load attributes of problems from the source file"
+          "description": "Whether to load attributes of problems from the source file"
         },
         "hydro.attributes.saveAttributes": {
           "type": "boolean",
           "default": true,
-          "description": "Save attributes of problems to the source file"
+          "description": "Whether to save attributes of problems to the source file"
         },
         "hydro.problems.cphFilename": {
           "type": "string",
           "default": "${docId}_${title}",
-          "markdownDescription": "The filename of the CPH file. You can use the following variables:\n- ${_id}: The raw ID of the problem (e.g. `66c739de21385536a27470b0`)\n- ${owner}: The owner of the problem (e.g. `1`)\n- ${ownerUname}: The username of the owner (e.g. `langningchen`)\n- ${domainId}: The domain ID of the problem (e.g. `system`)\n- ${docId}: The document ID of the problem (e.g. `1`)\n- ${title}: The title of the problem (e.g. `A+B Problem`)\n- ${nSubmit}: The number of submissions of the problem (e.g. `111`)\n- ${nAccept}: The number of accepted submissions of the problem (e.g. `48`)\n- ${memoryMin}: The minimum memory limit of the problem (e.g. `64`)\n- ${memoryMax}: The maximum memory limit of the problem (e.g. `64`)\n- ${timeMin}: The minimum time limit of the problem (e.g. `1000`)\n- ${timeMax}: The maximum time limit of the problem (e.g. `1000`)\n- ${type}: The type of the problem (e.g. `default`)"
+          "markdownDescription": "The filename of the CPH file. You can use the following variables:\r\n- `${_id}`: The raw ID of the problem (e.g. `66c739de21385536a27470b0`)\r\n- `${owner}`: The owner of the problem (e.g. `1`)\r\n- `${ownerUname}`: The username of the owner (e.g. `langningchen`)\r\n- `${domainId}`: The domain ID of the problem (e.g. `system`)\r\n- `${docId}`: The document ID of the problem (e.g. `1`)\r\n- `${title}`: The title of the problem (e.g. `A+B Problem`)\r\n- `${nSubmit}`: The number of submissions of the problem (e.g. `111`)\r\n- `${nAccept}`: The number of accepted submissions of the problem (e.g. `48`)\r\n- `${memoryMin}`: The minimum memory limit of the problem (e.g. `64`)\r\n- `${memoryMax}`: The maximum memory limit of the problem (e.g. `64`)\r\n- `${timeMin}`: The minimum time limit of the problem (e.g. `1000`)\r\n- `${timeMax}`: The maximum time limit of the problem (e.g. `1000`)\r\n- `${type}`: The type of the problem (e.g. `default`)"
         }
       }
     },
