@@ -47,8 +47,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
                 window.registerButton('clippy', 'Send to CPH', () => {
                     const testCases = markdownContent.rawContent.matchAll(/.*输入.*\s*```(plain)?\n((.|\n)*?)```\s*.*输出.*\s*```(plain)?\n((.|\n)*?)```/g);
+                    let name = data.cphFilename;
+                    name = name.replaceAll('${_id}', data.pdoc._id);
+                    name = name.replaceAll('${owner}', data.pdoc.owner);
+                    name = name.replaceAll('${ownerUname}', data.udoc.uname);
+                    name = name.replaceAll('${domainId}', data.pdoc.domainId);
+                    name = name.replaceAll('${docId}', data.pdoc.docId);
+                    name = name.replaceAll('${title}', data.pdoc.title);
+                    name = name.replaceAll('${nSubmit}', data.pdoc.nSubmit);
+                    name = name.replaceAll('${nAccept}', data.pdoc.nAccept);
+                    name = name.replaceAll('${memoryMin}', data.pdoc.config.memoryMin);
+                    name = name.replaceAll('${memoryMax}', data.pdoc.config.memoryMax);
+                    name = name.replaceAll('${timeMin}', data.pdoc.config.timeMin);
+                    name = name.replaceAll('${timeMax}', data.pdoc.config.timeMax);
+                    name = name.replaceAll('${type}', data.pdoc.config.type);
+                    name = name.replaceAll('${subType}', data.pdoc.config.subType);
                     const problem = {
-                        name: `${data.pdoc.docId}. ${data.pdoc.title}`,
+                        name,
                         url: data.pdoc.docId,
                         interactive: false,
                         memoryLimit: data.pdoc.config.memoryMax * 1024 * 1024,
@@ -167,7 +182,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         const type = contest.rule === 'homework' ? 'Homework' : 'Contest';
                         relatedHTML += `<vscode-label>${contest.title}</vscode-label>`;
                         relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contest._id}']})">Open ${type}</vscode-button>`;
-                        relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'openP', data: ['${contest.pids}', '${contest._id}']}); window.vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
+                        relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'openP', data: ['${data.pdoc.docId}', '${contest._id}']}); window.vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
                         relatedHTML += `<vscode-divider></vscode-divider>`;
                     }
                     relatedHTML += `</p>`;

@@ -34,9 +34,26 @@ Users using this extension should have [an Hydro account](https://hydro.ac).
 
 This extension contributes the following settings:
 
-* `hydro.server`: The server address of Hydro. Default is `hydro.ac`.
-* `hydro.safeProtocol`: Whether to use safe protocol (HTTPS/WSS) or not. Default is `true`.
-* `hydro.domain`: The Hydro domain of Hydro. Default is `system`.
+- `hydro.server.server`: The server address of Hydro, without protocol. Default is `hydro.ac`.
+- `hydro.server.safeProtocol`: Whether to use safe protocol (HTTPS/WSS). Default is `true`.
+- `hydro.server.domain`: The Hydro domain of Hydro. Default is `system`.
+- `hydro.userInterface.webviewColumn`: Determines the display position of the webview.
+- `hydro.attributes.loadAttributes`: Whether to load attributes of problems from the source file
+- `hydro.attributes.saveAttributes`: Whether to save attributes of problems to the source file
+- `hydro.problems.cphFilename`: The filename of the CPH file. You can use the following variables:
+  - `${_id}`: The raw ID of the problem (e.g. `66c739de21385536a27470b0`)
+  - `${owner}`: The owner of the problem (e.g. `1`)
+  - `${ownerUname}`: The username of the owner (e.g. `langningchen`)
+  - `${domainId}`: The domain ID of the problem (e.g. `system`)
+  - `${docId}`: The document ID of the problem (e.g. `1`)
+  - `${title}`: The title of the problem (e.g. `A+B Problem`)
+  - `${nSubmit}`: The number of submissions of the problem (e.g. `111`)
+  - `${nAccept}`: The number of accepted submissions of the problem (e.g. `48`)
+  - `${memoryMin}`: The minimum memory limit of the problem (e.g. `64`)
+  - `${memoryMax}`: The maximum memory limit of the problem (e.g. `64`)
+  - `${timeMin}`: The minimum time limit of the problem (e.g. `1000`)
+  - `${timeMax}`: The maximum time limit of the problem (e.g. `1000`)
+  - `${type}`: The type of the problem (e.g. `default`)
 
 ## License
 

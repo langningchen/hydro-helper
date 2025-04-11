@@ -19,4 +19,5 @@ export default class settings {
     static get webviewColumn(): vscode.ViewColumn { return settings.get('userInterface.webviewColumn') as vscode.ViewColumn; }
     static get loadAttributes(): vscode.ViewColumn { return settings.get('attributes.loadAttributes') as vscode.ViewColumn; }
     static get saveAttributes(): vscode.ViewColumn { return settings.get('attributes.saveAttributes') as vscode.ViewColumn; }
+    static get cphFilename(): vscode.ViewColumn { return settings.get('problems.cphFilename') as vscode.ViewColumn; }
 }
