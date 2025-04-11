@@ -12,6 +12,7 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 - Fix tab error causing page unavailable
 - Fix homework treeview judging result
 - Fix solution reply rendering
+- Handle potential errors during MathJax typesetting
 - Fix "Open in Broswer" button disappear after refreshing
 - Avoid cache video files
 - Fix score 0 doesn't display
