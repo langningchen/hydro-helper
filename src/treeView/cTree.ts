@@ -21,11 +21,11 @@ export default class extends treeView<Contest | Problem | Record> {
             } else if (element.contextValue === type) {
                 const tid = (element as Contest).id!;
                 const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}` }).start();
-                const records: Problem[] = [];
-                for (const rdoc of Object.keys(response.json.pdict)) {
-                    records.push(new Problem(response.json.pdict[rdoc], response.json.psdict[rdoc], tid));
+                const problems: Problem[] = [];
+                for (const pdoc of Object.keys(response.json.pdict)) {
+                    problems.push(new Problem(response.json.pdict[pdoc], response.json.psdict[pdoc], tid));
                 }
-                return records;
+                return problems;
             } else {
                 const [tid, pid] = (element as Problem).id!.split('-');
                 const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}` }).start();
