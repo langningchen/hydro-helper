@@ -182,7 +182,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         const type = contest.rule === 'homework' ? 'Homework' : 'Contest';
                         relatedHTML += `<vscode-label>${contest.title}</vscode-label>`;
                         relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'open${type.charAt(0)}', data: ['${contest._id}']})">Open ${type}</vscode-button>`;
-                        relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'openP', data: ['${contest.pids}', '${contest._id}']}); window.vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
+                        relatedHTML += `<vscode-button class="mr" onclick="window.vscode.postMessage({command: 'openP', data: ['${data.pdoc.docId}', '${contest._id}']}); window.vscode.postMessage({command: 'dispose'})">Open Problem in ${type}</vscode-button>`;
                         relatedHTML += `<vscode-divider></vscode-divider>`;
                     }
                     relatedHTML += `</p>`;
