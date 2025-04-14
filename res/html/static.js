@@ -386,7 +386,7 @@ window.addEventListener('DOMContentLoaded', () => {
             header.removeAttribute('disabled');
             panel.innerHTML = htmlContent;
         }
-        window.MathJax.typeset();
+        try { window.MathJax.typeset(); } catch (error) { console.error('Error in MathJax typeset:', error); }
         window.renderPdf();
         window.renderCode();
     };
