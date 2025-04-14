@@ -386,8 +386,7 @@ window.addEventListener('DOMContentLoaded', () => {
             header.removeAttribute('disabled');
             panel.innerHTML = htmlContent;
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        try { window.MathJax.typeset(); } catch (_) { ; }
+        try { window.MathJax.typeset(); } catch (error) { console.error('Error in MathJax typeset:', error); }
         window.renderPdf();
         window.renderCode();
     };
