@@ -499,8 +499,8 @@
     "vscode:prepublish": "node esbuild.mjs --production",
     "compile": "node esbuild.mjs",
     "watch:esbuild": "node esbuild.mjs --watch",
-    "package": "pnpm vsce package --no-dependencies",
-    "publish": "pnpm vsce publish --no-dependencies"
+    "package": "pnpm vsce package --allow-star-activation --no-dependencies",
+    "publish": "pnpm vsce publish --allow-star-activation --no-dependencies"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",
