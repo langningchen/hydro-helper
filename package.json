@@ -12,7 +12,7 @@
     "url": "https://github.com/langningchen/hydro-helper"
   },
   "engines": {
-    "vscode": "^1.94.0"
+    "vscode": "^1.100.0"
   },
   "categories": [
     "Other"
