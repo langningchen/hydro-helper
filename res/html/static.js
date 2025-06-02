@@ -232,7 +232,7 @@ window.formatString = (str) => {
     return message;
 };
 window.parseMarkdown = ({ content, fetchData }) => {
-    return content.replace(/\{\{([a-z0-9]+)\}\}/g, (match, id) => fetchData[id]);
+    return content.replace(/\{\{([a-z0-9]+)\}\}/g, (_, id) => fetchData[id]);
 };
 window.renderPdf = async () => {
     for (const pdfElement of document.getElementsByClassName('pdf')) {
