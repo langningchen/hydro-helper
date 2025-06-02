@@ -109,6 +109,10 @@ window.addEventListener('DOMContentLoaded', () => {
                             <vscode-table-cell>Memory</vscode-table-cell>
                             <vscode-table-cell>${window.toMemory(data.pdoc.config.memoryMin * 1024 * 1024)} ~ ${window.toMemory(data.pdoc.config.memoryMax * 1024 * 1024)}</vscode-table-cell>
                         </vscode-table-row>
+                        ${data.tdoc?._id ? `<vscode-table-row>
+                            <vscode-table-cell>Contest / Homework</vscode-table-cell>
+                            <vscode-table-cell>${data.tdoc?._id}</vscode-table-cell>
+                        </vscode-table-row>`: ``}
                         ${data.pdoc.nSubmit ? `<vscode-table-row>
                             <vscode-table-cell>Submit</vscode-table-cell>
                             <vscode-table-cell>${data.pdoc.nSubmit}</vscode-table-cell>

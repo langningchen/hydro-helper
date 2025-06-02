@@ -16,7 +16,7 @@ export default class {
             return new TextDecoder().decode(data);
         });
         const regex = /@(\S+)\s+(\S+)/g;
-        let match;
+        let match: RegExpExecArray;
         while ((match = regex.exec(this.content)) !== null) {
             this.attributes.set(match[1], match[2]);
         }
@@ -30,6 +30,7 @@ export default class {
         if (this.content.length > 0) {
             this.content += '\n// ';
             this.attributes.forEach((value, key) => { this.content += `@${key} ${value} `; });
+            this.content = this.content.trimEnd();
             this.content += '\n';
         }
         await vscode.workspace.fs.writeFile(this.file, new TextEncoder().encode(this.content));

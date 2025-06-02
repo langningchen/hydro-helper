@@ -232,9 +232,14 @@ export const activate = async (context: vscode.ExtensionContext) => {
 				code: (await vscode.workspace.fs.readFile(file[0])).toString(),
 			},
 		}).start();
+
+		if (response.status != 200) {
+			io.error('Submit failed');
+			return;
+		}
 		const rid = response.json.rid;
 		if (!rid) {
-			io.error('Submit failed');
+			io.info('Submitted');
 			return;
 		}
 
