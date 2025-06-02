@@ -242,30 +242,23 @@ window.renderPdf = async () => {
         }
         pdfElement.removeAttribute('data-src');
         pdfElement.style.width = '100%';
+        const pdf = await window.pdfjsLib.getDocument(sourceUrl).promise;
+        for (var page = 1; page <= pdf.numPages; page++) {
+            const canvas = document.createElement('canvas');
+            pdfElement.appendChild(canvas);
 
-        const render = async () => {
-            pdfElement.innerHTML = '';
-            const pdf = await window.pdfjsLib.getDocument(sourceUrl).promise;
-            for (var page = 1; page <= pdf.numPages; page++) {
-                const canvas = document.createElement('canvas');
-                pdfElement.appendChild(canvas);
-
-                const pageData = await pdf.getPage(page);
-                const viewport = pageData.getViewport({
-                    scale: pdfElement.clientWidth / pageData.getViewport({ scale: 1.0 }).width,
-                });
-                canvas.width = Math.floor(viewport.width);
-                canvas.height = Math.floor(viewport.height);
-                canvas.style.width = Math.floor(viewport.width) + 'px';
-                canvas.style.height = Math.floor(viewport.height) + 'px';
-                pageData.render({
-                    canvasContext: canvas.getContext('2d'),
-                    viewport,
-                });
-            }
-        };
-        render();
-        window.addEventListener('resize', render);
+            const pageData = await pdf.getPage(page);
+            const viewport = pageData.getViewport({
+                scale: pdfElement.clientWidth / pageData.getViewport({ scale: 1.0 }).width,
+            });
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
+            canvas.style.width = '100%';
+            pageData.render({
+                canvasContext: canvas.getContext('2d'),
+                viewport,
+            });
+        }
     }
 };
 window.renderCode = () => {
