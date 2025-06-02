@@ -21,6 +21,7 @@ export default class extends treeView<Contest | Problem | Record> {
             } else if (element.contextValue === type) {
                 const tid = (element as Contest).id!;
                 const response = await new fetch({ path: `/d/${settings.domain}/${type}/${tid}${type === 'contest' ? '/problems' : ''}` }).start();
+                if (!response.json.psdict) return [];
                 const problems: Problem[] = [];
                 for (const pdoc of response.json.tdoc.pids) {
                     problems.push(new Problem(response.json.pdict[pdoc], response.json.psdict[pdoc], tid));
