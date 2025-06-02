@@ -10,5 +10,6 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 - Allow star activation in packaging
 - Enhance PDF rendering to avoid flashing
 - Add contest/homework ID display
+- Trim end when writing attributes
 
 Want to see the previous log? [Click here](https://github.com/langningchen/hydro-helper/commits/main/CHANGELOG.md)

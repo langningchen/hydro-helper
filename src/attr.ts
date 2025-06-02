@@ -30,6 +30,7 @@ export default class {
         if (this.content.length > 0) {
             this.content += '\n// ';
             this.attributes.forEach((value, key) => { this.content += `@${key} ${value} `; });
+            this.content = this.content.trimEnd();
             this.content += '\n';
         }
         await vscode.workspace.fs.writeFile(this.file, new TextEncoder().encode(this.content));
