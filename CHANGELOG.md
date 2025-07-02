@@ -6,5 +6,6 @@ All notable changes to the "Hydro Helper" extension will be documented in this f
 
 - Add statistics tab in problem view
 - Refactor time and memory formatting functions for improved readability and precision
+- Handle WebSocket reconnection on timeout error
 
 Want to see the previous log? [Click here](https://github.com/langningchen/hydro-helper/commits/main/CHANGELOG.md)

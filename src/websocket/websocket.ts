@@ -37,6 +37,11 @@ export default class {
 
         ws.on('error', (err) => { io.error(err.toString()); });
         ws.on('close', (code, reason) => {
+            if (code == 4001) {
+                outputChannel.warn('WebSocket disconnected due to timeout, attempting to reconnect...');
+                this.start();
+                return;
+            }
             io.info([
                 'WebSocket closed',
                 code ? `code: ${code}` : '',
