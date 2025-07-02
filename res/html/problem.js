@@ -4,6 +4,7 @@ window.addEventListener('DOMContentLoaded', () => {
     window.registerTab('Solution');
     window.registerTab('Related');
     window.registerTab('Files');
+    window.registerTab('Statistics');
     window.registerTab('Record');
 
     window.setMessageHandler((message) => {
@@ -288,6 +289,46 @@ window.addEventListener('DOMContentLoaded', () => {
                 }
                 window.enableTab('Solution', solutionHTML);
                 window.setTabCount('Solution', data.psdocs.length);
+                break;
+            }
+            case 'statistics': {
+                if (message.error) {
+                    window.enableTab('Statistics', `<div class="center error">
+                        <vscode-icon name="error" size="18"></vscode-icon>
+                        <div>${message.error}</div>
+                    </div>`);
+                    return;
+                }
+                if (data === null) {
+                    window.enableTab('Statistics');
+                }
+                var statisticsHTML = `<vscode-table zebra bordered-columns responsive resizable breakpoint="400">
+                    <vscode-table-header slot="header">
+                        <vscode-table-header-cell>Status</vscode-table-header-cell>
+                        <vscode-table-header-cell>Submit By</vscode-table-header-cell>
+                        <vscode-table-header-cell>Time</vscode-table-header-cell>
+                        <vscode-table-header-cell>Memory</vscode-table-header-cell>
+                        <vscode-table-header-cell>Language</vscode-table-header-cell>
+                        <vscode-table-header-cell>Code</vscode-table-header-cell>
+                    </vscode-table-header>
+                    <vscode-table-body slot="body">`;
+                for (const rsdoc of data.rsdocs) {
+                    statisticsHTML += `<vscode-table-row>
+                        <vscode-table-cell style="cursor: pointer" onclick="vscode.postMessage({command:'openT',data:['${rsdoc._id}']})">
+                            <span class="icon record-status--icon ${window.statusIcon[1]}"></span>
+                            <span style="color: ${window.scoreColor[10]}">${100}</span>
+                            <span class="record-status--text ${window.statusIcon[1]}">${window.statusName[1]}</span>
+                        </vscode-table-cell>
+                        <vscode-table-cell>${data.udict[rsdoc.uid].uname}</vscode-table-cell>
+                        <vscode-table-cell>${window.toTime(rsdoc.time)}</vscode-table-cell>
+                        <vscode-table-cell>${window.toMemory(rsdoc.memory * 1024)}</vscode-table-cell>
+                        <vscode-table-cell>${window.languageDisplayName[rsdoc.lang]}</vscode-table-cell>
+                        <vscode-table-cell>${window.toMemory(rsdoc.length)}</vscode-table-cell>
+                    </vscode-table-row>`;
+                }
+                statisticsHTML += `</vscode-table-body></vscode-table>`;
+                window.enableTab('Statistics', statisticsHTML);
+                window.setTabCount('Statistics', data.rsdocs.length);
                 break;
             }
             case 'record': {

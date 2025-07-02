@@ -38,6 +38,14 @@ export default class pWeb extends webview {
                     postMessage({ command: 'record', error: (error as Error).message });
                 }))
 
+                awaitList.push(new fetch({ path: `/d/${settings.domain}/p/${pid}/stat` + (tid ? `?tid=${tid}` : '') }).start().then(async (response) => {
+                    if (response?.json !== undefined) {
+                        postMessage({ command: 'statistics', data: response.json, })
+                    }
+                }).catch((error) => {
+                    postMessage({ command: 'statistics', error: (error as Error).message });
+                }))
+
                 if (!tid) {
                     awaitList.push(new fetch({ path: `/d/${settings.domain}/p/${pid}/solution`, addCookie: true }).start().then(async (response) => {
                         if (response?.json !== undefined) {
