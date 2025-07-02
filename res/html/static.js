@@ -186,7 +186,7 @@ window.getUnit = (data, unit) => {
 };
 window.toTime = (time) => {
     if (time == 0) { return '-'; }
-    if (time < 1000) { return time + ' ms'; } time /= 1000;
+    if (time < 1000) { return time.toFixed(2) + ' ms'; } time /= 1000;
     if (time < 60) { return time.toFixed(2) + ' s'; } time = Math.floor(time / 60);
     if (time < 60) { return time + window.getUnit(time, ' minute'); } time = Math.floor(time / 60);
     if (time < 24) { return time + window.getUnit(time, ' hour'); } time = Math.floor(time / 24);
