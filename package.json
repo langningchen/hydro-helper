@@ -2,7 +2,7 @@
   "name": "hydro-helper",
   "displayName": "Hydro Helper",
   "description": "(UNOFFICIAL) Hydro Helper is a VSCode extension to solve Hydro problems easier",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "AGPL-3.0-only",
   "publisher": "langningchen",
   "icon": "res/icons/Hydro.png",
@@ -12,7 +12,7 @@
     "url": "https://github.com/langningchen/hydro-helper"
   },
   "engines": {
-    "vscode": "^1.94.0"
+    "vscode": "^1.101.0"
   },
   "categories": [
     "Other"
@@ -503,29 +503,29 @@
     "publish": "pnpm vsce publish --allow-star-activation --no-dependencies"
   },
   "devDependencies": {
-    "@eslint/js": "^9.23.0",
+    "@eslint/js": "^9.30.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "~20.17.19",
-    "@types/vscode": "1.94.0",
-    "@types/ws": "^8.5.14",
-    "@typescript-eslint/eslint-plugin": "^8.24.0",
-    "@typescript-eslint/parser": "^8.24.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "@vscode/vsce": "^3.2.2",
-    "esbuild": "^0.25.0",
-    "eslint": "^9.20.1",
-    "globals": "^16.0.0",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.27.0"
+    "@types/node": "~24.0.10",
+    "@types/vscode": "1.101.0",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "esbuild": "^0.25.5",
+    "eslint": "^9.30.1",
+    "globals": "^16.3.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.35.1"
   },
   "dependencies": {
     "@types/dom-parser": "^0.1.4",
     "@vscode/codicons": "^0.0.36",
     "@vscode/l10n-dev": "^0.0.35",
     "dom-parser": "^1.1.5",
-    "marked": "^15.0.7",
-    "ws": "^8.18.0"
+    "marked": "^16.0.0",
+    "ws": "^8.18.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [

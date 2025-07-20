@@ -186,13 +186,13 @@ window.getUnit = (data, unit) => {
 };
 window.toTime = (time) => {
     if (time == 0) { return '-'; }
-    if (time < 1000) { return time + 'ms'; } time = Math.floor(time / 1000);
-    if (time < 60) { return time + 's'; } time = Math.floor(time / 60);
-    if (time < 60) { return time + ' ' + window.getUnit(time, 'minute'); } time = Math.floor(time / 60);
-    if (time < 24) { return time + ' ' + window.getUnit(time, 'hour'); } time = Math.floor(time / 24);
-    if (time < 30) { return time + ' ' + window.getUnit(time, 'day'); } time = Math.floor(time / 30);
-    if (time < 12) { return 'about ' + Math.floor(time) + ' ' + window.getUnit(time, 'month'); } time = Math.floor(time / 12);
-    return 'about ' + Math.floor(time) + ' ' + window.getUnit(time, 'year');
+    if (time < 1000) { return time.toFixed(2) + ' ms'; } time /= 1000;
+    if (time < 60) { return time.toFixed(2) + ' s'; } time = Math.floor(time / 60);
+    if (time < 60) { return time + window.getUnit(time, ' minute'); } time = Math.floor(time / 60);
+    if (time < 24) { return time + window.getUnit(time, ' hour'); } time = Math.floor(time / 24);
+    if (time < 30) { return time + window.getUnit(time, ' day'); } time = Math.floor(time / 30);
+    if (time < 12) { return 'about ' + Math.floor(time) + window.getUnit(time, ' month'); } time = Math.floor(time / 12);
+    return 'about ' + Math.floor(time) + window.getUnit(time, ' year');
 };
 window.parseTime = (time) => {
     if (time.endsWith('ms')) { return parseInt(time.slice(0, -2)); }
@@ -201,10 +201,10 @@ window.parseTime = (time) => {
 };
 window.toMemory = (memory) => {
     if (memory == 0) { return '-'; }
-    if (memory < 1024) { return memory + 'B'; } memory = Math.floor(memory / 1024);
-    if (memory < 1024) { return memory + 'KiB'; } memory = Math.floor(memory / 1024);
-    if (memory < 1024) { return memory + 'MiB'; } memory = Math.floor(memory / 1024);
-    return memory + 'GiB';
+    if (memory < 1024) { return memory.toFixed(2) + ' B'; } memory /= 1024;
+    if (memory < 1024) { return memory.toFixed(2) + ' KiB'; } memory /= 1024;
+    if (memory < 1024) { return memory.toFixed(2) + ' MiB'; } memory /= 1024;
+    return memory.toFixed(2) + ' GiB';
 };
 window.parseMemory = (memory) => {
     if (memory.endsWith('KiB')) { return parseInt(memory.slice(0, -3)); }
@@ -216,11 +216,11 @@ window.toRelativeTime = (time) => {
     const suffix = (time > now ? 'later' : 'ago');
     var delta = Math.floor(Math.abs(now - time) / 1000);
     if (delta < 60) { return 'just now'; } delta = Math.floor(delta / 60);
-    if (delta < 60) { return delta + ' ' + window.getUnit(delta, 'minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
-    if (delta < 24) { return delta + ' ' + window.getUnit(delta, 'hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
-    if (delta < 30) { return delta + ' ' + window.getUnit(delta, 'day') + ' ' + suffix; } delta = Math.floor(delta / 30);
-    if (delta < 12) { return delta + ' ' + window.getUnit(delta, 'month') + ' ' + suffix; } delta = Math.floor(delta / 12);
-    return delta + ' ' + window.getUnit(delta, 'year') + ' ' + suffix;
+    if (delta < 60) { return delta + window.getUnit(delta, ' minute') + ' ' + suffix; } delta = Math.floor(delta / 60);
+    if (delta < 24) { return delta + window.getUnit(delta, ' hour') + ' ' + suffix; } delta = Math.floor(delta / 24);
+    if (delta < 30) { return delta + window.getUnit(delta, ' day') + ' ' + suffix; } delta = Math.floor(delta / 30);
+    if (delta < 12) { return delta + window.getUnit(delta, ' month') + ' ' + suffix; } delta = Math.floor(delta / 12);
+    return delta + window.getUnit(delta, ' year') + ' ' + suffix;
 };
 window.formatString = (str) => {
     if (typeof str === 'string') { return str; }

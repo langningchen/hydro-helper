@@ -354,13 +354,14 @@ export const activate = async (context: vscode.ExtensionContext) => {
 	}));
 
 	disposables.push(vscode.commands.registerCommand('hydro-helper.openP', async (pid?: vscode.TreeItem | string, tid?: string) => {
+		const writeAttr = pid === undefined;
 		if (pid instanceof vscode.TreeItem) { pid = undefined; }
 		const activeTextEditor = vscode.window.activeTextEditor;
 		pid = await ensureData(pid as string, 'pid', 'problem ID', activeTextEditor?.document.fileName.match(/\d+/)?.[0]);
 		if (!pid) { return; }
 		tid = await ensureData(tid, 'tid');
 		new pWeb(parseInt(pid), tid);
-		if (activeTextEditor) {
+		if (activeTextEditor && writeAttr) {
 			const attribute = new attr(activeTextEditor.document.uri);
 			await attribute.load();
 			attribute.attributes.set('pid', pid);
